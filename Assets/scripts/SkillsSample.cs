@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SkillsSample : MonoBehaviour {
 
@@ -8,10 +9,11 @@ public class SkillsSample : MonoBehaviour {
 		fireball,
 		stun
 	}
-	public skills[] skillsList;
+	public List<skills> skillsList;
 	// Use this for initialization
 	void Start () {
-	
+
+
 	}
 	
 	// Update is called once per frame
