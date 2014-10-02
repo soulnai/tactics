@@ -2,7 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class Player : MonoBehaviour {
+
+	//[SerializeField] public Skills[] skills;
 	
 	public Vector2 gridPosition = Vector2.zero;
 	
@@ -18,7 +21,7 @@ public class Player : MonoBehaviour {
 	public bool rangeattacking = false;
 	public bool dead = false;
 	
-	
+
 	public string playerName = "George";
 	public int HP = 25;
 	
@@ -39,7 +42,7 @@ public class Player : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-	
+
 	}
 	
 	// Update is called once per frame

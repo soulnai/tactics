@@ -7,7 +7,9 @@ public class UserPlayer : Player {
 	private Vector3 direction = new Vector3(0,0,0);
 	// Use this for initialization
 	void Start () {
-	
+		gameObject.AddComponent<BaseMelee>();
+		//skills.SetValue (new BaseMelee(),0);
+		//skills [0] = new BaseMelee();
 	}
 	
 	// Update is called once per frame
@@ -126,6 +128,30 @@ public class UserPlayer : Player {
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
 			Camera.main.GetComponent<CameraOrbit>().pivot = transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+		}
+
+		buttonRect = new Rect(buttonWidth, Screen.height - buttonHeight * 2, buttonWidth, buttonHeight);
+		if (GUI.Button(buttonRect, "Skill Attack")) {
+			/*attackRange = GetComponent<BaseMelee>().Range;
+			damageBase = GetComponent<BaseMelee>().BaseDamage;*/
+			if (GetComponent<SkillsSample>().skillsList.Contains(SkillsSample.skills.stun)) {
+				attackRange = 10;
+				damageBase = 50;
+				GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
+				GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
+			}
+			if (!attacking && !rangeattacking) {
+				GameManager.instance.removeTileHighlights();
+				moving = false;
+				attacking = true;
+				rangeattacking = false;
+				GameManager.instance.AtackhighlightTiles(gridPosition, Color.red, attackRange, true);
+			} else {
+				moving = false;
+				attacking = false;
+				rangeattacking = false;
+				GameManager.instance.removeTileHighlights();
+			}
 		}
 
 		base.TurnOnGUI ();
