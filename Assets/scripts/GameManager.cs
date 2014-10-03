@@ -6,6 +6,8 @@ using DG.Tweening;
 
 public class GameManager : MonoBehaviour {
 	public static GameManager instance;
+	public int unitsCountPlayer;
+	public int unitsCountAI;
 	public RaycastHit hit;
 	public GameObject TilePrefab;
 	public GameObject UserPlayerPrefab;
@@ -41,11 +43,13 @@ public class GameManager : MonoBehaviour {
 		generatePlayers();
 		unitselection = (GameObject)Instantiate(selectionring, players[0].transform.position, Quaternion.Euler(0,0,0));
 		unitselection.transform.parent = players [0].transform;
-		Camera.main.GetComponent<CameraOrbit> ().pivot = mapTransform.transform;
-		Camera.main.GetComponent<CameraOrbit> ().pivotOffset.x += 17;
-		Camera.main.GetComponent<CameraOrbit> ().pivotOffset.y += 20;
-		Camera.main.GetComponent<CameraOrbit> ().pivotOffset.z += -10;
-
+		Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
+		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+//		Camera.main.GetComponent<CameraOrbit> ().pivot = mapTransform.transform;
+//		Camera.main.GetComponent<CameraOrbit> ().pivotOffset.x += 17;
+//		Camera.main.GetComponent<CameraOrbit> ().pivotOffset.y += 20;
+//		Camera.main.GetComponent<CameraOrbit> ().pivotOffset.z += -10;
+//
 	//	Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 	//	Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 	}
@@ -441,56 +445,51 @@ public class GameManager : MonoBehaviour {
 
 	void generatePlayers() {
 		UserPlayer player;
-		
-		player = ((GameObject)Instantiate(UserPlayerPrefab, new Vector3(0 - Mathf.Floor(mapSize/2),0.5f, -0 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<UserPlayer>();
-		player.gridPosition = new Vector2(0,0);
-		player.playerName = "Bob";				
-		
-		players.Add(player);
-		
-		player = ((GameObject)Instantiate(UserPlayerPrefab, new Vector3((mapSize-1) - Mathf.Floor(mapSize/2),0.5f, -(mapSize-1) + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<UserPlayer>();
-		player.gridPosition = new Vector2(mapSize-1,mapSize-1);
-		player.playerName = "Kyle";
-		
-		players.Add(player);
-				
-		player = ((GameObject)Instantiate(UserPlayerPrefab, new Vector3(4 - Mathf.Floor(mapSize/2),0.5f, -5 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<UserPlayer>();
-		player.gridPosition = new Vector2(4,5);
-		player.playerName = "Lars";
-		
-		players.Add(player);
+		AIPlayer ai;
+		for(int i=0; i< unitsCountPlayer;i++)
+		{
+			Vector2 position = getRandoMapTileXY(true);
+			player = ((GameObject)Instantiate(UserPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<UserPlayer>();
+			player.gridPosition = position;
+			player.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
+			player.playerName = "Alice-"+i;				
+			players.Add(player);
+		}
 
-		player = ((GameObject)Instantiate(UserPlayerPrefab, new Vector3(8 - Mathf.Floor(mapSize/2),0.5f, -8 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<UserPlayer>();
-		player.gridPosition = new Vector2(8,8);
-		player.playerName = "Olivia";
-		
-		players.Add(player);
-		
-		AIPlayer aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(6 - Mathf.Floor(mapSize/2),0f, -4 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
-		aiplayer.gridPosition = new Vector2(6,4);
-		aiplayer.transform.position = map[6][4].transform.position + 0.5f * Vector3.up;
-		aiplayer.playerName = "Bot1";
-		
-		players.Add(aiplayer);
-
-		aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(8 - Mathf.Floor(mapSize/2),0.5f, -4 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
-		aiplayer.gridPosition = new Vector2(8,4);
-
-		aiplayer.playerName = "Bot2";
-		
-		players.Add(aiplayer);
-
-		aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(12 - Mathf.Floor(mapSize/2),0.5f, -1 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
-		aiplayer.gridPosition = new Vector2(12,1);
-		aiplayer.playerName = "Bot3";
-		
-		players.Add(aiplayer);
-
-		aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(18 - Mathf.Floor(mapSize/2),0.5f, -8 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
-		aiplayer.gridPosition = new Vector2(18,8);
-		aiplayer.playerName = "Bot4";
-
-		players.Add(aiplayer);
+		for(int i=0; i< unitsCountPlayer;i++)
+		{
+			Vector2 position = getRandoMapTileXY(true);
+			ai = ((GameObject)Instantiate(AIPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<AIPlayer>();
+			ai.gridPosition = position;
+			ai.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
+			ai.playerName = "Bot-"+i;				
+			players.Add(ai);
+		}
+//		AIPlayer aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(6 - Mathf.Floor(mapSize/2),0f, -4 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
+//		aiplayer.gridPosition = new Vector2(6,4);
+//		aiplayer.transform.position = map[6][4].transform.position + 0.5f * Vector3.up;
+//		aiplayer.playerName = "Bot1";
+//		
+//		players.Add(aiplayer);
+//
+//		aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(8 - Mathf.Floor(mapSize/2),0.5f, -4 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
+//		aiplayer.gridPosition = new Vector2(8,4);
+//
+//		aiplayer.playerName = "Bot2";
+//		
+//		players.Add(aiplayer);
+//
+//		aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(12 - Mathf.Floor(mapSize/2),0.5f, -1 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
+//		aiplayer.gridPosition = new Vector2(12,1);
+//		aiplayer.playerName = "Bot3";
+//		
+//		players.Add(aiplayer);
+//
+//		aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(18 - Mathf.Floor(mapSize/2),0.5f, -8 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
+//		aiplayer.gridPosition = new Vector2(18,8);
+//		aiplayer.playerName = "Bot4";
+//
+//		players.Add(aiplayer);
 	}
 
 	public void Explode (Player target, GameObject magictodestroy) {
@@ -515,6 +514,17 @@ public class GameManager : MonoBehaviour {
 		yield return new WaitForSeconds(waitTime);
 		nextTurn ();
 
+	}
+
+	public Vector2 getRandoMapTileXY(bool passible = false)
+	{
+		Vector2 tileXY = new Vector2(Random.Range(0,mapSize),Random.Range(0,mapSize));
+
+		if ((passible == true)&&(map[(int)tileXY.x][(int)tileXY.y].impassible == true))
+		{
+			tileXY = getRandoMapTileXY(passible);
+		}
+		return tileXY;
 	}
 
 	public void AtackOnMouseClick () {

@@ -6,8 +6,9 @@ public class GUImanager : MonoBehaviour {
 
 	public static GUImanager instance;
 	public GameManager gameManager;
+	public GameObject controlsPanel;
 	public UserPlayer unit;
-	public bool mouseOverGUI;
+	public bool mouseOverGUI = false;
 	// Use this for initialization
 	void Awake()
 	{
@@ -52,5 +53,15 @@ public class GUImanager : MonoBehaviour {
 	public void OnEndTurnClick()
 	{
 		unit.EndTurn();
+	}
+
+	public void ShowHideGUI()
+	{
+		controlsPanel.SetActive(!controlsPanel.activeSelf);
+	}
+
+	public void ReloadScene()
+	{
+		Application.LoadLevel(Application.loadedLevel);
 	}
 }

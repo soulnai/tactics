@@ -84,49 +84,31 @@ public class CameraOrbit : MonoBehaviour
 
 		if(Input.GetKey(KeyCode.RightArrow))
 		{
-			if (pivot != null)
+			if (pivot == null)
 			{
-				pivotOffset += 5f * Time.deltaTime*Camera.main.transform.right;
-			/*pivot = GameManager.instance.mapTransform.transform;
-			pivotOffset.x += 17;
-			pivotOffset.y += 20;
-				pivotOffset.z += -10;}
-			transform.Translate(new Vector3(5f * Time.deltaTime,0,0));
-			*/
+				transform.position += 5f * Time.deltaTime * new Vector3(Camera.main.transform.right.x,0,Camera.main.transform.right.z);
 			}
 		}
 		if(Input.GetKey(KeyCode.LeftArrow))
 		{
-				if (pivot != null)
+			if (pivot == null)
 			{
-				pivotOffset -= 5f * Time.deltaTime * Camera.main.transform.right;
-			/*	pivot = GameManager.instance.mapTransform.transform;
-				pivotOffset.x += 17;
-				pivotOffset.y += 20;
-				pivotOffset.z += -10;}
-				transform.Translate(new Vector3(5f * Time.deltaTime,0,0));
-			*/
-				}
+				transform.position -= 5f * Time.deltaTime * new Vector3(Camera.main.transform.right.x,0,Camera.main.transform.right.z);
+			}
 		}
 		if(Input.GetKey(KeyCode.DownArrow))
 		{
-					if (pivot != null)
+			if (pivot == null)
 			{
-				//pivotOffset.x += 17;
-				pivotOffset -= 5f * Time.deltaTime * Camera.main.transform.forward;
-				//pivotOffset.z += -10;}
-				//transform.Translate(new Vector3(5f * Time.deltaTime,0,0));
-					}
+				transform.position -= 5f * Time.deltaTime * new Vector3(Camera.main.transform.forward.x,0,Camera.main.transform.forward.z);
+			}
 		}
 		if(Input.GetKey(KeyCode.UpArrow))
 		{
-			if (pivot != null)
+			if (pivot == null)
 			{
-				pivotOffset += 5f * Time.deltaTime * Camera.main.transform.forward;
-				//pivotOffset.y += 20;
-				//pivotOffset.z += -10;}
-				//transform.Translate(new Vector3(5f * Time.deltaTime,0,0));
-						}
+				transform.position += 5f * Time.deltaTime * new Vector3(Camera.main.transform.forward.x,0,Camera.main.transform.forward.z);
+			}
 		}
 
 		if(Input.GetKey(KeyCode.RightShift))
