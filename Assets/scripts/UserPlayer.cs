@@ -77,7 +77,21 @@ public class UserPlayer : Player {
 		
 		
 		//move button
-		if (GUI.Button(buttonRect, "Attack Distance")) {
+		if (GUI.Button(buttonRect, "Attack Fireball")) {
+
+			if (GetComponent<SkillsSample>().skillsList.Contains(SkillsSample.skills.fireball)) {
+				attackDistance = GetComponent<FireballSkill>().fireballBaseRange;
+				damageBase = GetComponent<FireballSkill>().fireballBaseDamage;
+				burnTimerDuration = GetComponent<FireballSkill>().fireballBaseDuration;
+				burnDamage = true;
+				poisonDamage = false;
+				stunDamage = false;
+				freezeDamage = false;
+				GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Fireball;
+				GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
+				
+			}
+
 			if (!attacking && !rangeattacking) {
 				GameManager.instance.removeTileHighlights();
 				moving = false;
@@ -96,6 +110,11 @@ public class UserPlayer : Player {
 		buttonRect = new Rect(0, Screen.height - buttonHeight * 2, buttonWidth, buttonHeight);
 		
 		if (GUI.Button(buttonRect, "Attack")) {
+			burnDamage = false;
+			poisonDamage = false;
+			stunDamage = false;
+			freezeDamage = false;
+
 			if (!attacking && !rangeattacking) {
 				GameManager.instance.removeTileHighlights();
 				moving = false;
@@ -119,6 +138,10 @@ public class UserPlayer : Player {
 			moving = false;
 			attacking = false;
 			rangeattacking = false;
+			burnDamage = false;
+			poisonDamage = false;
+			stunDamage = false;
+			freezeDamage = false;
 			GameManager.instance.nextTurn();
 		}
 
@@ -131,12 +154,16 @@ public class UserPlayer : Player {
 		}
 
 		buttonRect = new Rect(buttonWidth, Screen.height - buttonHeight * 2, buttonWidth, buttonHeight);
-		if (GUI.Button(buttonRect, "Skill Attack")) {
-			/*attackRange = GetComponent<BaseMelee>().Range;
-			damageBase = GetComponent<BaseMelee>().BaseDamage;*/
+		if (GUI.Button(buttonRect, "Stun Attack")) {
+
 			if (GetComponent<SkillsSample>().skillsList.Contains(SkillsSample.skills.stun)) {
-				attackDistance = 10;
-				damageBase = 50;
+				attackDistance = GetComponent<StunSkill>().stunBaseRange;
+				damageBase = GetComponent<StunSkill>().stunBaseDamage;
+				stunTimerDuration = GetComponent<StunSkill>().stunBaseDuration;
+				stunDamage = true;
+				burnDamage = false;
+				poisonDamage = false;
+				freezeDamage = false;
 				GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
 				GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
 

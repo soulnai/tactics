@@ -8,7 +8,8 @@ public class SkillsSample : MonoBehaviour {
 		none,
 		iceArrow,
 		fireball,
-		stun
+		stun,
+		poison
 	}
 	public List<skills> skillsList;
 	// Use this for initialization

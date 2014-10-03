@@ -331,6 +331,10 @@ public class GameManager : MonoBehaviour {
 
 					if (hit) {
 
+						if (players[currentPlayerIndex].stunDamage) {
+							target.stunned = true;
+							target.stunTimer = players[currentPlayerIndex].stunTimerDuration;
+						}
 					
 						magic.transform.DOMove(target.transform.position, 2f).OnComplete(MoveCompleted);
 						magiceffect = true;
@@ -521,11 +525,13 @@ public class GameManager : MonoBehaviour {
 
 			if(Physics.Raycast(ray,out hit))
 			{
-				if (players[currentPlayerIndex].rangeattacking) {
+				if (!hit.collider.gameObject.GetComponent<AIPlayer> ().dead){
+					if (players[currentPlayerIndex].rangeattacking) {
 					GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
-				}
-				if (players[currentPlayerIndex].attacking) {
+					}
+					if (players[currentPlayerIndex].attacking) {
 					GameManager.instance.attackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
+					}
 				}
 			}
 		}

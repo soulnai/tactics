@@ -39,7 +39,16 @@ public class Player : MonoBehaviour {
 	public int stunTimer;
 	public int burnTimer;
 	public int freezeTimer;
-	
+
+	//attack modifiers
+	public bool poisonDamage;
+	public bool stunDamage;
+	public bool burnDamage;
+	public bool freezeDamage;
+	public int poisonTimerDuration;
+	public int stunTimerDuration;
+	public int burnTimerDuration;
+	public int freezeTimerDuration;
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
