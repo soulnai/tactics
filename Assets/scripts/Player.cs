@@ -5,8 +5,6 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Player : MonoBehaviour {
 
-	//[SerializeField] public Skills[] skills;
-	
 	public Vector2 gridPosition = Vector2.zero;
 	
 	public Vector3 moveDestination;
@@ -31,6 +29,16 @@ public class Player : MonoBehaviour {
 	public float damageRollSides = 6; //d6
 	
 	public int actionPoints = 2;
+
+	//statuses and timers
+	public bool poisoned;
+	public bool stunned;
+	public bool burned;
+	public bool freezed;
+	public int poisonTimer;
+	public int stunTimer;
+	public int burnTimer;
+	public int freezeTimer;
 	
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
