@@ -102,6 +102,10 @@ public class UserPlayer : Player {
 				moving = false;
 				attacking = false;
 				rangeattacking = false;
+				stunDamage = false;
+				burnDamage = false;
+				poisonDamage = false;
+				freezeDamage = false;
 				GameManager.instance.removeTileHighlights();
 			}
 		}
@@ -125,6 +129,10 @@ public class UserPlayer : Player {
 				moving = false;
 				attacking = false;
 				rangeattacking = false;
+				stunDamage = false;
+				burnDamage = false;
+				poisonDamage = false;
+				freezeDamage = false;
 				GameManager.instance.removeTileHighlights();
 			}
 		}
@@ -178,6 +186,10 @@ public class UserPlayer : Player {
 				moving = false;
 				attacking = false;
 				rangeattacking = false;
+				stunDamage = false;
+				burnDamage = false;
+				poisonDamage = false;
+				freezeDamage = false;
 				GameManager.instance.removeTileHighlights();
 			}
 		}
