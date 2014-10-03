@@ -135,17 +135,18 @@ public class UserPlayer : Player {
 			/*attackRange = GetComponent<BaseMelee>().Range;
 			damageBase = GetComponent<BaseMelee>().BaseDamage;*/
 			if (GetComponent<SkillsSample>().skillsList.Contains(SkillsSample.skills.stun)) {
-				attackRange = 10;
+				attackDistance = 10;
 				damageBase = 50;
 				GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
 				GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
+
 			}
 			if (!attacking && !rangeattacking) {
 				GameManager.instance.removeTileHighlights();
 				moving = false;
-				attacking = true;
-				rangeattacking = false;
-				GameManager.instance.AtackhighlightTiles(gridPosition, Color.red, attackRange, true);
+				attacking = false;
+				rangeattacking = true;
+				GameManager.instance.AtackhighlightTiles(gridPosition, Color.red, attackDistance, true);
 			} else {
 				moving = false;
 				attacking = false;
