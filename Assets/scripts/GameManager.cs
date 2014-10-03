@@ -519,7 +519,7 @@ public class GameManager : MonoBehaviour {
 
 	public void AtackOnMouseClick () {
 				
-		if (Input.GetMouseButtonDown(0)) 
+		if ((Input.GetMouseButtonDown(0))&&(!GUImanager.instance.mouseOverGUI))
 		{
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 

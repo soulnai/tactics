@@ -25,8 +25,6 @@ public class UserPlayer : Player {
 	
 	public override void TurnUpdate ()
 	{
-
-
 		if (positionQueue.Count > 0) {
 			direction = (positionQueue[0] - transform.position).normalized;
 			direction.y = 0;
@@ -43,13 +41,14 @@ public class UserPlayer : Player {
 					animation.CrossFade("Idle", 0.2F);
 					actionPoints--;
 				}
-			}
-			
+			}		
 		}
 		
 		base.TurnUpdate ();
 	}
-	
+
+	//Draw GUI
+	/**
 	public override void TurnOnGUI () {
 		float buttonHeight = 50;
 		float buttonWidth = 150;
@@ -59,18 +58,7 @@ public class UserPlayer : Player {
 		
 		//move button
 		if (GUI.Button(buttonRect, "Move")) {
-			if (!moving) {
-				GameManager.instance.removeTileHighlights();
-				moving = true;
-				attacking = false;
-				rangeattacking = false;
-				GameManager.instance.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
-			} else {
-				moving = false;
-				attacking = false;
-				rangeattacking = false;
-				GameManager.instance.removeTileHighlights();
-			}
+			Move ();
 		}
 
 		buttonRect = new Rect(0, Screen.height - buttonHeight * 4, buttonWidth, buttonHeight);
@@ -79,78 +67,23 @@ public class UserPlayer : Player {
 		//move button
 		if (GUI.Button(buttonRect, "Attack Fireball")) {
 
-			if (GetComponent<SkillsSample>().skillsList.Contains(SkillsSample.skills.fireball)) {
-				attackDistance = GetComponent<FireballSkill>().fireballBaseRange;
-				damageBase = GetComponent<FireballSkill>().fireballBaseDamage;
-				burnTimerDuration = GetComponent<FireballSkill>().fireballBaseDuration;
-				burnDamage = true;
-				poisonDamage = false;
-				stunDamage = false;
-				freezeDamage = false;
-				GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Fireball;
-				GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
-				
-			}
+			MagicAttack ();
 
-			if (!attacking && !rangeattacking) {
-				GameManager.instance.removeTileHighlights();
-				moving = false;
-				attacking = false;
-				rangeattacking = true;
-				GameManager.instance.AtackhighlightTiles(gridPosition, Color.red, attackDistance, true);
-			} else {
-				moving = false;
-				attacking = false;
-				rangeattacking = false;
-				stunDamage = false;
-				burnDamage = false;
-				poisonDamage = false;
-				freezeDamage = false;
-				GameManager.instance.removeTileHighlights();
-			}
 		}
 		
 		//attack button
 		buttonRect = new Rect(0, Screen.height - buttonHeight * 2, buttonWidth, buttonHeight);
 		
 		if (GUI.Button(buttonRect, "Attack")) {
-			burnDamage = false;
-			poisonDamage = false;
-			stunDamage = false;
-			freezeDamage = false;
+			Attack ();
 
-			if (!attacking && !rangeattacking) {
-				GameManager.instance.removeTileHighlights();
-				moving = false;
-				attacking = true;
-				rangeattacking = false;
-				GameManager.instance.AtackhighlightTiles(gridPosition, Color.red, attackRange, true);
-			} else {
-				moving = false;
-				attacking = false;
-				rangeattacking = false;
-				stunDamage = false;
-				burnDamage = false;
-				poisonDamage = false;
-				freezeDamage = false;
-				GameManager.instance.removeTileHighlights();
-			}
 		}
 		
 		//end turn button
 		buttonRect = new Rect(0, Screen.height - buttonHeight * 1, buttonWidth, buttonHeight);		
 		
 		if (GUI.Button(buttonRect, "End Turn")) {
-			GameManager.instance.removeTileHighlights();
-			actionPoints = 2;
-			moving = false;
-			attacking = false;
-			rangeattacking = false;
-			burnDamage = false;
-			poisonDamage = false;
-			stunDamage = false;
-			freezeDamage = false;
-			GameManager.instance.nextTurn();
+			EndTurn ();
 		}
 
 		buttonRect = new Rect(buttonWidth, Screen.height - buttonHeight * 1, buttonWidth, buttonHeight);		
@@ -164,36 +97,131 @@ public class UserPlayer : Player {
 		buttonRect = new Rect(buttonWidth, Screen.height - buttonHeight * 2, buttonWidth, buttonHeight);
 		if (GUI.Button(buttonRect, "Stun Attack")) {
 
-			if (GetComponent<SkillsSample>().skillsList.Contains(SkillsSample.skills.stun)) {
-				attackDistance = GetComponent<StunSkill>().stunBaseRange;
-				damageBase = GetComponent<StunSkill>().stunBaseDamage;
-				stunTimerDuration = GetComponent<StunSkill>().stunBaseDuration;
-				stunDamage = true;
-				burnDamage = false;
-				poisonDamage = false;
-				freezeDamage = false;
-				GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
-				GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
-
-			}
-			if (!attacking && !rangeattacking) {
-				GameManager.instance.removeTileHighlights();
-				moving = false;
-				attacking = false;
-				rangeattacking = true;
-				GameManager.instance.AtackhighlightTiles(gridPosition, Color.red, attackDistance, true);
-			} else {
-				moving = false;
-				attacking = false;
-				rangeattacking = false;
-				stunDamage = false;
-				burnDamage = false;
-				poisonDamage = false;
-				freezeDamage = false;
-				GameManager.instance.removeTileHighlights();
-			}
+			StunAttack ();
 		}
 
 		base.TurnOnGUI ();
+	}
+	
+	**/
+
+	public void Move ()
+	{
+		if (!moving) {
+			GameManager.instance.removeTileHighlights ();
+			moving = true;
+			attacking = false;
+			rangeattacking = false;
+			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
+		}
+		else {
+			moving = false;
+			attacking = false;
+			rangeattacking = false;
+			GameManager.instance.removeTileHighlights ();
+		}
+	}
+
+	public void MagicAttack ()
+	{
+		if (GetComponent<SkillsSample> ().skillsList.Contains (SkillsSample.skills.fireball)) {
+			attackDistance = GetComponent<FireballSkill> ().fireballBaseRange;
+			damageBase = GetComponent<FireballSkill> ().fireballBaseDamage;
+			burnTimerDuration = GetComponent<FireballSkill> ().fireballBaseDuration;
+			burnDamage = true;
+			poisonDamage = false;
+			stunDamage = false;
+			freezeDamage = false;
+			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Fireball;
+			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
+		}
+		if (!attacking && !rangeattacking) {
+			GameManager.instance.removeTileHighlights ();
+			moving = false;
+			attacking = false;
+			rangeattacking = true;
+			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+		}
+		else {
+			moving = false;
+			attacking = false;
+			rangeattacking = false;
+			stunDamage = false;
+			burnDamage = false;
+			poisonDamage = false;
+			freezeDamage = false;
+			GameManager.instance.removeTileHighlights ();
+		}
+	}
+
+	public void Attack ()
+	{
+		burnDamage = false;
+		poisonDamage = false;
+		stunDamage = false;
+		freezeDamage = false;
+		if (!attacking && !rangeattacking) {
+			GameManager.instance.removeTileHighlights ();
+			moving = false;
+			attacking = true;
+			rangeattacking = false;
+			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackRange, true);
+		}
+		else {
+			moving = false;
+			attacking = false;
+			rangeattacking = false;
+			stunDamage = false;
+			burnDamage = false;
+			poisonDamage = false;
+			freezeDamage = false;
+			GameManager.instance.removeTileHighlights ();
+		}
+	}
+
+	public void EndTurn ()
+	{
+		GameManager.instance.removeTileHighlights ();
+		actionPoints = 2;
+		moving = false;
+		attacking = false;
+		rangeattacking = false;
+		burnDamage = false;
+		poisonDamage = false;
+		stunDamage = false;
+		freezeDamage = false;
+		GameManager.instance.nextTurn ();
+	}
+
+	public void StunAttack ()
+	{
+		if (GetComponent<SkillsSample> ().skillsList.Contains (SkillsSample.skills.stun)) {
+			attackDistance = GetComponent<StunSkill> ().stunBaseRange;
+			damageBase = GetComponent<StunSkill> ().stunBaseDamage;
+			stunTimerDuration = GetComponent<StunSkill> ().stunBaseDuration;
+			stunDamage = true;
+			burnDamage = false;
+			poisonDamage = false;
+			freezeDamage = false;
+			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
+			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
+		}
+		if (!attacking && !rangeattacking) {
+			GameManager.instance.removeTileHighlights ();
+			moving = false;
+			attacking = false;
+			rangeattacking = true;
+			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+		}
+		else {
+			moving = false;
+			attacking = false;
+			rangeattacking = false;
+			stunDamage = false;
+			burnDamage = false;
+			poisonDamage = false;
+			freezeDamage = false;
+			GameManager.instance.removeTileHighlights ();
+		}
 	}
 }

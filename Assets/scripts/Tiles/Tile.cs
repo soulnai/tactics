@@ -65,7 +65,7 @@ public class Tile : MonoBehaviour {
 	
 	
 	void OnMouseDown() {
-		if (Application.loadedLevelName == "gameScene") {
+		if ((Application.loadedLevelName == "gameScene")&&(!GUImanager.instance.mouseOverGUI)) {
 			if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].moving) {
 				GameManager.instance.moveCurrentPlayer(this);
 			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].attacking) {
