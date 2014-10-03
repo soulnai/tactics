@@ -39,9 +39,9 @@ public class GUImanager : MonoBehaviour {
 		unit.Attack();
 	}
 
-	public void OnRangedAttackClick()
+	public void OnStunAttackClick()
 	{
-
+		unit.StunAttack ();
 	}
 
 	public void OnMagicAttackClick()
