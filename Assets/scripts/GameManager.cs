@@ -525,7 +525,7 @@ public class GameManager : MonoBehaviour {
 
 			if(Physics.Raycast(ray,out hit))
 			{
-				if (!hit.collider.gameObject.GetComponent<AIPlayer> ().dead){
+				if ((hit.collider.gameObject.GetComponent<AIPlayer>() != null)&&(!hit.collider.gameObject.GetComponent<AIPlayer> ().dead)){
 					if (players[currentPlayerIndex].rangeattacking) {
 					GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
 					}
