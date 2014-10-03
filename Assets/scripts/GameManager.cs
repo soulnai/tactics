@@ -75,42 +75,13 @@ public class GameManager : MonoBehaviour {
 	
 	public void nextTurn() {
 		if (currentPlayerIndex + 1 < players.Count) {
-
 			removeTileHighlights();
-
-			currentPlayerIndex++;
-
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
-
+			currentPlayerIndex++;
 			unitselection.transform.position = players [currentPlayerIndex].transform.position;
 			unitselection.transform.parent = players [currentPlayerIndex].transform;
-
 			Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
-
-			if (players[currentPlayerIndex].poisonTimer >0) {
-				players[currentPlayerIndex].poisonTimer--;
-			} else {
-				players[currentPlayerIndex].poisoned = false;
-			}
-
-			if (players[currentPlayerIndex].stunTimer >0) {
-				players[currentPlayerIndex].stunTimer--;
-			} else {
-				players[currentPlayerIndex].stunned = false;
-			}
-
-			if (players[currentPlayerIndex].burnTimer >0) {
-				players[currentPlayerIndex].burnTimer--;
-			} else {
-				players[currentPlayerIndex].burned = false;
-			}
-
-			if (players[currentPlayerIndex].freezeTimer >0) {
-				players[currentPlayerIndex].freezeTimer--;
-			} else {
-				players[currentPlayerIndex].freezed = false;
-			}
 
 			players[currentPlayerIndex].moving = true;
 			players[currentPlayerIndex].attacking = false;
@@ -119,39 +90,11 @@ public class GameManager : MonoBehaviour {
 		} else {
 		//	Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
 			currentPlayerIndex = 0;
-
 			removeTileHighlights();
-
 			Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
-
 			unitselection.transform.position = players [currentPlayerIndex].transform.position;
 			unitselection.transform.parent = players [currentPlayerIndex].transform;
-
-			if (players[currentPlayerIndex].poisonTimer >0) {
-				players[currentPlayerIndex].poisonTimer--;
-			} else {
-				players[currentPlayerIndex].poisoned = false;
-			}
-			
-			if (players[currentPlayerIndex].stunTimer >0) {
-				players[currentPlayerIndex].stunTimer--;
-			} else {
-				players[currentPlayerIndex].stunned = false;
-			}
-			
-			if (players[currentPlayerIndex].burnTimer >0) {
-				players[currentPlayerIndex].burnTimer--;
-			} else {
-				players[currentPlayerIndex].burned = false;
-			}
-			
-			if (players[currentPlayerIndex].freezeTimer >0) {
-				players[currentPlayerIndex].freezeTimer--;
-			} else {
-				players[currentPlayerIndex].freezed = false;
-			}
-
 			players[currentPlayerIndex].moving = true;
 			players[currentPlayerIndex].attacking = false;
 			players[currentPlayerIndex].rangeattacking = false;
@@ -307,7 +250,6 @@ public class GameManager : MonoBehaviour {
 
 				var newRotation = Quaternion.LookRotation((target.transform.position - players[currentPlayerIndex].transform.position).normalized);
 				magic = ((GameObject)Instantiate(MagicPrefab, players[currentPlayerIndex].transform.position+0.5f*Vector3.up, Quaternion.Euler(0,0,0)));
-
 				//newRotation.x = 0.0f;
 				//newRotation.y = 0.0f;
 				newRotation.x = 0.0f;

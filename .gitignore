@@ -82,5 +82,3 @@ $RECYCLE.BIN/
 *.psd
 *.tga
 *.anim
-web build/web build.html
-web build/web build.unity3d
