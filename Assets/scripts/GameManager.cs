@@ -17,11 +17,11 @@ public class GameManager : MonoBehaviour {
 	public GameObject MagicPrefab;
 	public GameObject MagicExplosionPrefab;
 	public GameObject magic;
-	public GameObject selectionring;
+	public GameObject selectionRing;
 	public Player targetPub;
 	public bool Loose = false;
 	public Texture ImpasTex;
-	public GameObject unitselection;
+
 	public List<Tile> highlightedTiles;
 	public bool magiceffect = false;
 	
@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour {
 
 	private RaycastHit hit;
 	private RaycastHit target;
+	private GameObject unitSelection;
 
 	void Awake() {
 		instance = this;
@@ -48,8 +49,8 @@ public class GameManager : MonoBehaviour {
 	void Start () {		
 		generateMap();
 		generatePlayers();
-		unitselection = (GameObject)Instantiate(selectionring, players[0].transform.position, Quaternion.Euler(0,0,0));
-		unitselection.transform.parent = players [0].transform;
+		unitSelection = (GameObject)Instantiate(selectionRing, players[0].transform.position, Quaternion.Euler(0,0,0));
+		unitSelection.transform.parent = players [0].transform;
 		Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 	}
@@ -72,8 +73,8 @@ public class GameManager : MonoBehaviour {
 
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
 
-			unitselection.transform.position = players [currentPlayerIndex].transform.position;
-			unitselection.transform.parent = players [currentPlayerIndex].transform;
+			unitSelection.transform.position = players [currentPlayerIndex].transform.position;
+			unitSelection.transform.parent = players [currentPlayerIndex].transform;
 
 			Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
@@ -90,8 +91,8 @@ public class GameManager : MonoBehaviour {
 			Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 
-			unitselection.transform.position = players [currentPlayerIndex].transform.position;
-			unitselection.transform.parent = players [currentPlayerIndex].transform;
+			unitSelection.transform.position = players [currentPlayerIndex].transform.position;
+			unitSelection.transform.parent = players [currentPlayerIndex].transform;
 
 
 			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
