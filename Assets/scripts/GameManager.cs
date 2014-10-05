@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
 	public int unitsCountPlayer;
 	public int unitsCountAI;
 	public RaycastHit hit;
+	public RaycastHit target;
 	public GameObject TilePrefab;
 	public GameObject UserPlayerPrefab;
 	public GameObject AIPlayerPrefab;
@@ -486,6 +487,7 @@ public class GameManager : MonoBehaviour {
 			if(Physics.Raycast(ray,out hit))
 			{
 				if ((hit.collider.gameObject.GetComponent<AIPlayer>() != null)&&(hit.collider.gameObject.GetComponent<AIPlayer> ().currentUnitState != unitStates.dead)){
+					ckeckLineofSign(hit.collider.gameObject.GetComponent<AIPlayer>());
 					if (players[currentPlayerIndex].currentUnitAction == unitActions.rangedAttack) {
 					GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
 					}
@@ -495,9 +497,25 @@ public class GameManager : MonoBehaviour {
 					if (players[currentPlayerIndex].currentUnitAction == unitActions.magicAttack) {
 						GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
 					}
+
 				}
 			}
 		}
 
+	}
+
+	public void ckeckLineofSign(AIPlayer ai)
+	{
+//		Ray ray = players[currentPlayerIndex].transform.position;
+		if(Physics.Raycast(players[currentPlayerIndex].transform.position+new Vector3(0,0.5f,0),players[currentPlayerIndex].transform.position+new Vector3(0,0.5f,0)-ai.transform.position,out target,100f))
+		{
+			if(target.transform == ai.transform)
+			{
+				Debug.Log("Line of sign-"+target.transform.name);
+				Debug.Break();
+			}
+			else
+				Debug.Log(target.transform.name);
+		}
 	}
 }
