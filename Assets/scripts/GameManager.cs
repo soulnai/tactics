@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using EnumSpace;
 
 public class GameManager : MonoBehaviour {
 	public static GameManager instance;
@@ -116,9 +117,8 @@ public class GameManager : MonoBehaviour {
 				players[currentPlayerIndex].freezed = false;
 			}
 
-			players[currentPlayerIndex].moving = true;
-			players[currentPlayerIndex].attacking = false;
-			players[currentPlayerIndex].rangeattacking = false;
+			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
+
 			GameManager.instance.highlightTilesAt(players[currentPlayerIndex].gridPosition, Color.blue, players[currentPlayerIndex].movementPerActionPoint, false);
 		} else {
 		//	Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
@@ -156,9 +156,8 @@ public class GameManager : MonoBehaviour {
 				players[currentPlayerIndex].freezed = false;
 			}
 
-			players[currentPlayerIndex].moving = true;
-			players[currentPlayerIndex].attacking = false;
-			players[currentPlayerIndex].rangeattacking = false;
+			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
+	
 			GameManager.instance.highlightTilesAt(players[currentPlayerIndex].gridPosition, Color.blue, players[currentPlayerIndex].movementPerActionPoint, false);
 		}
 	}
@@ -214,7 +213,7 @@ public class GameManager : MonoBehaviour {
 		//if (destTile.visual.transform.renderer.materials[0].color != Color.white && !destTile.impassible && players[currentPlayerIndex].positionQueue.Count == 0) {
 			if ((highlightedTiles.Contains(destTile)) && !destTile.impassible && players[currentPlayerIndex].positionQueue.Count == 0) {
 			removeTileHighlights();
-			players[currentPlayerIndex].moving = false;
+			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
 			foreach(Tile t in TilePathFinder.FindPath(map[(int)players[currentPlayerIndex].gridPosition.x][(int)players[currentPlayerIndex].gridPosition.y],destTile, players.Where(x => x.gridPosition != destTile.gridPosition && x.gridPosition != players[currentPlayerIndex].gridPosition).Select(x => x.gridPosition).ToArray())) {
 				players[currentPlayerIndex].positionQueue.Add(map[(int)t.gridPosition.x][(int)t.gridPosition.y].transform.position + 0.5f * Vector3.up);
 				Debug.Log("(" + players[currentPlayerIndex].positionQueue[players[currentPlayerIndex].positionQueue.Count - 1].x + "," + players[currentPlayerIndex].positionQueue[players[currentPlayerIndex].positionQueue.Count - 1].y + ")");
@@ -535,11 +534,11 @@ public class GameManager : MonoBehaviour {
 
 			if(Physics.Raycast(ray,out hit))
 			{
-				if ((hit.collider.gameObject.GetComponent<AIPlayer>() != null)&&(!hit.collider.gameObject.GetComponent<AIPlayer> ().dead)){
-					if (players[currentPlayerIndex].rangeattacking) {
+				if ((hit.collider.gameObject.GetComponent<AIPlayer>() != null)&&(hit.collider.gameObject.GetComponent<AIPlayer> ().currentUnitState != unitStates.dead)){
+					if (players[currentPlayerIndex].currentUnitAction == unitActions.rangedAttack) {
 					GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
 					}
-					if (players[currentPlayerIndex].attacking) {
+					if (players[currentPlayerIndex].currentUnitAction == unitActions.meleeAttack) {
 					GameManager.instance.attackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
 					}
 				}

@@ -45,6 +45,11 @@ public class GUImanager : MonoBehaviour {
 		unit.StunAttack ();
 	}
 
+	public void OnRangedAttackClick()
+	{
+
+	}
+
 	public void OnMagicAttackClick()
 	{
 		unit.MagicAttack();
@@ -63,5 +68,10 @@ public class GUImanager : MonoBehaviour {
 	public void ReloadScene()
 	{
 		Application.LoadLevel(Application.loadedLevel);
+	}
+
+	public void SlowMo()
+	{
+		Time.timeScale = 0.5f;
 	}
 }
