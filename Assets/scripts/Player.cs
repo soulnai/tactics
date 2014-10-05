@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using EnumSpace;
 
 [System.Serializable]
 public class Player : MonoBehaviour {
@@ -14,12 +15,6 @@ public class Player : MonoBehaviour {
 	public int attackRange = 1;
 	public int attackDistance = 5;
 	
-	public bool moving = false;
-	public bool attacking = false;
-	public bool rangeattacking = false;
-	public bool dead = false;
-	
-
 	public string playerName = "George";
 	public int HP = 25;
 	
@@ -30,25 +25,9 @@ public class Player : MonoBehaviour {
 	
 	public int actionPoints = 2;
 
-	//statuses and timers
-	public bool poisoned;
-	public bool stunned;
-	public bool burned;
-	public bool freezed;
-	public int poisonTimer;
-	public int stunTimer;
-	public int burnTimer;
-	public int freezeTimer;
+	public EnumSpace.unitStates currentUnitState;
+	public EnumSpace.unitActions currentUnitAction;
 
-	//attack modifiers
-	public bool poisonDamage;
-	public bool stunDamage;
-	public bool burnDamage;
-	public bool freezeDamage;
-	public int poisonTimerDuration;
-	public int stunTimerDuration;
-	public int burnTimerDuration;
-	public int freezeTimerDuration;
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
@@ -64,10 +43,10 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	public virtual void Update () {		
-		if (HP <= 0 && dead == false && GameManager.instance.magiceffect == false) {
+		if (HP <= 0 && currentUnitState!=unitStates.dead && GameManager.instance.magiceffect == false) {
 			//transform.rotation = Quaternion.Euler(new Vector3(90,0,0));
 			transform.renderer.material.color = Color.red;
-			dead = true;
+			currentUnitState = unitStates.dead;
 			animation.CrossFade("Death");
 			StartCoroutine(WaitAndCallback(animation["Death"].length));
 		}
@@ -76,9 +55,7 @@ public class Player : MonoBehaviour {
 	public virtual void TurnUpdate () {
 		if (actionPoints <= 0) {
 			actionPoints = 2;
-			moving = false;
-			attacking = false;	
-			rangeattacking = false;
+			currentUnitAction = unitActions.idle;
 			GameManager.instance.nextTurn();
 		}
 	}

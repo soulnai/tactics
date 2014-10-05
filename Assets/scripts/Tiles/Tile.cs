@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using EnumSpace;
 
 public class Tile : MonoBehaviour {
 
@@ -65,12 +66,14 @@ public class Tile : MonoBehaviour {
 	
 	
 	void OnMouseDown() {
-		if (Application.loadedLevelName == "gameScene") {
-			if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].moving) {
+		if ((Application.loadedLevelName == "gameScene")&&(!GUImanager.instance.mouseOverGUI)) {
+			if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.moving) {
 				GameManager.instance.moveCurrentPlayer(this);
-			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].attacking) {
+			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.meleeAttack) {
 				GameManager.instance.attackWithCurrentPlayer(this);
-			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].rangeattacking) {
+			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.rangedAttack) {
+				GameManager.instance.distanceAttackWithCurrentPlayer(this);
+			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.magicAttack) {
 				GameManager.instance.distanceAttackWithCurrentPlayer(this);
 			} else {
 				/*impassible = impassible ? false : true;
