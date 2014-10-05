@@ -16,8 +16,6 @@ public class GUImanager : MonoBehaviour {
 	}
 	void Start () {
 		gameManager = GameManager.instance;
-//		unit = gameManager.players[gameManager.currentPlayerIndex] as UserPlayer;
-//		Camera.main.WorldToScreenPoint(transform.position)
 	}
 	
 	// Update is called once per frame

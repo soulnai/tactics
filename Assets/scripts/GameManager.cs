@@ -7,10 +7,10 @@ using EnumSpace;
 
 public class GameManager : MonoBehaviour {
 	public static GameManager instance;
+	//units count
 	public int unitsCountPlayer;
 	public int unitsCountAI;
-	public RaycastHit hit;
-	public RaycastHit target;
+	//prefabs
 	public GameObject TilePrefab;
 	public GameObject UserPlayerPrefab;
 	public GameObject AIPlayerPrefab;
@@ -32,7 +32,12 @@ public class GameManager : MonoBehaviour {
 	public List <List<Tile>> map = new List<List<Tile>>();
 	public List <Player> players = new List<Player>();
 	public int currentPlayerIndex = 0;
-	
+
+	public GameObject pointer;
+
+	private RaycastHit hit;
+	private RaycastHit target;
+
 	void Awake() {
 		instance = this;
 
@@ -47,36 +52,15 @@ public class GameManager : MonoBehaviour {
 		unitselection.transform.parent = players [0].transform;
 		Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
-//		Camera.main.GetComponent<CameraOrbit> ().pivot = mapTransform.transform;
-//		Camera.main.GetComponent<CameraOrbit> ().pivotOffset.x += 17;
-//		Camera.main.GetComponent<CameraOrbit> ().pivotOffset.y += 20;
-//		Camera.main.GetComponent<CameraOrbit> ().pivotOffset.z += -10;
-//
-	//	Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
-	//	Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		drawPointer();
 		if (players[currentPlayerIndex].HP > 0) players[currentPlayerIndex].TurnUpdate();
 		else nextTurn();
 
-		if (players [0].HP <= 0 && players [1].HP <= 0 && players [2].HP <= 0 && players [3].HP <= 0) {
-			Loose = true;
-		}
-
-		AtackOnMouseClick ();
-		//Camera.main.transform.LookAt (players[currentPlayerIndex].transform);
-		//Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
-		//Camera.main.GetComponent<CameraOrbit> ().pivotOffset = 0.9f * Vector3.up;
-	}
-	
-	void OnGUI () {
-		if (players[currentPlayerIndex].HP > 0) players[currentPlayerIndex].TurnOnGUI();
-		if (Loose) {
-						GUI.Label (new Rect (Screen.width / 2, Screen.height / 2, 200f, 200f), "You Loose!");
-				}
+		AttackOnMouseClick ();
 	}
 	
 	public void nextTurn() {
@@ -99,7 +83,6 @@ public class GameManager : MonoBehaviour {
 
 			GameManager.instance.highlightTilesAt(players[currentPlayerIndex].gridPosition, Color.blue, players[currentPlayerIndex].movementPerActionPoint, false);
 		} else {
-		//	Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
 			currentPlayerIndex = 0;
 
 			removeTileHighlights();
@@ -133,23 +116,13 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public void AtackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers) {
+	public void AttackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers) {
 		
 		highlightedTiles = new List<Tile>();
 		
 		if (ignorePlayers) highlightedTiles = TileHighlightAtack.FindHighlight(map[(int)originLocation.x][(int)originLocation.y], distance);
 		else highlightedTiles = TileHighlightAtack.FindHighlight(map[(int)originLocation.x][(int)originLocation.y], distance, players.Where(x => x.gridPosition != originLocation).Select(x => x.gridPosition).ToArray());
 
-	/*	for (int index = 0; index<highlightedTiles.Count; index++ ) {
-			if (Physics.Raycast(players[currentPlayerIndex].transform.position+0.5f*Vector3.up, highlightedTiles[index].transform.position, out hit, 100.0F))
-			{
-				if (hit.transform.position != highlightedTiles[index].transform.position) {
-					Debug.Log (hit.transform.position);
-					highlightedTiles.Remove(highlightedTiles[index]);
-				}
-			}
-		}
-		*/
 		foreach (Tile t in highlightedTiles) 
 			t.visual.transform.renderer.materials[1].color = highlightColor;
 		}
@@ -164,8 +137,6 @@ public class GameManager : MonoBehaviour {
 	}
  	
 	public void moveCurrentPlayer(Tile destTile) {
-
-		//if (destTile.visual.transform.renderer.materials[0].color != Color.white && !destTile.impassible && players[currentPlayerIndex].positionQueue.Count == 0) {
 			if ((highlightedTiles.Contains(destTile)) && !destTile.impassible && players[currentPlayerIndex].positionQueue.Count == 0) {
 			removeTileHighlights();
 			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
@@ -194,13 +165,8 @@ public class GameManager : MonoBehaviour {
 			if (target != null) {
 
 				var newRotation = Quaternion.LookRotation((target.transform.position - players[currentPlayerIndex].transform.position).normalized);
-				//newRotation.x = 0.0f;
-				//newRotation.y = 0.0f;
-				newRotation.x = 0.0f;
 				players[currentPlayerIndex].transform.rotation = Quaternion.Slerp(players[currentPlayerIndex].transform.rotation, newRotation, 1);
 
-
-				//Debug.Log ("p.x: " + players[currentPlayerIndex].gridPosition.x + ", p.y: " + players[currentPlayerIndex].gridPosition.y + " t.x: " + target.gridPosition.x + ", t.y: " + target.gridPosition.y);
 				if (players[currentPlayerIndex].gridPosition.x >= target.gridPosition.x - players[currentPlayerIndex].attackRange && players[currentPlayerIndex].gridPosition.x <= target.gridPosition.x + players[currentPlayerIndex].attackRange &&
 				    players[currentPlayerIndex].gridPosition.y >= target.gridPosition.y - players[currentPlayerIndex].attackRange && players[currentPlayerIndex].gridPosition.y <= target.gridPosition.y + players[currentPlayerIndex].attackRange) {
 
@@ -210,14 +176,6 @@ public class GameManager : MonoBehaviour {
 
 					players[currentPlayerIndex].animation.Play("Attack");
 					StartCoroutine(WaitAndCallback(players[currentPlayerIndex].animation["Attack"].length));
-
-					/*if (players[currentPlayerIndex].animation.IsPlaying("ComboAttack") == false){
-						Debug.Log("Atack animation finished");
-					players[currentPlayerIndex].actionPoints=0;
-					players[currentPlayerIndex].attacking = false;
-					}*/
-					//attack logic
-					//roll to hit
 					bool hit = Random.Range(0.0f, 1.0f) <= players[currentPlayerIndex].attackChance;
 					
 					if (hit) {
@@ -245,7 +203,7 @@ public class GameManager : MonoBehaviour {
 				players[currentPlayerIndex].animation.CrossFade("Idle", 1f);
 			}
 		} else {
-			Debug.Log ("destination invalid");
+			Debug.Log ("target invalid");
 		}
 	}
 
@@ -264,15 +222,12 @@ public class GameManager : MonoBehaviour {
 			if (target != null) {
 
 				var newRotation = Quaternion.LookRotation((target.transform.position - players[currentPlayerIndex].transform.position).normalized);
-				magic = ((GameObject)Instantiate(MagicPrefab, players[currentPlayerIndex].transform.position+0.5f*Vector3.up, Quaternion.Euler(0,0,0)));
+				if (players[currentPlayerIndex].currentUnitAction == unitActions.magicAttack)
+					magic = ((GameObject)Instantiate(MagicPrefab, players[currentPlayerIndex].transform.position+0.5f*Vector3.up, Quaternion.Euler(0,0,0)));
 
-				//newRotation.x = 0.0f;
-				//newRotation.y = 0.0f;
-				newRotation.x = 0.0f;
+
 				players[currentPlayerIndex].transform.rotation = Quaternion.Slerp(players[currentPlayerIndex].transform.rotation, newRotation, 1);
-				
-				
-				//Debug.Log ("p.x: " + players[currentPlayerIndex].gridPosition.x + ", p.y: " + players[currentPlayerIndex].gridPosition.y + " t.x: " + target.gridPosition.x + ", t.y: " + target.gridPosition.y);
+
 				if (players[currentPlayerIndex].gridPosition.x >= target.gridPosition.x - players[currentPlayerIndex].attackDistance && players[currentPlayerIndex].gridPosition.x <= target.gridPosition.x + players[currentPlayerIndex].attackDistance &&
 				    players[currentPlayerIndex].gridPosition.y >= target.gridPosition.y - players[currentPlayerIndex].attackDistance && players[currentPlayerIndex].gridPosition.y <= target.gridPosition.y + players[currentPlayerIndex].attackDistance) {
 
@@ -295,18 +250,14 @@ public class GameManager : MonoBehaviour {
 						magiceffect = true;
 						//damage logic
 						int amountOfDamage = (int)Mathf.Floor(players[currentPlayerIndex].damageBase + Random.Range(0, players[currentPlayerIndex].damageRollSides));
-						
 
-
-					//	target.animation.CrossFade("Damage");
 						target.HP -= amountOfDamage;
 
 						Debug.Log(players[currentPlayerIndex].playerName + " successfuly hit " + target.playerName + " for " + amountOfDamage + " damage!");
 					} else {
 						magic.transform.DOMove(target.transform.position, 2f).OnComplete(MoveCompleted);
 						Debug.Log(players[currentPlayerIndex].playerName + " missed " + target.playerName + "!");
-						/*target.animation.Play("Damage");
-						target.animation.CrossFade("Idle", 1f);*/
+
 					}
 				} else {
 					Debug.Log ("Target is not adjacent!");
@@ -321,17 +272,6 @@ public class GameManager : MonoBehaviour {
 
 	void generateMap() {
 		loadMapFromXml();
-
-//		map = new List<List<Tile>>();
-//		for (int i = 0; i < mapSize; i++) {
-//			List <Tile> row = new List<Tile>();
-//			for (int j = 0; j < mapSize; j++) {
-//				Tile tile = ((GameObject)Instantiate(TilePrefab, new Vector3(i - Mathf.Floor(mapSize/2),0, -j + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<Tile>();
-//				tile.gridPosition = new Vector2(i, j);
-//				row.Add (tile);
-//			}
-//			map.Add(row);
-//		}
 	}
 
 	void loadMapFromXml() {
@@ -358,34 +298,18 @@ public class GameManager : MonoBehaviour {
 					int height = 1;
 					Vector3 temp = new Vector3(0, height,0 );
 					tile.transform.position += temp;
-					/*for (int e = 0; e < tile.transform.position.y; e++) {
-						Debug.Log("Check");
-						Tile filltile = ((GameObject)Instantiate(PrefabHolder.instance.BASE_TILE_PREFAB, new Vector3(tile.transform.position.x,tile.transform.position.y-e,tile.transform.position.z), Quaternion.Euler(new Vector3()))).GetComponent<Tile>();
-						filltile.gridPosition = new Vector2(i, j);
-						filltile.setType(TileType.Normal);
-						filltile.transform.parent = tile.transform;
-					}*/
 				}
 
 				if (tile.type == TileType.VeryDifficult) {
 					int height = 2;
 					Vector3 temp = new Vector3(0, height,0 );
 					tile.transform.position += temp;
-					/*for (int e = 0; e < tile.transform.position.y; e++) {
-						Debug.Log("Check");
-						Tile filltile = ((GameObject)Instantiate(PrefabHolder.instance.BASE_TILE_PREFAB, new Vector3(tile.transform.position.x,tile.transform.position.y-e,tile.transform.position.z), Quaternion.Euler(new Vector3()))).GetComponent<Tile>();
-						filltile.gridPosition = new Vector2(i, j);
-						filltile.setType(TileType.Normal);
-						filltile.transform.parent = tile.transform;
-					}*/
 				}
 
 				if (tile.type == TileType.Impassible) {
 
 					Vector3 temp = new Vector3(0, -1,0 );
 					tile.transform.position += temp;
-					//tile.renderer.material.mainTexture =  Resources.Load<Texture>("HPTP_NS_Lava1a.png"); 
-					//tile.renderer.material.SetTexture("_MainTex", ImpasTex);
 				}
 				row.Add (tile);
 			}
@@ -416,31 +340,6 @@ public class GameManager : MonoBehaviour {
 			ai.playerName = "Bot-"+i;				
 			players.Add(ai);
 		}
-//		AIPlayer aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(6 - Mathf.Floor(mapSize/2),0f, -4 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
-//		aiplayer.gridPosition = new Vector2(6,4);
-//		aiplayer.transform.position = map[6][4].transform.position + 0.5f * Vector3.up;
-//		aiplayer.playerName = "Bot1";
-//		
-//		players.Add(aiplayer);
-//
-//		aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(8 - Mathf.Floor(mapSize/2),0.5f, -4 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
-//		aiplayer.gridPosition = new Vector2(8,4);
-//
-//		aiplayer.playerName = "Bot2";
-//		
-//		players.Add(aiplayer);
-//
-//		aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(12 - Mathf.Floor(mapSize/2),0.5f, -1 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
-//		aiplayer.gridPosition = new Vector2(12,1);
-//		aiplayer.playerName = "Bot3";
-//		
-//		players.Add(aiplayer);
-//
-//		aiplayer = ((GameObject)Instantiate(AIPlayerPrefab, new Vector3(18 - Mathf.Floor(mapSize/2),0.5f, -8 + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<AIPlayer>();
-//		aiplayer.gridPosition = new Vector2(18,8);
-//		aiplayer.playerName = "Bot4";
-//
-//		players.Add(aiplayer);
 	}
 
 	public void Explode (Player target, GameObject magictodestroy) {
@@ -478,7 +377,22 @@ public class GameManager : MonoBehaviour {
 		return tileXY;
 	}
 
-	public void AtackOnMouseClick () {
+	public void drawPointer()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
+
+		if(Physics.Raycast(ray,out hit,1000f,mask))
+		{
+			if(hit.transform.gameObject.GetComponent<Tile>() != null)
+			{
+				Tile t = hit.transform.gameObject.GetComponent<Tile>();
+				pointer.transform.position = Vector3.Lerp(pointer.transform.position,(t.transform.position+new Vector3(0,0.5f,0)),0.5f);
+			}
+		}
+	}
+
+	public void AttackOnMouseClick () {
 				
 		if ((Input.GetMouseButtonDown(0))&&(!GUImanager.instance.mouseOverGUI))
 		{
@@ -506,7 +420,7 @@ public class GameManager : MonoBehaviour {
 
 	public void ckeckLineofSign(AIPlayer ai)
 	{
-//		Ray ray = players[currentPlayerIndex].transform.position;
+
 		if(Physics.Raycast(players[currentPlayerIndex].transform.position+new Vector3(0,0.5f,0),players[currentPlayerIndex].transform.position+new Vector3(0,0.5f,0)-ai.transform.position,out target,100f))
 		{
 			if(target.transform == ai.transform)

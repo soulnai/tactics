@@ -51,15 +51,8 @@ public class UserPlayer : Player {
 	public void Move ()
 	{
 		GameManager.instance.removeTileHighlights ();
-		if (currentUnitAction != unitActions.moving) {
-			GameManager.instance.removeTileHighlights ();
-			currentUnitAction = unitActions.moving;
-			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
-		}
-		else {
-			currentUnitAction = unitActions.idle;
-			GameManager.instance.removeTileHighlights ();
-		}
+		currentUnitAction = unitActions.moving;
+		GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
 	}
 
 	public void MagicAttack ()
@@ -72,7 +65,7 @@ public class UserPlayer : Player {
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
 
 			currentUnitAction = unitActions.magicAttack;
-			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		}
 	}
 
@@ -83,7 +76,7 @@ public class UserPlayer : Player {
 			currentUnitAction = unitActions.meleeAttack;
 			attackDistance = AbilitiesManager.instance.getAbility("baseMelee").range;
 			damageBase = AbilitiesManager.instance.getAbility("baseMelee").baseDamage;
-			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		}
 	}
 
@@ -94,7 +87,7 @@ public class UserPlayer : Player {
 			currentUnitAction = unitActions.rangedAttack;
 			attackDistance = AbilitiesManager.instance.getAbility("baseRanged").range;
 			damageBase = AbilitiesManager.instance.getAbility("baseRanged").baseDamage;
-			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		}
 	}
 
@@ -115,7 +108,7 @@ public class UserPlayer : Player {
 			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
 			currentUnitAction = unitActions.rangedAttack;
-			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 	}
 	}
 }
