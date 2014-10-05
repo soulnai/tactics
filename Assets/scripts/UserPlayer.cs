@@ -132,12 +132,13 @@ public class UserPlayer : Player {
 			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Fireball;
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
 		}
-		if ((currentUnitAction != unitActions.meleeAttack)&&(currentUnitAction != unitActions.rangedAttack)) {
+		if ((currentUnitAction != unitActions.magicAttack)) {
 			GameManager.instance.removeTileHighlights ();
 			currentUnitAction = unitActions.magicAttack;
 			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		}
 		else {
+			burnDamage = false;
 			currentUnitAction = unitActions.idle;
 			GameManager.instance.removeTileHighlights ();
 		}
@@ -149,7 +150,7 @@ public class UserPlayer : Player {
 		poisonDamage = false;
 		stunDamage = false;
 		freezeDamage = false;
-		if ((currentUnitAction != unitActions.meleeAttack)&&(currentUnitAction != unitActions.rangedAttack)) {
+		if ((currentUnitAction != unitActions.meleeAttack)) {
 			GameManager.instance.removeTileHighlights ();
 			currentUnitAction = unitActions.meleeAttack;
 			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackRange, true);
@@ -178,7 +179,7 @@ public class UserPlayer : Player {
 			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
 		}
-		if ((currentUnitAction != unitActions.meleeAttack)&&(currentUnitAction != unitActions.rangedAttack)) {
+		if ((currentUnitAction != unitActions.rangedAttack)) {
 			GameManager.instance.removeTileHighlights ();
 			currentUnitAction = unitActions.rangedAttack;
 			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);

@@ -541,6 +541,9 @@ public class GameManager : MonoBehaviour {
 					if (players[currentPlayerIndex].currentUnitAction == unitActions.meleeAttack) {
 					GameManager.instance.attackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
 					}
+					if (players[currentPlayerIndex].currentUnitAction == unitActions.magicAttack) {
+						GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
+					}
 				}
 			}
 		}

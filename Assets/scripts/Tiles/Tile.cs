@@ -73,6 +73,8 @@ public class Tile : MonoBehaviour {
 				GameManager.instance.attackWithCurrentPlayer(this);
 			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.rangedAttack) {
 				GameManager.instance.distanceAttackWithCurrentPlayer(this);
+			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.magicAttack) {
+				GameManager.instance.distanceAttackWithCurrentPlayer(this);
 			} else {
 				/*impassible = impassible ? false : true;
 				if (impassible) {
