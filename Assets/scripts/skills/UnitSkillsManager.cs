@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -14,7 +14,7 @@ public class UnitSkillsManager : MonoBehaviour {
 	void Start () {
 		for(int i=0;i<skillsList.Count;i++)
 		{
-			attacks.Add(AttacksManager.instance.getAttack(skillsList[0]));
+			attacks.Add(AbilitiesManager.instance.getAbility(skillsList[i]));
 		}
 	}
 	

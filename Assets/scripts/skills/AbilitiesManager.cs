@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class AttacksManager : MonoBehaviour {
+public class AbilitiesManager : MonoBehaviour {
 
-	public static AttacksManager instance;
+	public static AbilitiesManager instance;
 	public List<BaseAttack> attacks;
 
 	public void Awake()
@@ -13,7 +13,7 @@ public class AttacksManager : MonoBehaviour {
 		instance = this;
 	}
 
-	public BaseAttack getAttack(string ID)
+	public BaseAttack getAbility(string ID)
 	{
 		return attacks.Find(BaseAttack => BaseAttack.attackID == ID); 
 	}
