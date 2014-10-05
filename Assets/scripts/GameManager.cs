@@ -93,29 +93,6 @@ public class GameManager : MonoBehaviour {
 			Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 
-			if (players[currentPlayerIndex].poisonTimer >0) {
-				players[currentPlayerIndex].poisonTimer--;
-			} else {
-				players[currentPlayerIndex].poisoned = false;
-			}
-
-			if (players[currentPlayerIndex].stunTimer >0) {
-				players[currentPlayerIndex].stunTimer--;
-			} else {
-				players[currentPlayerIndex].stunned = false;
-			}
-
-			if (players[currentPlayerIndex].burnTimer >0) {
-				players[currentPlayerIndex].burnTimer--;
-			} else {
-				players[currentPlayerIndex].burned = false;
-			}
-
-			if (players[currentPlayerIndex].freezeTimer >0) {
-				players[currentPlayerIndex].freezeTimer--;
-			} else {
-				players[currentPlayerIndex].freezed = false;
-			}
 
 			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
 
@@ -132,29 +109,6 @@ public class GameManager : MonoBehaviour {
 			unitselection.transform.position = players [currentPlayerIndex].transform.position;
 			unitselection.transform.parent = players [currentPlayerIndex].transform;
 
-			if (players[currentPlayerIndex].poisonTimer >0) {
-				players[currentPlayerIndex].poisonTimer--;
-			} else {
-				players[currentPlayerIndex].poisoned = false;
-			}
-			
-			if (players[currentPlayerIndex].stunTimer >0) {
-				players[currentPlayerIndex].stunTimer--;
-			} else {
-				players[currentPlayerIndex].stunned = false;
-			}
-			
-			if (players[currentPlayerIndex].burnTimer >0) {
-				players[currentPlayerIndex].burnTimer--;
-			} else {
-				players[currentPlayerIndex].burned = false;
-			}
-			
-			if (players[currentPlayerIndex].freezeTimer >0) {
-				players[currentPlayerIndex].freezeTimer--;
-			} else {
-				players[currentPlayerIndex].freezed = false;
-			}
 
 			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
 	
@@ -334,10 +288,7 @@ public class GameManager : MonoBehaviour {
 
 					if (hit) {
 
-						if (players[currentPlayerIndex].stunDamage) {
-							target.stunned = true;
-							target.stunTimer = players[currentPlayerIndex].stunTimerDuration;
-						}
+						//damage types goes here
 					
 						magic.transform.DOMove(target.transform.position, 2f).OnComplete(MoveCompleted);
 						magiceffect = true;

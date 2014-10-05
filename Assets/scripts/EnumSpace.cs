@@ -23,9 +23,26 @@ namespace EnumSpace {
 		poison,
 		fire,
 		water,
+		ice,
 		electricity,
 		earth,
 		darkness,
-		light
+		light,
+		//-------------
+		slashing,
+		pearcing,
+		blunt
+	}
+
+	public enum attackTypes{
+		melee,
+		ranged,
+		magic
+	}
+
+	public enum areaPatterns{
+		line,
+		circle,
+		cross
 	}
 }

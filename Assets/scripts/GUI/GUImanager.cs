@@ -37,7 +37,7 @@ public class GUImanager : MonoBehaviour {
 
 	public void OnAttackClick()
 	{
-		unit.Attack();
+		unit.MeleeAttack();
 	}
 
 	public void OnStunAttackClick()

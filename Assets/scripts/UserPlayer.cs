@@ -5,12 +5,12 @@ using EnumSpace;
 
 public class UserPlayer : Player {
 
+	public UnitSkillsManager unitSkills;
+
 	private Vector3 direction = new Vector3(0,0,0);
 	// Use this for initialization
 	void Start () {
 		gameObject.AddComponent<BaseMelee>();
-		//skills.SetValue (new BaseMelee(),0);
-		//skills [0] = new BaseMelee();
 	}
 	
 	// Update is called once per frame
@@ -48,66 +48,9 @@ public class UserPlayer : Player {
 		base.TurnUpdate ();
 	}
 
-	//Draw GUI
-	/**
-	public override void TurnOnGUI () {
-		float buttonHeight = 50;
-		float buttonWidth = 150;
-		
-		Rect buttonRect = new Rect(0, Screen.height - buttonHeight * 3, buttonWidth, buttonHeight);
-		
-		
-		//move button
-		if (GUI.Button(buttonRect, "Move")) {
-			Move ();
-		}
-
-		buttonRect = new Rect(0, Screen.height - buttonHeight * 4, buttonWidth, buttonHeight);
-		
-		
-		//move button
-		if (GUI.Button(buttonRect, "Attack Fireball")) {
-
-			MagicAttack ();
-
-		}
-		
-		//attack button
-		buttonRect = new Rect(0, Screen.height - buttonHeight * 2, buttonWidth, buttonHeight);
-		
-		if (GUI.Button(buttonRect, "Attack")) {
-			Attack ();
-
-		}
-		
-		//end turn button
-		buttonRect = new Rect(0, Screen.height - buttonHeight * 1, buttonWidth, buttonHeight);		
-		
-		if (GUI.Button(buttonRect, "End Turn")) {
-			EndTurn ();
-		}
-
-		buttonRect = new Rect(buttonWidth, Screen.height - buttonHeight * 1, buttonWidth, buttonHeight);		
-
-		if (GUI.Button(buttonRect, "Unit Center")) {
-			Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
-			Camera.main.GetComponent<CameraOrbit>().pivot = transform;
-			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
-		}
-
-		buttonRect = new Rect(buttonWidth, Screen.height - buttonHeight * 2, buttonWidth, buttonHeight);
-		if (GUI.Button(buttonRect, "Stun Attack")) {
-
-			StunAttack ();
-		}
-
-		base.TurnOnGUI ();
-	}
-	
-	**/
-
 	public void Move ()
 	{
+		GameManager.instance.removeTileHighlights ();
 		if (currentUnitAction != unitActions.moving) {
 			GameManager.instance.removeTileHighlights ();
 			currentUnitAction = unitActions.moving;
@@ -121,43 +64,37 @@ public class UserPlayer : Player {
 
 	public void MagicAttack ()
 	{
-		if (GetComponent<SkillsSample> ().skillsList.Contains (SkillsSample.skills.fireball)) {
-			attackDistance = GetComponent<FireballSkill> ().fireballBaseRange;
-			damageBase = GetComponent<FireballSkill> ().fireballBaseDamage;
-			burnTimerDuration = GetComponent<FireballSkill> ().fireballBaseDuration;
-			burnDamage = true;
-			poisonDamage = false;
-			stunDamage = false;
-			freezeDamage = false;
+		GameManager.instance.removeTileHighlights ();
+		if (unitSkills.skillsList.Contains ("baseMagic")) {
+			attackDistance = AttacksManager.instance.getAttack("baseMagic").range;
+			damageBase = AttacksManager.instance.getAttack("baseMagic").baseDamage;
 			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Fireball;
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
-		}
-		if ((currentUnitAction != unitActions.magicAttack)) {
-			GameManager.instance.removeTileHighlights ();
+
 			currentUnitAction = unitActions.magicAttack;
 			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		}
-		else {
-			burnDamage = false;
-			currentUnitAction = unitActions.idle;
-			GameManager.instance.removeTileHighlights ();
+	}
+
+	public void MeleeAttack ()
+	{
+		GameManager.instance.removeTileHighlights ();
+		if (unitSkills.skillsList.Contains ("baseMelee")) {
+			currentUnitAction = unitActions.meleeAttack;
+			attackDistance = AttacksManager.instance.getAttack("baseMelee").range;
+			damageBase = AttacksManager.instance.getAttack("baseMelee").baseDamage;
+			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackRange, true);
 		}
 	}
 
-	public void Attack ()
+	public void RangedAttack ()
 	{
-		burnDamage = false;
-		poisonDamage = false;
-		stunDamage = false;
-		freezeDamage = false;
-		if ((currentUnitAction != unitActions.meleeAttack)) {
-			GameManager.instance.removeTileHighlights ();
-			currentUnitAction = unitActions.meleeAttack;
+		GameManager.instance.removeTileHighlights ();
+		if (unitSkills.skillsList.Contains ("baseRanged")) {
+			currentUnitAction = unitActions.rangedAttack;
+			attackDistance = AttacksManager.instance.getAttack("baseRanged").range;
+			damageBase = AttacksManager.instance.getAttack("baseRanged").baseDamage;
 			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackRange, true);
-		}
-		else {
-			currentUnitAction = unitActions.idle;
-			GameManager.instance.removeTileHighlights ();
 		}
 	}
 
@@ -171,23 +108,22 @@ public class UserPlayer : Player {
 
 	public void StunAttack ()
 	{
-		if (GetComponent<SkillsSample> ().skillsList.Contains (SkillsSample.skills.stun)) {
-			attackDistance = GetComponent<StunSkill> ().stunBaseRange;
-			damageBase = GetComponent<StunSkill> ().stunBaseDamage;
-			stunTimerDuration = GetComponent<StunSkill> ().stunBaseDuration;
-			stunDamage = true;
-			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
-			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
-		}
+	GameManager.instance.removeTileHighlights ();
+	if (unitSkills.skillsList.Contains ("stunAttack")) {
+		attackDistance = AttacksManager.instance.getAttack("stunAttack").range;
+		damageBase = AttacksManager.instance.getAttack("stunAttack").baseDamage;
+		GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
+		GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
+
 		if ((currentUnitAction != unitActions.rangedAttack)) {
 			GameManager.instance.removeTileHighlights ();
 			currentUnitAction = unitActions.rangedAttack;
 			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		}
 		else {
-			stunDamage = false;
 			currentUnitAction = unitActions.idle;
 			GameManager.instance.removeTileHighlights ();
 		}
+	}
 	}
 }
