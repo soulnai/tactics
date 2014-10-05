@@ -29,15 +29,13 @@
             Main DOTween class. Contains static methods to create and control tweens in a generic way
             </summary>
         </member>
-        <member name="F:DG.Tweening.DOTween.inspectorUpdater">
-            <summary>Used internally inside Unity Editor, as a trick to update DOTween's inspector at every frame</summary>
-        </member>
         <member name="F:DG.Tweening.DOTween.Version">
             <summary>DOTween's version</summary>
         </member>
         <member name="F:DG.Tweening.DOTween.useSafeMode">
             <summary>If TRUE (default) makes tweens slightly slower but safer, automatically taking care of a series of things
-            (like targets becoming null while a tween is playing)</summary>
+            (like targets becoming null while a tween is playing).
+            <para>Default: TRUE</para></summary>
         </member>
         <member name="F:DG.Tweening.DOTween.showUnityEditorReport">
             <summary>If TRUE you will get a DOTween report when exiting play mode (only in the Editor).
@@ -46,22 +44,28 @@
             <para>Default: FALSE</para></summary>
         </member>
         <member name="F:DG.Tweening.DOTween.timeScale">
-            <summary>Global DOTween timeScale</summary>
+            <summary>Global DOTween timeScale.
+            <para>Default: 1</para></summary>
         </member>
         <member name="F:DG.Tweening.DOTween.defaultAutoPlay">
-            <summary>Default autoPlay behaviour for new tweens</summary>
+            <summary>Default autoPlay behaviour for new tweens.
+            <para>Default: AutoPlay.All</para></summary>
         </member>
         <member name="F:DG.Tweening.DOTween.defaultAutoKill">
-            <summary>Default autoKillOnComplete behaviour for new tweens</summary>
+            <summary>Default autoKillOnComplete behaviour for new tweens.
+            <para>Default: TRUE</para></summary>
         </member>
         <member name="F:DG.Tweening.DOTween.defaultLoopType">
-            <summary>Default loopType applied to all new tweens</summary>
+            <summary>Default loopType applied to all new tweens.
+            <para>Default: LoopType.Restart</para></summary>
         </member>
         <member name="F:DG.Tweening.DOTween.defaultRecyclable">
-            <summary>If TRUE all newly created tweens are set as recyclable, otherwise not</summary>
+            <summary>If TRUE all newly created tweens are set as recyclable, otherwise not.
+            <para>Default: FALSE</para></summary>
         </member>
         <member name="F:DG.Tweening.DOTween.defaultEaseType">
-            <summary>Default ease applied to all new tweens</summary>
+            <summary>Default ease applied to all new tweens.
+            <para>Default: Ease.InOutQuad</para></summary>
         </member>
         <member name="F:DG.Tweening.DOTween.defaultEaseOvershootOrAmplitude">
             <summary>Default overshoot/amplitude used for eases
@@ -76,7 +80,7 @@
             Must be called once, before the first ever DOTween call/reference,
             otherwise it will be called automatically and will use default options.
             Calling it a second time won't have any effect.
-            <para>You can chain <see cref="M:DG.Tweening.DOTween.SetCapacity(System.Int32,System.Int32)"/> to this method, to directly set the max starting size of Tweeners and Sequences:</para>
+            <para>You can chain <code>SetCapacity</code> to this method, to directly set the max starting size of Tweeners and Sequences:</para>
             <code>DOTween.Init(false, false, LogBehaviour.Default).SetCapacity(100, 20);</code>
             </summary>
             <param name="recycleAllByDefault">If TRUE all new tweens will be set for recycling, meaning that when killed,
@@ -97,21 +101,6 @@
             <param name="logBehaviour">Type of logging to use.
             You can change this setting at any time by changing the static <see cref="P:DG.Tweening.DOTween.logBehaviour"/> property.
             <para>Default: ErrorsOnly</para></param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.SetCapacity(System.Int32,System.Int32)">
-            <summary>
-            Directly sets the current max capacity of Tweeners and Sequences
-            (meaning how many Tweeners and Sequences can be running at the same time),
-            so that DOTween doesn't need to automatically increase them in case the max is reached
-            (which might lead to hiccups when that happens).
-            Sequences capacity must be less or equal to Tweeners capacity
-            (if you pass a low Tweener capacity it will be automatically increased to match the Sequence's).
-            Beware: use this method only when there are no tweens running.
-            </summary>
-            <param name="tweenersCapacity">Max Tweeners capacity.
-            Default: 200</param>
-            <param name="sequencesCapacity">Max Sequences capacity.
-            Default: 50</param>
         </member>
         <member name="M:DG.Tweening.DOTween.SetTweensCapacity(System.Int32,System.Int32)">
             <summary>
@@ -140,13 +129,12 @@
             Clears all cached tween pools.
             </summary>
         </member>
-        <member name="M:DG.Tweening.DOTween.IsTweening(System.Object)">
+        <member name="M:DG.Tweening.DOTween.Validate">
             <summary>
-            Returns TRUE if a tween with the given ID or target is active (either playing or paused).
-            <para>You can also use this to know if a shortcut tween is active for a given target.</para>
-            <para>Example:</para>
-            <para><code>transform.DOMoveX(45, 1); // transform is automatically added as the tween target</code></para>
-            <para><code>DOTween.IsTweening(transform); // Returns true</code></para>
+            Checks all active tweens to find and remove eventually invalid ones (usually because their targets became NULL)
+            and returns the total number of invalid tweens found and removed.
+            <para>Automatically called when loading a new scene if <see cref="F:DG.Tweening.DOTween.useSafeMode"/> is TRUE.</para>
+            BEWARE: this is a slightly expensive operation so use it with care
             </summary>
         </member>
         <member name="M:DG.Tweening.DOTween.To(DG.Tweening.Core.DOGetter{System.Single},DG.Tweening.Core.DOSetter{System.Single},System.Single,System.Single)">
@@ -264,122 +252,6 @@
             <param name="setter">A setter for the field or property to tween
             <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
             <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{System.Single},DG.Tweening.Core.DOSetter{System.Single},System.Single,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{System.Int32},DG.Tweening.Core.DOSetter{System.Int32},System.Int32,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{System.UInt32},DG.Tweening.Core.DOSetter{System.UInt32},System.UInt32,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{System.String},DG.Tweening.Core.DOSetter{System.String},System.String,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{UnityEngine.Vector2},DG.Tweening.Core.DOSetter{UnityEngine.Vector2},UnityEngine.Vector2,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{UnityEngine.Vector3},DG.Tweening.Core.DOSetter{UnityEngine.Vector3},UnityEngine.Vector3,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{UnityEngine.Vector4},DG.Tweening.Core.DOSetter{UnityEngine.Vector4},UnityEngine.Vector4,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{UnityEngine.Quaternion},DG.Tweening.Core.DOSetter{UnityEngine.Quaternion},UnityEngine.Vector3,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{UnityEngine.Color},DG.Tweening.Core.DOSetter{UnityEngine.Color},UnityEngine.Color,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{UnityEngine.Rect},DG.Tweening.Core.DOSetter{UnityEngine.Rect},UnityEngine.Rect,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From(DG.Tweening.Core.DOGetter{UnityEngine.RectOffset},DG.Tweening.Core.DOSetter{UnityEngine.RectOffset},UnityEngine.RectOffset,System.Single)">
-            <summary>Tweens a property or field from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.From``3(DG.Tweening.Plugins.Core.ABSTweenPlugin{``0,``1,``2},DG.Tweening.Core.DOGetter{``0},DG.Tweening.Core.DOSetter{``0},``1,System.Single)">
-            <summary>Tweens a property or field from the given value using a custom plugin</summary>
-            <param name="plugin">The plugin to use. Each custom plugin implements a static <code>Get()</code> method
-            you'll need to call to assign the correct plugin in the correct way, like this:
-            <para><code>CustomPlugin.Get()</code></para></param>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.FromAxis(DG.Tweening.Core.DOGetter{UnityEngine.Vector3},DG.Tweening.Core.DOSetter{UnityEngine.Vector3},System.Single,System.Single,DG.Tweening.AxisConstraint)">
-            <summary>Tweens only one axis of a Vector3 from the given value using default plugins.</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
-            <param name="axisConstraint">The axis to tween</param>
-        </member>
-        <member name="M:DG.Tweening.DOTween.FromAlpha(DG.Tweening.Core.DOGetter{UnityEngine.Color},DG.Tweening.Core.DOSetter{UnityEngine.Color},System.Single,System.Single)">
-            <summary>Tweens only the alpha of a Color from the given value using default plugins</summary>
-            <param name="getter">A getter for the field or property to tween.
-            <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-            <param name="setter">A setter for the field or property to tween
-            <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-            <param name="fromValue">The value to start from</param><param name="duration">The tween's duration</param>
         </member>
         <member name="M:DG.Tweening.DOTween.To(DG.Tweening.Core.DOSetter{System.Single},System.Single,System.Single,System.Single)">
             <summary>Tweens a virtual property from the given start to the given end value 
@@ -519,14 +391,24 @@
             <summary>Toggles the play state of all tweens with the given ID or target and returns the number of actual tweens toggled
             (meaning the tweens that could be played or paused, depending on the toggle state)</summary>
         </member>
+        <member name="M:DG.Tweening.DOTween.IsTweening(System.Object)">
+            <summary>
+            Returns TRUE if a tween with the given ID or target is active (regardless if it's playing or not).
+            <para>You can also use this to know if a shortcut tween is active for a given target.</para>
+            <para>Example:</para>
+            <para><code>transform.DOMoveX(45, 1); // transform is automatically added as the tween target</code></para>
+            <para><code>DOTween.IsTweening(transform); // Returns true</code></para>
+            </summary>
+        </member>
         <member name="M:DG.Tweening.DOTween.TotPlayingTweens">
             <summary>
             Returns the total number of active and playing tweens.
-            A tween is considered as in a play state even if delayed but not paused.
+            A tween is considered as playing even if its delay is actually playing
             </summary>
         </member>
         <member name="P:DG.Tweening.DOTween.logBehaviour">
-            <summary>DOTween's log behaviour</summary>
+            <summary>DOTween's log behaviour.
+            <para>Default: LogBehaviour.ErrorsOnly</para></summary>
         </member>
         <member name="T:DG.Tweening.Core.Extensions">
             <summary>
@@ -672,6 +554,15 @@
             <param name="atPosition">The time position where the callback will be placed</param>
             <param name="callback">The callback to insert</param>
         </member>
+        <member name="M:DG.Tweening.TweenSettingsExtensions.From``1(``0)">
+            <summary>Changes a TO tween into a FROM tween: sets the current target's position as the tween's endValue
+            then immediately sends the target to the previously set endValue.</summary>
+        </member>
+        <member name="M:DG.Tweening.TweenSettingsExtensions.From``1(``0,System.Boolean)">
+            <summary>Changes a TO tween into a FROM tween: sets the current target's position as the tween's endValue
+            then immediately sends the target to the previously set endValue.</summary>
+            <param name="isRelative">If TRUE the FROM value will be calculated as relative to the current one</param>
+        </member>
         <member name="M:DG.Tweening.TweenSettingsExtensions.SetDelay``1(``0,System.Single)">
             <summary>Sets a delayed startup for the tween.
             <para>Has no effect on Sequences or if the tween has already started</para></summary>
@@ -719,59 +610,59 @@
             <summary>Sets the ease of the tween using a custom ease function.
             <para>Has no effect on Sequences</para></summary>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{System.Single,System.Single,DG.Tweening.Plugins.Core.DefaultPlugins.Options.FloatOptions},System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{System.Single,System.Single,DG.Tweening.Plugins.Options.FloatOptions},System.Boolean)">
             <summary>Options for float tweens</summary>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Core.DefaultPlugins.Options.VectorOptions},System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions},System.Boolean)">
             <summary>Options for Vector2 tweens</summary>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Core.DefaultPlugins.Options.VectorOptions},DG.Tweening.AxisConstraint,System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions},DG.Tweening.AxisConstraint,System.Boolean)">
             <summary>Options for Vector2 tweens</summary>
             <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Core.DefaultPlugins.Options.VectorOptions},System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions},System.Boolean)">
             <summary>Options for Vector3 tweens</summary>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Core.DefaultPlugins.Options.VectorOptions},DG.Tweening.AxisConstraint,System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions},DG.Tweening.AxisConstraint,System.Boolean)">
             <summary>Options for Vector3 tweens</summary>
             <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector4,UnityEngine.Vector4,DG.Tweening.Plugins.Core.DefaultPlugins.Options.VectorOptions},System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector4,UnityEngine.Vector4,DG.Tweening.Plugins.Options.VectorOptions},System.Boolean)">
             <summary>Options for Vector4 tweens</summary>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector4,UnityEngine.Vector4,DG.Tweening.Plugins.Core.DefaultPlugins.Options.VectorOptions},DG.Tweening.AxisConstraint,System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector4,UnityEngine.Vector4,DG.Tweening.Plugins.Options.VectorOptions},DG.Tweening.AxisConstraint,System.Boolean)">
             <summary>Options for Vector4 tweens</summary>
             <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Core.DefaultPlugins.Options.QuaternionOptions},System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions},System.Boolean)">
             <summary>Options for Quaternion tweens</summary>
             <param name="useShortest360Route">If TRUE (default) the rotation will take the shortest route, and will not rotate more than 360°.
             If FALSE the rotation will be fully accounted. Is always FALSE if the tween is set as relative</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Core.DefaultPlugins.Options.ColorOptions},System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions},System.Boolean)">
             <summary>Options for Color tweens</summary>
             <param name="alphaOnly">If TRUE only the alpha value of the color will be tweened</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Rect,UnityEngine.Rect,DG.Tweening.Plugins.Core.DefaultPlugins.Options.RectOptions},System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Rect,UnityEngine.Rect,DG.Tweening.Plugins.Options.RectOptions},System.Boolean)">
             <summary>Options for Vector4 tweens</summary>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{System.String,System.String,DG.Tweening.Plugins.Core.DefaultPlugins.Options.StringOptions},System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{System.String,System.String,DG.Tweening.Plugins.Options.StringOptions},System.Boolean)">
             <summary>Options for Vector4 tweens</summary>
             <param name="scramble">If TRUE the string will appear from a random animation of characters</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector3,UnityEngine.Vector3[],DG.Tweening.Plugins.Core.DefaultPlugins.Options.Vector3ArrayOptions},System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector3,UnityEngine.Vector3[],DG.Tweening.Plugins.Options.Vector3ArrayOptions},System.Boolean)">
             <summary>Options for Vector3Array tweens</summary>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector3,UnityEngine.Vector3[],DG.Tweening.Plugins.Core.DefaultPlugins.Options.Vector3ArrayOptions},DG.Tweening.AxisConstraint,System.Boolean)">
+        <member name="M:DG.Tweening.TweenSettingsExtensions.SetOptions(DG.Tweening.Core.TweenerCore{UnityEngine.Vector3,UnityEngine.Vector3[],DG.Tweening.Plugins.Options.Vector3ArrayOptions},DG.Tweening.AxisConstraint,System.Boolean)">
             <summary>Options for Vector3Array tweens</summary>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
@@ -780,6 +671,10 @@
             This class serves only as a utility class to store tween settings to apply on multiple tweens.
             It is in no way needed otherwise, since you can directly apply tween settings to a tween via chaining
             </summary>
+        </member>
+        <member name="F:DG.Tweening.TweenParms.Parms">
+            <summary>A variable you can eventually Clear and reuse when needed,
+            to avoid instantiating TweenParms objects</summary>
         </member>
         <member name="M:DG.Tweening.TweenParms.#ctor">
             <summary>Creates a new TweenParms object, which you can use to store tween settings
@@ -883,6 +778,13 @@
             <summary>Sets the ease of the tween using a custom ease function.
             <para>Has no effect on Sequences</para></summary>
         </member>
+        <member name="M:DG.Tweening.Plugins.Core.PathCore.Path.GetPoint(System.Single,System.Boolean)">
+            <summary>
+            Gets the point on the path at the given percentage (0 to 1)
+            </summary>
+            <param name="perc">The percentage (0 to 1) at which to get the point</param>
+            <param name="convertToConstantPerc">If TRUE constant speed is taken into account, otherwise not</param>
+        </member>
         <member name="T:DG.Tweening.Tweener">
             <summary>
             Animates a single value
@@ -929,26 +831,26 @@
         <member name="F:DG.Tweening.Tween.onKill">
             <summary>Called the moment the tween is killed</summary>
         </member>
-        <member name="M:DG.Tweening.Tweener.ChangeStartValue``1(``0,System.Single)">
+        <member name="M:DG.Tweening.Tweener.ChangeStartValue(System.Object,System.Single)">
             <summary>Changes the start value of a tween and rewinds it (without pausing it).
             Has no effect with tweens that are inside Sequences</summary>
             <param name="newStartValue">The new start value</param>
             <param name="newDuration">If bigger than 0 applies it as the new tween duration</param>
         </member>
-        <member name="M:DG.Tweening.Tweener.ChangeEndValue``1(``0,System.Single,System.Boolean)">
+        <member name="M:DG.Tweening.Tweener.ChangeEndValue(System.Object,System.Single,System.Boolean)">
             <summary>Changes the end value of a tween and rewinds it (without pausing it).
             Has no effect with tweens that are inside Sequences</summary>
             <param name="newEndValue">The new end value</param>
             <param name="newDuration">If bigger than 0 applies it as the new tween duration</param>
             <param name="snapStartValue">If TRUE the start value will become the current target's value, otherwise it will stay the same</param>
         </member>
-        <member name="M:DG.Tweening.Tweener.ChangeEndValue``1(``0,System.Boolean)">
+        <member name="M:DG.Tweening.Tweener.ChangeEndValue(System.Object,System.Boolean)">
             <summary>Changes the end value of a tween and rewinds it (without pausing it).
             Has no effect with tweens that are inside Sequences</summary>
             <param name="newEndValue">The new end value</param>
             <param name="snapStartValue">If TRUE the start value will become the current target's value, otherwise it will stay the same</param>
         </member>
-        <member name="M:DG.Tweening.Tweener.ChangeValues``1(``0,``0,System.Single)">
+        <member name="M:DG.Tweening.Tweener.ChangeValues(System.Object,System.Object,System.Single)">
             <summary>Changes the start and end value of a tween and rewinds it (without pausing it).
             Has no effect with tweens that are inside Sequences</summary>
             <param name="newStartValue">The new start value</param>
@@ -1086,7 +988,7 @@
         <member name="M:DG.Tweening.TweenExtensions.IsPlaying(DG.Tweening.Tween)">
             <summary>Returns TRUE if this tween is playing</summary>
         </member>
-        <member name="T:DG.Tweening.Plugins.Core.DefaultPlugins.Vector3ArrayPlugin">
+        <member name="T:DG.Tweening.Plugins.Vector3ArrayPlugin">
             <summary>
             This plugin generates some GC allocations at startup
             </summary>
@@ -1109,6 +1011,11 @@
         </member>
         <member name="F:DG.Tweening.LogBehaviour.ErrorsOnly">
             <summary>Log only errors</summary>
+        </member>
+        <member name="T:DG.Tweening.Plugins.PathPlugin">
+            <summary>
+            Path plugin works exclusively with Transforms
+            </summary>
         </member>
         <member name="T:DG.Tweening.Core.Easing.EaseCurve">
             <summary>
@@ -1216,6 +1123,20 @@
             Don't assign this! It's assigned automatically when setting the ease to an AnimationCurve or to a custom ease function
             </summary>
         </member>
+        <member name="T:DG.Tweening.PathMode">
+            <summary>
+            Path mode
+            </summary>
+        </member>
+        <member name="F:DG.Tweening.PathMode.Full3D">
+            <summary>Regular 3D path</summary>
+        </member>
+        <member name="F:DG.Tweening.PathMode.TopDown2D">
+            <summary>2D top-down path</summary>
+        </member>
+        <member name="F:DG.Tweening.PathMode.Sidescroller2D">
+            <summary>2D side-scroller path</summary>
+        </member>
         <member name="M:DG.Tweening.Core.Utils.Vector3FromAngle(System.Single,System.Single)">
             <summary>
             Returns a Vector3 with z = 0
@@ -1230,6 +1151,30 @@
             <summary>
             Controls other tweens as a group
             </summary>
+        </member>
+        <member name="T:DG.Tweening.Core.DOTweenComponent">
+            <summary>
+            Used to separate DOTween class from the MonoBehaviour instance (in order to use static constructors on DOTween).
+            Contains all instance-based methods
+            </summary>
+        </member>
+        <member name="F:DG.Tweening.Core.DOTweenComponent.inspectorUpdater">
+            <summary>Used internally inside Unity Editor, as a trick to update DOTween's inspector at every frame</summary>
+        </member>
+        <member name="M:DG.Tweening.Core.DOTweenComponent.SetCapacity(System.Int32,System.Int32)">
+            <summary>
+            Directly sets the current max capacity of Tweeners and Sequences
+            (meaning how many Tweeners and Sequences can be running at the same time),
+            so that DOTween doesn't need to automatically increase them in case the max is reached
+            (which might lead to hiccups when that happens).
+            Sequences capacity must be less or equal to Tweeners capacity
+            (if you pass a low Tweener capacity it will be automatically increased to match the Sequence's).
+            Beware: use this method only when there are no tweens running.
+            </summary>
+            <param name="tweenersCapacity">Max Tweeners capacity.
+            Default: 200</param>
+            <param name="sequencesCapacity">Max Sequences capacity.
+            Default: 50</param>
         </member>
         <member name="T:DG.Tweening.AutoPlay">
             <summary>
@@ -1254,10 +1199,10 @@
             </summary>
         </member>
         <member name="F:DG.Tweening.UpdateType.Default">
-            <summary>Updates every frame during Update calls and uses Unity's Time.timeScale as a base</summary>
+            <summary>Updates every frame during Update calls</summary>
         </member>
         <member name="F:DG.Tweening.UpdateType.Late">
-            <summary>Updates every frame during LateUpdate calls and uses Unity's Time.timeScale as a base</summary>
+            <summary>Updates every frame during LateUpdate calls</summary>
         </member>
         <member name="T:DG.Tweening.ShortcutExtensions">
             <summary>
@@ -1270,22 +1215,10 @@
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOMoveFrom(UnityEngine.Transform,UnityEngine.Vector3,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's position from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOMoveX(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
             <summary>Tweens a Transform's X position to the given value.
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOMoveXFrom(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's X position from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOMoveY(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
@@ -1294,22 +1227,10 @@
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOMoveYFrom(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's Y position from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOMoveZ(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
             <summary>Tweens a Transform's Z position to the given value.
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOMoveZFrom(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's Z position from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOLocalMove(UnityEngine.Transform,UnityEngine.Vector3,System.Single,System.Boolean)">
@@ -1318,22 +1239,10 @@
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLocalMoveFrom(UnityEngine.Transform,UnityEngine.Vector3,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's localPosition from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOLocalMoveX(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
             <summary>Tweens a Transform's X localPosition to the given value.
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLocalMoveXFrom(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's X localPosition from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOLocalMoveY(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
@@ -1342,35 +1251,16 @@
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLocalMoveYFrom(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's Y localPosition from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOLocalMoveZ(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
             <summary>Tweens a Transform's Z localPosition to the given value.
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLocalMoveZFrom(UnityEngine.Transform,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's Z localPosition from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DORotate(UnityEngine.Transform,UnityEngine.Vector3,System.Single,System.Boolean)">
             <summary>Tweens a Transform's rotation to the given value.
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-            <param name="useShortest360Route">If TRUE (default) the rotation will take the shortest route and will not rotate more than 360°.
-            If FALSE the rotation will be fully accounted. Is always FALSE if the tween is set as relative</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DORotateFrom(UnityEngine.Transform,UnityEngine.Vector3,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's rotation from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
             <param name="useShortest360Route">If TRUE (default) the rotation will take the shortest route and will not rotate more than 360°.
             If FALSE the rotation will be fully accounted. Is always FALSE if the tween is set as relative</param>
         </member>
@@ -1381,22 +1271,8 @@
             <param name="useShortest360Route">If TRUE (default) the rotation will take the shortest route and will not rotate more than 360°.
             If FALSE the rotation will be fully accounted. Is always FALSE if the tween is set as relative</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLocalRotateFrom(UnityEngine.Transform,UnityEngine.Vector3,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's localRotation from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-            <param name="useShortest360Route">If TRUE (default) the rotation will take the shortest route and will not rotate more than 360°.
-            If FALSE the rotation will be fully accounted. Is always FALSE if the tween is set as relative</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOLocalAxisRotate(UnityEngine.Transform,UnityEngine.Vector3,System.Single)">
             <summary>Tweens a Transform's rotation to the given value, using its local axis system
-            (like when rotating an object with the "local" switch enabled in Unity's editor).
-            <para>The endValue passed is obviously considered relative to the transform's actual rotation.</para>
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLocalAxisRotateFrom(UnityEngine.Transform,UnityEngine.Vector3,System.Single)">
-            <summary>Tweens a Transform's rotation from the given value to its current one, using its local axis system
             (like when rotating an object with the "local" switch enabled in Unity's editor).
             <para>The endValue passed is obviously considered relative to the transform's actual rotation.</para>
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
@@ -1407,51 +1283,26 @@
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOScaleFrom(UnityEngine.Transform,UnityEngine.Vector3,System.Single)">
-            <summary>Tweens a Transform's localScale from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOScaleX(UnityEngine.Transform,System.Single,System.Single)">
             <summary>Tweens a Transform's X localScale to the given value.
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOScaleXFrom(UnityEngine.Transform,System.Single,System.Single)">
-            <summary>Tweens a Transform's X localScale from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOScaleY(UnityEngine.Transform,System.Single,System.Single)">
             <summary>Tweens a Transform's Y localScale to the given value.
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOScaleYFrom(UnityEngine.Transform,System.Single,System.Single)">
-            <summary>Tweens a Transform's Y localScale from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOScaleZ(UnityEngine.Transform,System.Single,System.Single)">
             <summary>Tweens a Transform's Z localScale to the given value.
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOScaleZFrom(UnityEngine.Transform,System.Single,System.Single)">
-            <summary>Tweens a Transform's Z localScale from the given value to its current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLookAt(UnityEngine.Transform,UnityEngine.Vector3,System.Single,System.Nullable{UnityEngine.Vector3})">
+        <member name="M:DG.Tweening.ShortcutExtensions.DOLookAt(UnityEngine.Transform,UnityEngine.Vector3,System.Single,DG.Tweening.AxisConstraint,System.Nullable{UnityEngine.Vector3})">
             <summary>Tweens a Transform's rotation so that it will look towards the given position.
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="towards">The position to look at</param><param name="duration">The duration of the tween</param>
-            <param name="up">The vector that defines in which direction up is (default: Vector3.up)</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLookFrom(UnityEngine.Transform,UnityEngine.Vector3,System.Single,System.Nullable{UnityEngine.Vector3})">
-            <summary>Tweens a Transform's rotation so that it will look from the given position to the current one.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="from">The position to look from</param><param name="duration">The duration of the tween</param>
+            <param name="axisConstraint">Eventual axis constraint for the rotation</param>
             <param name="up">The vector that defines in which direction up is (default: Vector3.up)</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOPunchPosition(UnityEngine.Transform,UnityEngine.Vector3,System.Single,System.Int32,System.Single,System.Boolean)">
@@ -1510,16 +1361,32 @@
             <param name="randomness">Indicates how much the shake will be random (0 to 180 - values higher than 90 kind of suck, so beware). 
             Setting it to 0 will shake along a single direction.</param>
         </member>
+        <member name="M:DG.Tweening.ShortcutExtensions.DOPath(UnityEngine.Transform,UnityEngine.Vector3[],System.Single,DG.Tweening.PathType,DG.Tweening.PathMode,System.Int32,System.Nullable{UnityEngine.Color})">
+            <summary>Tweens a Transform's position through the given path waypoints, using the chosen path algorithm.
+            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
+            <param name="path">The waypoint to go through</param>
+            <param name="duration">The duration of the tween</param>
+            <param name="pathType">The type of path: Linear (straight path) or CatmullRom (curved CatmullRom path)</param>
+            <param name="pathMode">The path mode: 3D, side-scroller 2D, top-down 2D</param>
+            <param name="resolution">The resolution of the path: higher resolutions make for more detailed curved paths but are more expensive.
+            Defaults to 10, but a value of 5 is usually enough if you don't have dramatic long curves between waypoints</param>
+            <param name="gizmoColor">The color of the path (shown when gizmos are active in the Play panel and the tween is running)</param>
+        </member>
+        <member name="M:DG.Tweening.ShortcutExtensions.DOLocalPath(UnityEngine.Transform,UnityEngine.Vector3[],System.Single,DG.Tweening.PathType,DG.Tweening.PathMode,System.Int32,System.Nullable{UnityEngine.Color})">
+            <summary>Tweens a Transform's localPosition through the given path waypoints, using the chosen path algorithm.
+            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
+            <param name="path">The waypoint to go through</param>
+            <param name="duration">The duration of the tween</param>
+            <param name="pathType">The type of path: Linear (straight path) or CatmullRom (curved CatmullRom path)</param>
+            <param name="pathMode">The path mode: 3D, side-scroller 2D, top-down 2D</param>
+            <param name="resolution">The resolution of the path: higher resolutions make for more detailed curved paths but are more expensive.
+            Defaults to 10, but a value of 5 is usually enough if you don't have dramatic long curves between waypoints</param>
+            <param name="gizmoColor">The color of the path (shown when gizmos are active in the Play panel and the tween is running)</param>
+        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOMove(UnityEngine.Rigidbody,UnityEngine.Vector3,System.Single,System.Boolean)">
             <summary>Tweens a Rigidbody's position to the given value.
             Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOMoveFrom(UnityEngine.Rigidbody,UnityEngine.Vector3,System.Single,System.Boolean)">
-            <summary>Tweens a Rigidbody's position from the given value to its current one.
-            Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOMoveX(UnityEngine.Rigidbody,System.Single,System.Single,System.Boolean)">
@@ -1528,22 +1395,10 @@
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOMoveXFrom(UnityEngine.Rigidbody,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Rigidbody's X position from the given value to its current one.
-            Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOMoveY(UnityEngine.Rigidbody,System.Single,System.Single,System.Boolean)">
             <summary>Tweens a Rigidbody's Y position to the given value.
             Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOMoveYFrom(UnityEngine.Rigidbody,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Rigidbody's Y position from the given value to its current one.
-            Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOMoveZ(UnityEngine.Rigidbody,System.Single,System.Single,System.Boolean)">
@@ -1552,23 +1407,10 @@
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
             <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOMoveZFrom(UnityEngine.Rigidbody,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Rigidbody's Z position from the given value to its current one.
-            Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DORotate(UnityEngine.Rigidbody,UnityEngine.Vector3,System.Single,System.Boolean)">
             <summary>Tweens a Rigidbody's rotation to the given value.
             Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-            <param name="useShortest360Route">If TRUE (default) the rotation will take the shortest route and will not rotate more than 360°.
-            If FALSE the rotation will be fully accounted. Is always FALSE if the tween is set as relative</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DORotateFrom(UnityEngine.Rigidbody,UnityEngine.Vector3,System.Single,System.Boolean)">
-            <summary>Tweens a Rigidbody's rotation from the given value to its current one.
-            Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
             <param name="useShortest360Route">If TRUE (default) the rotation will take the shortest route and will not rotate more than 360°.
             If FALSE the rotation will be fully accounted. Is always FALSE if the tween is set as relative</param>
         </member>
@@ -1579,23 +1421,11 @@
             Also stores the transform as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLocalAxisRotateFrom(UnityEngine.Rigidbody,UnityEngine.Vector3,System.Single)">
-            <summary>Tweens a Rigidbody's rotation from the given value to its current one, using its local axis system
-            (like when rotating an object with the "local" switch enabled in Unity's editor).
-            <para>The endValue passed is obviously considered relative to the transform's actual rotation.</para>
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLookAt(UnityEngine.Rigidbody,UnityEngine.Vector3,System.Single,System.Nullable{UnityEngine.Vector3})">
+        <member name="M:DG.Tweening.ShortcutExtensions.DOLookAt(UnityEngine.Rigidbody,UnityEngine.Vector3,System.Single,DG.Tweening.AxisConstraint,System.Nullable{UnityEngine.Vector3})">
             <summary>Tweens a Rigidbody's rotation so that it will look towards the given position.
             Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
             <param name="towards">The position to look at</param><param name="duration">The duration of the tween</param>
-            <param name="up">The vector that defines in which direction up is (default: Vector3.up)</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOLookFrom(UnityEngine.Rigidbody,UnityEngine.Vector3,System.Single,System.Nullable{UnityEngine.Vector3})">
-            <summary>Tweens a Rigidbody's rotation so that it will look from the given position to the current one.
-            Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
-            <param name="from">The position to look at</param><param name="duration">The duration of the tween</param>
+            <param name="axisConstraint">Eventual axis constraint for the rotation</param>
             <param name="up">The vector that defines in which direction up is (default: Vector3.up)</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOShakePosition(UnityEngine.Camera,System.Single,System.Single,System.Int32,System.Single)">
@@ -1621,11 +1451,6 @@
             Also stores the camera as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOColorFrom(UnityEngine.Camera,UnityEngine.Color,System.Single)">
-            <summary>Tweens a Camera's backgroundColor from the given value to its current one.
-            Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOColor(UnityEngine.Material,UnityEngine.Color,System.Single)">
             <summary>Tweens a Material's color to the given value.
             Also stores the material as the tween's target so it can be used for filtered operations</summary>
@@ -1638,49 +1463,26 @@
             <param name="property">The name of the color property to tween (like _Tint or _SpecColor)</param>
             <param name="duration">The duration of the tween</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOColorFrom(UnityEngine.Material,UnityEngine.Color,System.Single)">
-            <summary>Tweens a Material's color from the given value to its current one.
-            Also stores the material as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOColorFrom(UnityEngine.Material,UnityEngine.Color,System.String,System.Single)">
-            <summary>Tweens a Material's named color property from the given value to its current one.
-            Also stores the material as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param>
-            <param name="property">The name of the color property to tween (like _Tint or _SpecColor)</param>
-            <param name="duration">The duration of the tween</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOFade(UnityEngine.Material,System.Single,System.Single)">
             <summary>Tweens a Material's alpha color to the given value
             (will have no effect unless your material supports transparency).
             Also stores the material as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOFadeFrom(UnityEngine.Material,System.Single,System.Single)">
-            <summary>Tweens a Material's alpha color from the given value to its current one
-            (will have no effect unless your material supports transparency).
-            Also stores the material as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
-        </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOColor(UnityEngine.Light,UnityEngine.Color,System.Single)">
             <summary>Tweens a Light's color to the given value.
             Also stores the light as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOColorFrom(UnityEngine.Light,UnityEngine.Color,System.Single)">
-            <summary>Tweens a Light's color from the given value to its current one.
-            Also stores the light as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOIntensity(UnityEngine.Light,System.Single,System.Single)">
             <summary>Tweens a Light's intensity to the given value.
             Also stores the light as the tween's target so it can be used for filtered operations</summary>
             <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         </member>
-        <member name="M:DG.Tweening.ShortcutExtensions.DOIntensityFrom(UnityEngine.Light,System.Single,System.Single)">
-            <summary>Tweens a Light's intensity from the given value to its current one.
+        <member name="M:DG.Tweening.ShortcutExtensions.DOShadowStrength(UnityEngine.Light,System.Single,System.Single)">
+            <summary>Tweens a Light's shadowStrength to the given value.
             Also stores the light as the tween's target so it can be used for filtered operations</summary>
-            <param name="fromValue">The value to tween from</param><param name="duration">The duration of the tween</param>
+            <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         </member>
         <member name="M:DG.Tweening.ShortcutExtensions.DOKill(UnityEngine.Transform)">
             <summary>
@@ -1973,6 +1775,17 @@
             (meaning tweens that were started from this target, or that had this target added as an Id)
             and returns the total number of tweens involved.
             </summary>
+        </member>
+        <member name="T:DG.Tweening.PathType">
+            <summary>
+            Type of path to use with DOPath tweens
+            </summary>
+        </member>
+        <member name="F:DG.Tweening.PathType.Linear">
+            <summary>Linear, composed of straight segments between each waypoint</summary>
+        </member>
+        <member name="F:DG.Tweening.PathType.CatmullRom">
+            <summary>Curved path (which uses Catmull-Rom curves)</summary>
         </member>
         <member name="T:DG.Tweening.AxisConstraint">
             <summary>

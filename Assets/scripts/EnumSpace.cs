@@ -18,4 +18,14 @@ namespace EnumSpace {
 		magicAttack,
 		skillAttack
 	}
+
+	public enum damageTypes{
+		poison,
+		fire,
+		water,
+		electricity,
+		earth,
+		darkness,
+		light
+	}
 }
