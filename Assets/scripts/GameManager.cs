@@ -81,8 +81,10 @@ public class GameManager : MonoBehaviour {
 			Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 
-			players[currentPlayerIndex].currentUnitState = unitStates.normal;
-			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
+			if (players[currentPlayerIndex].currentUnitState!=unitStates.dead) {
+				players[currentPlayerIndex].currentUnitState = unitStates.normal;
+				players[currentPlayerIndex].currentUnitAction = unitActions.moving; 
+			}
 
 			GameManager.instance.highlightTilesAt(players[currentPlayerIndex].gridPosition, Color.blue, players[currentPlayerIndex].movementPerActionPoint, false);
 		} else {
@@ -96,9 +98,10 @@ public class GameManager : MonoBehaviour {
 			unitSelection.transform.position = players [currentPlayerIndex].transform.position;
 			unitSelection.transform.parent = players [currentPlayerIndex].transform;
 
+			if (players[currentPlayerIndex].currentUnitState!=unitStates.dead) {
 			players[currentPlayerIndex].currentUnitState = unitStates.normal;
 			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
-	
+			}
 			GameManager.instance.highlightTilesAt(players[currentPlayerIndex].gridPosition, Color.blue, players[currentPlayerIndex].movementPerActionPoint, false);
 		}
 	}

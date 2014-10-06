@@ -219,17 +219,17 @@ ModelImporter:
     4300054: Object03
     4300056: Object14
     4300058: HeadD
-    7400030: walk
-    7400032: run
+    7400030: Walk
+    7400032: Run
     7400034: stand
-    7400036: idle
+    7400036: Idle
     7400038: ready
-    7400040: attack 1
+    7400040: Attack
     7400042: attack 2
     7400044: attack 3
-    7400046: hit 1
+    7400046: Damage
     7400048: hit 2
-    7400050: dead
+    7400050: Death
     7400052: jump
     7400054: push
     7400056: climb
@@ -274,7 +274,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: walk
+      name: Walk
       takeName: 
       firstFrame: 0
       lastFrame: 30
@@ -300,7 +300,7 @@ ModelImporter:
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
-      name: run
+      name: Run
       takeName: 
       firstFrame: 31
       lastFrame: 51
@@ -352,7 +352,7 @@ ModelImporter:
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
-      name: idle
+      name: Idle
       takeName: 
       firstFrame: 123
       lastFrame: 473
@@ -404,7 +404,7 @@ ModelImporter:
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
-      name: attack 1
+      name: Attack
       takeName: 
       firstFrame: 515
       lastFrame: 545
@@ -482,7 +482,7 @@ ModelImporter:
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
-      name: hit 1
+      name: Damage
       takeName: 
       firstFrame: 603
       lastFrame: 618
@@ -534,7 +534,7 @@ ModelImporter:
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
-      name: dead
+      name: Death
       takeName: 
       firstFrame: 635
       lastFrame: 699

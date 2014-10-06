@@ -6,7 +6,8 @@ using EnumSpace;
 [System.Serializable]
 public class Player : MonoBehaviour {
 
-	public AnimationClip[] animationsArray;
+	//public AnimationClip[] animationsArray;
+
 
 	public Vector2 gridPosition = Vector2.zero;
 	
