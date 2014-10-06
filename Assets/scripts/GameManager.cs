@@ -233,7 +233,7 @@ public class GameManager : MonoBehaviour {
 //					Debug.Log("/MagicPrefabs/"+MagicPrefab);
 
 					//magic = ((GameObject)Instantiate(Resources.Load<GameObject>("MagicPrefabs/"+MagicPrefab), players[currentPlayerIndex].transform.position+0.5f*Vector3.up, Quaternion.Euler(0,0,0)));
-				magic = ((GameObject)Instantiate(MagicPrefab, players[currentPlayerIndex].transform.position+0.5f*Vector3.up, Quaternion.Euler(0,0,0)));
+				magic = ((GameObject)Instantiate(MagicPrefab, players[currentPlayerIndex].transform.position+0.5f*Vector3.up, Quaternion.identity));
 
 				players[currentPlayerIndex].transform.rotation = Quaternion.Slerp(players[currentPlayerIndex].transform.rotation, newRotation, 1);
 
@@ -256,7 +256,7 @@ public class GameManager : MonoBehaviour {
 
 						//damage types goes here
 					
-						magic.transform.DOMove(target.transform.position, 2f).OnComplete(MoveCompleted);
+						magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
 						magiceffect = true;
 						//damage logic
 						int amountOfDamage = (int)Mathf.Floor(players[currentPlayerIndex].damageBase + Random.Range(0, players[currentPlayerIndex].damageRollSides));
@@ -265,7 +265,7 @@ public class GameManager : MonoBehaviour {
 
 						Debug.Log(players[currentPlayerIndex].playerName + " successfuly hit " + target.playerName + " for " + amountOfDamage + " damage!");
 					} else {
-						magic.transform.DOMove(target.transform.position, 2f).OnComplete(MoveCompleted);
+						magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
 						Debug.Log(players[currentPlayerIndex].playerName + " missed " + target.playerName + "!");
 
 					}
