@@ -20,6 +20,11 @@ public class Player : MonoBehaviour {
 	
 	public string playerName = "George";
 	public int HP = 25;
+	public int MP = 25;
+	public int Strength = 2;
+	public int Magic = 2;
+	public int PhysicalDefense = 2;
+	public int MagicDefense = 2;
 	
 	public float attackChance = 0.75f;
 	public float defenseReduction = 0.15f;

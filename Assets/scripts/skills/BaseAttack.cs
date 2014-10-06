@@ -14,6 +14,8 @@ public class BaseAttack {
 	public int effectDamage;
 	public damageTypes damageType;
 	public int duration;
+
+	public int MPCost;
 }
 
 

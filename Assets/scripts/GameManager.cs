@@ -183,6 +183,7 @@ public class GameManager : MonoBehaviour {
 					players[currentPlayerIndex].animation.Play("Attack");
 					StartCoroutine(WaitAndCallback(players[currentPlayerIndex].animation["Attack"].length));
 					bool hit = Random.Range(0.0f, 1.0f) <= players[currentPlayerIndex].attackChance;
+
 					
 					if (hit) {
 						//damage logic
@@ -245,7 +246,8 @@ public class GameManager : MonoBehaviour {
 					
 					players[currentPlayerIndex].animation.Play("Attack");
 					StartCoroutine(WaitAndCallback(players[currentPlayerIndex].animation["Attack"].length));
-					
+
+					players[currentPlayerIndex].MP -= AbilitiesManager.instance.getAbility("baseMagic").MPCost;
 					//attack logic
 					//roll to hit
 					bool hit = Random.Range(0.0f, 1.0f) <= players[currentPlayerIndex].attackChance;

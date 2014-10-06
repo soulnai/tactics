@@ -63,9 +63,10 @@ public class UserPlayer : Player {
 			damageBase = AbilitiesManager.instance.getAbility("baseMagic").baseDamage;
 			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Fireball;
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
-
+			if (MP >= AbilitiesManager.instance.getAbility("baseMagic").MPCost) {
 			currentUnitAction = unitActions.magicAttack;
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+			}
 		}
 	}
 
