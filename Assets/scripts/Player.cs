@@ -6,6 +6,8 @@ using EnumSpace;
 [System.Serializable]
 public class Player : MonoBehaviour {
 
+	public AnimationClip[] animationsArray;
+
 	public Vector2 gridPosition = Vector2.zero;
 	
 	public Vector3 moveDestination;
@@ -49,6 +51,7 @@ public class Player : MonoBehaviour {
 			currentUnitState = unitStates.dead;
 			animation.CrossFade("Death");
 			StartCoroutine(WaitAndCallback(animation["Death"].length));
+			GameManager.instance.nextTurn();
 		}
 	}
 	

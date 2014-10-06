@@ -84,11 +84,16 @@ public class UserPlayer : Player {
 	{
 		GameManager.instance.removeTileHighlights ();
 		if (unitSkills.skillsList.Contains ("baseRanged")) {
-			currentUnitAction = unitActions.rangedAttack;
+
 			attackDistance = AbilitiesManager.instance.getAbility("baseRanged").range;
 			damageBase = AbilitiesManager.instance.getAbility("baseRanged").baseDamage;
+			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
+			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
+
+			currentUnitAction = unitActions.rangedAttack;
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		}
+
 	}
 
 	public void EndTurn ()
@@ -105,8 +110,8 @@ public class UserPlayer : Player {
 		if (unitSkills.skillsList.Contains ("baseStun")) {
 			attackDistance = AbilitiesManager.instance.getAbility("baseStun").range;
 			damageBase = AbilitiesManager.instance.getAbility("baseStun").baseDamage;
-			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
-			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
+			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Poison;
+			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.PoisonExplode;
 			currentUnitAction = unitActions.rangedAttack;
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 	}

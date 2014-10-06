@@ -7,6 +7,8 @@ public class FireballSkill : MonoBehaviour {
 	public int fireballBaseDamage = 10;
 	public int fireballBaseRange = 5;
 	public bool burned = true;
+	public GameObject visualprefab = MagicPrefabHolder.instance.Fireball;
+	public GameObject explosionprefab = MagicPrefabHolder.instance.FireballExplode;
 	// Use this for initialization
 	void Start () {
 	

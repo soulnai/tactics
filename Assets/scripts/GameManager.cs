@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour {
 	public GameObject TilePrefab;
 	public GameObject UserPlayerPrefab;
 	public GameObject AIPlayerPrefab;
+	//public string MagicPrefab;
+	//public string MagicExplosionPrefab;
 	public GameObject MagicPrefab;
 	public GameObject MagicExplosionPrefab;
 	public GameObject magic;
@@ -79,7 +81,7 @@ public class GameManager : MonoBehaviour {
 			Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 
-
+			players[currentPlayerIndex].currentUnitState = unitStates.normal;
 			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
 
 			GameManager.instance.highlightTilesAt(players[currentPlayerIndex].gridPosition, Color.blue, players[currentPlayerIndex].movementPerActionPoint, false);
@@ -94,7 +96,7 @@ public class GameManager : MonoBehaviour {
 			unitSelection.transform.position = players [currentPlayerIndex].transform.position;
 			unitSelection.transform.parent = players [currentPlayerIndex].transform;
 
-
+			players[currentPlayerIndex].currentUnitState = unitStates.normal;
 			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
 	
 			GameManager.instance.highlightTilesAt(players[currentPlayerIndex].gridPosition, Color.blue, players[currentPlayerIndex].movementPerActionPoint, false);
@@ -223,9 +225,11 @@ public class GameManager : MonoBehaviour {
 			if (target != null) {
 
 				var newRotation = Quaternion.LookRotation((target.transform.position - players[currentPlayerIndex].transform.position).normalized);
-				if (players[currentPlayerIndex].currentUnitAction == unitActions.magicAttack)
-					magic = ((GameObject)Instantiate(MagicPrefab, players[currentPlayerIndex].transform.position+0.5f*Vector3.up, Quaternion.Euler(0,0,0)));
+				//if (players[currentPlayerIndex].currentUnitAction == unitActions.magicAttack)
+//					Debug.Log("/MagicPrefabs/"+MagicPrefab);
 
+					//magic = ((GameObject)Instantiate(Resources.Load<GameObject>("MagicPrefabs/"+MagicPrefab), players[currentPlayerIndex].transform.position+0.5f*Vector3.up, Quaternion.Euler(0,0,0)));
+				magic = ((GameObject)Instantiate(MagicPrefab, players[currentPlayerIndex].transform.position+0.5f*Vector3.up, Quaternion.Euler(0,0,0)));
 
 				players[currentPlayerIndex].transform.rotation = Quaternion.Slerp(players[currentPlayerIndex].transform.rotation, newRotation, 1);
 
@@ -265,6 +269,7 @@ public class GameManager : MonoBehaviour {
 				}
 
 				players[currentPlayerIndex].animation.CrossFade("Idle", 1f);
+
 			}
 		} else {
 			Debug.Log ("destination invalid");
@@ -350,9 +355,11 @@ public class GameManager : MonoBehaviour {
 		Destroy (magictodestroy);
 		magiceffect = false;
 		if (target.HP > 0) {
-			target.animation.Play("Damage");
-			target.animation.CrossFade("Idle", 2f);
+						target.animation.Play ("Damage");
+						StartCoroutine (WaitAndNextTurn (target.animation ["Damage"].length));
+						target.animation.CrossFade ("Idle", 2f);
 		}
+				
 
 	}
 
@@ -360,11 +367,18 @@ public class GameManager : MonoBehaviour {
 		Explode(targetPub, magic);
 	}
 
-	IEnumerator WaitAndCallback(float waitTime){
+	IEnumerator WaitAndNextTurn(float waitTime){
 
 		yield return new WaitForSeconds(waitTime);
 		nextTurn ();
 
+	}
+
+	IEnumerator WaitAndCallback(float waitTime){
+		
+		yield return new WaitForSeconds(waitTime);
+
+		
 	}
 
 	public Vector2 getRandoMapTileXY(bool passible = false)
@@ -374,6 +388,12 @@ public class GameManager : MonoBehaviour {
 		if ((passible == true)&&(map[(int)tileXY.x][(int)tileXY.y].impassible == true))
 		{
 			tileXY = getRandoMapTileXY(passible);
+		}
+
+		for (int i =0; i<players.Count; i++) {
+			if (map[(int)tileXY.x][(int)tileXY.y].gridPosition == players[i].gridPosition){
+				tileXY = getRandoMapTileXY();
+			}		
 		}
 		return tileXY;
 	}
