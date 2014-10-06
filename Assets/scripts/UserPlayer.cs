@@ -51,15 +51,8 @@ public class UserPlayer : Player {
 	public void Move ()
 	{
 		GameManager.instance.removeTileHighlights ();
-		if (currentUnitAction != unitActions.moving) {
-			GameManager.instance.removeTileHighlights ();
-			currentUnitAction = unitActions.moving;
-			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
-		}
-		else {
-			currentUnitAction = unitActions.idle;
-			GameManager.instance.removeTileHighlights ();
-		}
+		currentUnitAction = unitActions.moving;
+		GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
 	}
 
 	public void MagicAttack ()
@@ -72,10 +65,14 @@ public class UserPlayer : Player {
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
 
 			currentUnitAction = unitActions.magicAttack;
+<<<<<<< HEAD
 			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		} else {
 			GameManager.instance.removeTileHighlights ();
 			currentUnitAction = unitActions.idle;
+=======
+			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+>>>>>>> origin/Chewie
 		}
 	}
 
@@ -86,10 +83,14 @@ public class UserPlayer : Player {
 			currentUnitAction = unitActions.meleeAttack;
 			attackDistance = AbilitiesManager.instance.getAbility("baseMelee").range;
 			damageBase = AbilitiesManager.instance.getAbility("baseMelee").baseDamage;
+<<<<<<< HEAD
 			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		}else {
 			GameManager.instance.removeTileHighlights ();
 			currentUnitAction = unitActions.idle;
+=======
+			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+>>>>>>> origin/Chewie
 		}
 	}
 
@@ -100,10 +101,14 @@ public class UserPlayer : Player {
 			currentUnitAction = unitActions.rangedAttack;
 			attackDistance = AbilitiesManager.instance.getAbility("baseRanged").range;
 			damageBase = AbilitiesManager.instance.getAbility("baseRanged").baseDamage;
+<<<<<<< HEAD
 			GameManager.instance.AtackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		} else {
 			GameManager.instance.removeTileHighlights ();
 			currentUnitAction = unitActions.idle;
+=======
+			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+>>>>>>> origin/Chewie
 		}
 	}
 
@@ -118,6 +123,7 @@ public class UserPlayer : Player {
 	public void StunAttack ()
 	{
 		GameManager.instance.removeTileHighlights ();
+<<<<<<< HEAD
 		if (unitSkills.skillsList.Contains ("baseStun") && currentUnitAction != unitActions.rangedAttack) {
 						attackDistance = AbilitiesManager.instance.getAbility ("baseStun").range;
 						damageBase = AbilitiesManager.instance.getAbility ("baseStun").baseDamage;
@@ -129,5 +135,15 @@ public class UserPlayer : Player {
 			GameManager.instance.removeTileHighlights ();
 			currentUnitAction = unitActions.idle;
 				}
+=======
+		if (unitSkills.skillsList.Contains ("baseStun")) {
+			attackDistance = AbilitiesManager.instance.getAbility("baseStun").range;
+			damageBase = AbilitiesManager.instance.getAbility("baseStun").baseDamage;
+			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
+			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
+			currentUnitAction = unitActions.rangedAttack;
+			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+	}
+>>>>>>> origin/Chewie
 	}
 }

@@ -54,7 +54,7 @@ public class AIPlayer : Player {
 
 				currentUnitAction = unitActions.meleeAttack;
 
-				GameManager.instance.AtackhighlightTiles(gridPosition, Color.red, attackRange,true);
+				GameManager.instance.AttackhighlightTiles(gridPosition, Color.red, attackRange,true);
 
 				GameManager.instance.attackWithCurrentPlayer(GameManager.instance.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y]);
 			}
