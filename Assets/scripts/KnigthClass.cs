@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ScoutClass : UserPlayer {
-	
+public class KnigthClass : UserPlayer {
 
 	// Use this for initialization
 	void Start () {
-		movementPerActionPoint = 10;
-		HP = 5;
-
+		movementPerActionPoint = 5;
+		HP = 10;
 	}
 	
 	// Update is called once per frame

@@ -21,6 +21,7 @@ public class GUImanager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		unit = gameManager.players[gameManager.currentPlayerIndex] as UserPlayer;
+
 	}
 
 	public void setMouseOverGUI(bool over)

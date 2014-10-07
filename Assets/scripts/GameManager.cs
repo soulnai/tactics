@@ -12,10 +12,8 @@ public class GameManager : MonoBehaviour {
 	public int unitsCountAI;
 	//prefabs
 	public GameObject TilePrefab;
-	public GameObject UserPlayerPrefab;
+	public GameObject[] UserPlayerPrefab;
 	public GameObject AIPlayerPrefab;
-	//public string MagicPrefab;
-	//public string MagicExplosionPrefab;
 	public GameObject MagicPrefab;
 	public GameObject MagicExplosionPrefab;
 	public GameObject magic;
@@ -335,7 +333,7 @@ public class GameManager : MonoBehaviour {
 		for(int i=0; i< unitsCountPlayer;i++)
 		{
 			Vector2 position = getRandoMapTileXY(true);
-			player = ((GameObject)Instantiate(UserPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<UserPlayer>();
+			player = ((GameObject)Instantiate(UserPlayerPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<UserPlayer>();
 			player.gridPosition = position;
 			player.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
 			player.playerName = "Alice-"+i;				
