@@ -9,6 +9,8 @@ public class GUImanager : MonoBehaviour {
 	public GameObject controlsPanel;
 	public UserPlayer unit;
 	public bool mouseOverGUI = false;
+
+	public Button[] UIButtonsArray;
 	// Use this for initialization
 	void Awake()
 	{
@@ -22,6 +24,23 @@ public class GUImanager : MonoBehaviour {
 	void Update () {
 		unit = gameManager.players[gameManager.currentPlayerIndex] as UserPlayer;
 
+		if (!unit.unitSkills.skillsList.Contains ("baseStun")) {
+						UIButtonsArray [0].enabled = false;		
+				} else {
+			UIButtonsArray [0].enabled = true;	
+		}
+
+		if (!unit.unitSkills.skillsList.Contains ("baseRanged")) {
+			UIButtonsArray [1].enabled = false;		
+		} else {
+			UIButtonsArray [1].enabled = true;	
+		}
+
+		if (!unit.unitSkills.skillsList.Contains ("baseMagic")) {
+			UIButtonsArray [2].enabled = false;		
+		} else {
+			UIButtonsArray [2].enabled = true;	
+		}
 	}
 
 	public void setMouseOverGUI(bool over)
