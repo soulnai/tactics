@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour {
 						Debug.Log(players[currentPlayerIndex].playerName + " successfuly hit " + target.playerName + " for " + amountOfDamage + " damage!");
 					} else {
 						Debug.Log(players[currentPlayerIndex].playerName + " missed " + target.playerName + "!");
-						target.animation.Play("Damage");
+						target.animation.Play("Avoid");
 						target.animation.CrossFade("Idle", 1f);
 					}
 				} else {
