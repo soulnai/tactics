@@ -3,11 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using EnumSpace;
 
+//Events
+public delegate void UnitAnimationEnd(Unit unit);
+//
+
 [System.Serializable]
 public class Unit : MonoBehaviour {
 
 	//public AnimationClip[] animationsArray;
-
+	public event UnitAnimationEnd OnUnitAnimationEnd;
 
 	public Vector2 gridPosition = Vector2.zero;
 	
@@ -40,6 +44,7 @@ public class Unit : MonoBehaviour {
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
+
 	private Vector3 lookDirection = Vector3.zero;
 
 	void Awake () {
@@ -60,6 +65,12 @@ public class Unit : MonoBehaviour {
 		{
 			MoveUnit();
 		}
+	}
+
+	public void Attack(Unit target)
+	{
+		animation.Play("Attack");
+		StartCoroutine(WaitAndCallback(animation["Attack"].length));
 	}
 
 	public void MoveUnit()
@@ -122,7 +133,13 @@ public class Unit : MonoBehaviour {
 			animation.CrossFade("Damage");
 	}
 
-	IEnumerator WaitAndCallback(float waitTime){	
+	IEnumerator WaitAndCallback(float waitTime){
+		Debug.Log("Started");
 		yield return new WaitForSeconds(waitTime);
+//		Debug.Log("Animation Ended");
+		if(OnUnitAnimationEnd != null)
+		{
+			OnUnitAnimationEnd(this);
+		}
 	}
 }

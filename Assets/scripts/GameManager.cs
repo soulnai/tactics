@@ -14,8 +14,7 @@ public class GameManager : MonoBehaviour {
 	public GameObject TilePrefab;
 	public GameObject[] UserUnitPrefab;
 	public GameObject AIPlayerPrefab;
-	//public string MagicPrefab;
-	//public string MagicExplosionPrefab;
+
 	public GameObject MagicPrefab;
 	public GameObject MagicExplosionPrefab;
 	public GameObject magic;
@@ -33,6 +32,7 @@ public class GameManager : MonoBehaviour {
 	
 	public List <List<Tile>> map = new List<List<Tile>>();
 	public List <Unit> units = new List<Unit>();
+	public List <Player> players = new List<Player>();
 	public int currentUnitIndex = 0;
 	public int currentPlayerIndex = 0;
 	public Unit currentUnit{
@@ -41,6 +41,14 @@ public class GameManager : MonoBehaviour {
 		}
 		get{
 			return units[currentUnitIndex];
+		}
+	}
+	public Player currentPlayer{
+		set{
+			
+		}
+		get{
+			return players[currentPlayerIndex];
 		}
 	}
 
@@ -54,12 +62,13 @@ public class GameManager : MonoBehaviour {
 		instance = this;
 
 		mapTransform = transform.FindChild("Map");
+		generateMap();
+		generateUnits();
 	}
 
 	// Use this for initialization
 	void Start () {		
-		generateMap();
-		generateUnits();
+
 		unitSelection = (GameObject)Instantiate(selectionRing, units[0].transform.position, Quaternion.Euler(0,0,0));
 		unitSelection.transform.parent = units [0].transform;
 		Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
@@ -170,9 +179,9 @@ public class GameManager : MonoBehaviour {
 				    units[currentUnitIndex].gridPosition.y >= target.gridPosition.y - units[currentUnitIndex].attackRange && units[currentUnitIndex].gridPosition.y <= target.gridPosition.y + units[currentUnitIndex].attackRange) {
 
 					removeTileHighlights();
-								
-					units[currentUnitIndex].animation.Play("Attack");
-					StartCoroutine(WaitAndCallback(units[currentUnitIndex].animation["Attack"].length));
+
+					currentUnit.Attack(target);		
+
 					bool hit = Random.Range(0.0f, 1.0f) <= units[currentUnitIndex].attackChance;
 
 					
@@ -193,8 +202,6 @@ public class GameManager : MonoBehaviour {
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
 
 				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
-
-//				units[currentUnitIndex].checkAP();
 			}
 		} else {
 			Debug.Log ("target invalid");
@@ -231,9 +238,7 @@ public class GameManager : MonoBehaviour {
 					
 					removeTileHighlights();
 							
-					
-					units[currentUnitIndex].animation.Play("Attack");
-					StartCoroutine(WaitAndCallback(units[currentUnitIndex].animation["Attack"].length));
+					currentUnit.Attack(target);	
 
 					units[currentUnitIndex].MP -= AbilitiesManager.instance.getAbility("baseMagic").MPCost;
 					//attack logic
@@ -265,7 +270,6 @@ public class GameManager : MonoBehaviour {
 
 
 				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
-//				units[currentUnitIndex].checkAP();
 			}
 		} else {
 			Debug.Log ("destination invalid");
@@ -331,6 +335,7 @@ public class GameManager : MonoBehaviour {
 			unit.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
 			unit.unitName = "Alice-"+i;				
 			units.Add(unit);
+			players[0].addUnit(unit);
 		}
 
 		for(int i=0; i< unitsCountAI;i++)
@@ -341,6 +346,7 @@ public class GameManager : MonoBehaviour {
 			ai.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
 			ai.unitName = "Bot-"+i;				
 			units.Add(ai);
+			players[1].addUnit(ai);
 		}
 	}
 
@@ -359,8 +365,6 @@ public class GameManager : MonoBehaviour {
 		{
 			target.makeDead();
 		}
-				
-
 	}
 
 	public void MoveCompleted (){
@@ -372,13 +376,6 @@ public class GameManager : MonoBehaviour {
 		yield return new WaitForSeconds(waitTime);
 		units[currentUnitIndex].checkAP();
 
-	}
-
-	IEnumerator WaitAndCallback(float waitTime){
-
-		yield return new WaitForSeconds(waitTime);
-//		units[currentUnitIndex].checkAP();
-		
 	}
 
 	public Vector2 getRandoMapTileXY(bool passible = false)
