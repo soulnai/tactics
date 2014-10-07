@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GUImanager : MonoBehaviour {
 
@@ -9,6 +10,8 @@ public class GUImanager : MonoBehaviour {
 	public GameObject controlsPanel;
 	public UserPlayer unit;
 	public bool mouseOverGUI = false;
+	public List<Button> skillsButtonsList;
+
 	// Use this for initialization
 	void Awake()
 	{
@@ -20,7 +23,7 @@ public class GUImanager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		unit = gameManager.players[gameManager.currentPlayerIndex] as UserPlayer;
+		unit = gameManager.units[gameManager.currentUnitIndex] as UserPlayer;
 	}
 
 	public void setMouseOverGUI(bool over)
@@ -30,7 +33,7 @@ public class GUImanager : MonoBehaviour {
 
 	public void OnMoveClick()
 	{
-		unit.Move();
+		unit.tryMove();
 	}
 
 	public void OnAttackClick()
@@ -71,5 +74,16 @@ public class GUImanager : MonoBehaviour {
 	public void SlowMo()
 	{
 		Time.timeScale = 0.5f;
+	}
+
+	public void updateSkills()
+	{
+		GameManager gm = GameManager.instance;
+		int skillsCount = gm.units[gm.currentUnitIndex].GetComponent<UnitSkillsManager>().skillsList.Count;
+		for(int i = 0; i<skillsCount; i++)
+		{
+			skillsButtonsList[i].gameObject.SetActive(true);
+//			skillsButtonsList[i].onClick();
+		}
 	}
 }

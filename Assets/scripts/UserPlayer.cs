@@ -3,7 +3,7 @@ using System.Collections;
 using DG.Tweening;
 using EnumSpace;
 
-public class UserPlayer : Player {
+public class UserPlayer : Unit {
 
 	public UnitSkillsManager unitSkills;
 
@@ -15,44 +15,49 @@ public class UserPlayer : Player {
 	
 	// Update is called once per frame
 	public override void Update () {
-		if (GameManager.instance.players[GameManager.instance.currentPlayerIndex] == this) {
-			transform.renderer.material.color = Color.green;
-		} else {
-			transform.renderer.material.color = Color.white;
+
+		if(UnitAction == unitActions.moving)
+		{
+			MoveUnit();
 		}
 
 		base.Update();
 	}
 	
-	public override void TurnUpdate ()
+	public override void EndTurn ()
+	{
+		base.EndTurn ();
+	}
+
+	public void MoveUnit()
 	{
 		if (positionQueue.Count > 0) {
 			direction = (positionQueue[0] - transform.position).normalized;
 			direction.y = 0;
-//			Debug.DrawRay(positionQueue[0],direction*1000f,Color.red);
-
+			
 			transform.rotation = Quaternion.Lerp(transform.rotation,(Quaternion.LookRotation((direction).normalized)),0.1f);
 			transform.position += (positionQueue[0] - transform.position).normalized * moveSpeed * Time.deltaTime;
 			if (!animation.IsPlaying("Run")) {animation.CrossFade("Run", 0.2F);}
 			if (Vector3.Distance(positionQueue[0], transform.position) <= 0.1f) {
-				//transform.position = positionQueue[0];
 				positionQueue.RemoveAt(0);
 				if (positionQueue.Count == 0) {
 					animation.Stop();
 					animation.CrossFade("Idle", 0.2F);
 					actionPoints--;
+					UnitAction = unitActions.idle;
+					checkAP();
 				}
-			}		
+			}	
 		}
-		
-		base.TurnUpdate ();
 	}
 
-	public void Move ()
+	public void tryMove ()
 	{
 		GameManager.instance.removeTileHighlights ();
-		currentUnitAction = unitActions.moving;
-		GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
+		if(actionPoints > 0){
+			UnitAction = unitActions.readyToMove;
+			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
+		}
 	}
 
 	public void MagicAttack ()
@@ -64,7 +69,7 @@ public class UserPlayer : Player {
 			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Fireball;
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
 			if (MP >= AbilitiesManager.instance.getAbility("baseMagic").MPCost) {
-			currentUnitAction = unitActions.magicAttack;
+			UnitAction = unitActions.magicAttack;
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 			}
 		}
@@ -74,7 +79,7 @@ public class UserPlayer : Player {
 	{
 		GameManager.instance.removeTileHighlights ();
 		if (unitSkills.skillsList.Contains ("baseMelee")) {
-			currentUnitAction = unitActions.meleeAttack;
+			UnitAction = unitActions.meleeAttack;
 			attackDistance = AbilitiesManager.instance.getAbility("baseMelee").range;
 			damageBase = AbilitiesManager.instance.getAbility("baseMelee").baseDamage;
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
@@ -91,19 +96,19 @@ public class UserPlayer : Player {
 			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
 
-			currentUnitAction = unitActions.rangedAttack;
+			UnitAction = unitActions.rangedAttack;
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 		}
 
 	}
 
-	public void EndTurn ()
-	{
-		GameManager.instance.removeTileHighlights ();
-		actionPoints = 2;
-		currentUnitAction = unitActions.idle;
-		GameManager.instance.nextTurn ();
-	}
+//	public void EndTurn ()
+//	{
+//		GameManager.instance.removeTileHighlights ();
+//		actionPoints = 2;
+//		currentUnitAction = unitActions.idle;
+//		GameManager.instance.nextTurn ();
+//	}
 
 	public void StunAttack ()
 	{
@@ -113,7 +118,7 @@ public class UserPlayer : Player {
 			damageBase = AbilitiesManager.instance.getAbility("baseStun").baseDamage;
 			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Poison;
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.PoisonExplode;
-			currentUnitAction = unitActions.rangedAttack;
+			UnitAction = unitActions.rangedAttack;
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 	}
 	}

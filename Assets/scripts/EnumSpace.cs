@@ -12,6 +12,7 @@ namespace EnumSpace {
 
 	public enum unitActions{
 		idle,
+		readyToMove,
 		moving,
 		meleeAttack,
 		rangedAttack,
@@ -45,4 +46,17 @@ namespace EnumSpace {
 		circle,
 		cross
 	}
+
+	public enum playerTurnStates{
+		start,
+		end,
+		nextPlayerTurn
+	}
+
+	public enum unitTurnStates{
+		start,
+		end,
+		nextUnitTurn
+	}
+
 }

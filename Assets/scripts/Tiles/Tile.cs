@@ -67,21 +67,14 @@ public class Tile : MonoBehaviour {
 	
 	void OnMouseDown() {
 		if ((Application.loadedLevelName == "gameScene")&&(!GUImanager.instance.mouseOverGUI)) {
-			if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.moving) {
+			if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.readyToMove) {
 				GameManager.instance.moveCurrentPlayer(this);
-			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.meleeAttack) {
+			} else if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.meleeAttack) {
 				GameManager.instance.attackWithCurrentPlayer(this);
-			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.rangedAttack) {
+			} else if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.rangedAttack) {
 				GameManager.instance.distanceAttackWithCurrentPlayer(this);
-			} else if (GameManager.instance.players[GameManager.instance.currentPlayerIndex].currentUnitAction == unitActions.magicAttack) {
+			} else if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.magicAttack) {
 				GameManager.instance.distanceAttackWithCurrentPlayer(this);
-			} else {
-				/*impassible = impassible ? false : true;
-				if (impassible) {
-					visual.transform.renderer.materials[0].color = new Color(.5f, .5f, 0.0f);
-				} else {
-					visual.transform.renderer.materials[0].color = Color.white;
-				}*/
 			}
 		} else if (Application.loadedLevelName == "MapCreatorScene") {
 			setType(MapCreatorManager.instance.palletSelection);
