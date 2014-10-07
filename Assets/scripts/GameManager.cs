@@ -201,7 +201,7 @@ public class GameManager : MonoBehaviour {
 
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
 
-				units[currentUnitIndex].actionPoints--;
+				units[currentUnitIndex].actionPoints = 0;
 				units[currentUnitIndex].checkAP();
 			}
 		} else {
@@ -271,7 +271,7 @@ public class GameManager : MonoBehaviour {
 
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
 
-				units[currentUnitIndex].actionPoints--;
+				units[currentUnitIndex].actionPoints = 0;
 				units[currentUnitIndex].checkAP();
 			}
 		} else {
