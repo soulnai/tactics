@@ -27,8 +27,8 @@ public class UserUnit : Unit {
 		if (unitSkills.skillsList.Contains ("baseMagic")) {
 			attackDistance = AbilitiesManager.instance.getAbility("baseMagic").range;
 			damageBase = AbilitiesManager.instance.getAbility("baseMagic").baseDamage;
-			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Fireball;
-			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FireballExplode;
+			GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Freeze;
+			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FreezeExplode;
 			if (MP >= AbilitiesManager.instance.getAbility("baseMagic").MPCost) {
 			UnitAction = unitActions.magicAttack;
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
