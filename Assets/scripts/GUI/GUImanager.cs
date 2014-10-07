@@ -11,6 +11,9 @@ public class GUImanager : MonoBehaviour {
 	public bool mouseOverGUI = false;
 
 	public Button[] UIButtonsArray;
+	public StyledComboBox comboButton;
+	delegate void StyledItemitem(int num);
+
 	// Use this for initialization
 	void Awake()
 	{
@@ -18,6 +21,8 @@ public class GUImanager : MonoBehaviour {
 	}
 	void Start () {
 		gameManager = GameManager.instance;
+
+		//comboButton.ClearItems();
 	}
 	
 	// Update is called once per frame
@@ -41,7 +46,11 @@ public class GUImanager : MonoBehaviour {
 		} else {
 			UIButtonsArray [2].enabled = true;	
 		}
+
+		//comboButton.AddItems("Test1", "Test2", "Test3", "Unity", "Needs", "A", "Better", "Encapsulation", "System", "Than", "Prefabs");
+		//
 	}
+
 
 	public void setMouseOverGUI(bool over)
 	{
@@ -81,6 +90,7 @@ public class GUImanager : MonoBehaviour {
 	public void ShowHideGUI()
 	{
 		controlsPanel.SetActive(!controlsPanel.activeSelf);
+
 	}
 
 	public void ReloadScene()

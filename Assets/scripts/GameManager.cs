@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour {
 		unitSelection.transform.parent = players [0].transform;
 		Camera.main.GetComponent<CameraOrbit>().pivot = players[currentPlayerIndex].transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+		GUImanager.instance.comboButton.AddItems(players[currentPlayerIndex].GetComponent<UnitSkillsManager>().skillsList[0], players[currentPlayerIndex].GetComponent<UnitSkillsManager>().skillsList[1]);
 	}
 	
 	// Update is called once per frame
@@ -82,6 +83,8 @@ public class GameManager : MonoBehaviour {
 			if (players[currentPlayerIndex].currentUnitState!=unitStates.dead) {
 				players[currentPlayerIndex].currentUnitState = unitStates.normal;
 				players[currentPlayerIndex].currentUnitAction = unitActions.moving; 
+				//GUImanager.instance.comboButton.ClearItems();
+				GUImanager.instance.comboButton.AddItems(players[currentPlayerIndex].GetComponent<UnitSkillsManager>().skillsList[0], players[currentPlayerIndex].GetComponent<UnitSkillsManager>().skillsList[1]);
 			}
 
 			GameManager.instance.highlightTilesAt(players[currentPlayerIndex].gridPosition, Color.blue, players[currentPlayerIndex].movementPerActionPoint, false);
@@ -99,6 +102,8 @@ public class GameManager : MonoBehaviour {
 			if (players[currentPlayerIndex].currentUnitState!=unitStates.dead) {
 			players[currentPlayerIndex].currentUnitState = unitStates.normal;
 			players[currentPlayerIndex].currentUnitAction = unitActions.moving;
+				//GUImanager.instance.comboButton.ClearItems();
+				GUImanager.instance.comboButton.AddItems(players[currentPlayerIndex].GetComponent<UnitSkillsManager>().skillsList[0], players[currentPlayerIndex].GetComponent<UnitSkillsManager>().skillsList[1]);
 			}
 			GameManager.instance.highlightTilesAt(players[currentPlayerIndex].gridPosition, Color.blue, players[currentPlayerIndex].movementPerActionPoint, false);
 		}
