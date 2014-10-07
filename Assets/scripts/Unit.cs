@@ -40,7 +40,7 @@ public class Unit : MonoBehaviour {
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
-
+	private Vector3 direction = Vector3.zero;
 
 	void Awake () {
 		moveDestination = transform.position;
@@ -53,8 +53,34 @@ public class Unit : MonoBehaviour {
 	
 	// Update is called once per frame
 	public virtual void Update () {		
-		if (HP <= 0 && UnitState!=unitStates.dead && GameManager.instance.magiceffect == false &&(GameManager.instance.units[GameManager.instance.currentUnitIndex] == this)) {
-			GameManager.instance.nextTurn();
+		if (UnitState == unitStates.dead&&(GameManager.instance.units[GameManager.instance.currentUnitIndex] == this)) {
+			EndTurn();
+		}
+		if(UnitAction == unitActions.moving)
+		{
+			MoveUnit();
+		}
+	}
+
+	public void MoveUnit()
+	{
+		if (positionQueue.Count > 0) {
+			direction = (positionQueue[0] - transform.position).normalized;
+			direction.y = 0;
+			
+			transform.rotation = Quaternion.Lerp(transform.rotation,(Quaternion.LookRotation((direction).normalized)),0.1f);
+			transform.position += (positionQueue[0] - transform.position).normalized * moveSpeed * Time.deltaTime;
+			if (!animation.IsPlaying("Run")) {animation.CrossFade("Run", 0.2F);}
+			if (Vector3.Distance(positionQueue[0], transform.position) <= 0.1f) {
+				positionQueue.RemoveAt(0);
+				if (positionQueue.Count == 0) {
+					animation.Stop();
+					animation.CrossFade("Idle", 0.2F);
+					actionPoints--;
+					UnitAction = unitActions.idle;
+					checkAP();
+				}
+			}	
 		}
 	}
 
@@ -73,14 +99,10 @@ public class Unit : MonoBehaviour {
 		UnitAction = unitActions.idle;
 		GameManager.instance.nextTurn ();
 	}
-	
-	public virtual void TurnOnGUI () {
-		
-	}
 
 	public void OnGUI() {
 		//display HP
-		Vector3 location = Camera.main.WorldToScreenPoint(transform.position) + Vector3.up * 35;
+		Vector3 location = Camera.main.WorldToScreenPoint(transform.position) + Vector3.up * 55;
 		GUI.Label(new Rect(location.x, Screen.height - location.y, 30, 20), HP.ToString());
 	}
 

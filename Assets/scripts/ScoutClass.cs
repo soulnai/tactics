@@ -1,8 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class ScoutClass : UserPlayer {
-	
+public class ScoutClass : UserUnit {
 
 	// Use this for initialization
 	void Start () {

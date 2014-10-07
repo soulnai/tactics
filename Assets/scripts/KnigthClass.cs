@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class KnigthClass : UserPlayer {
+public class KnigthClass : UserUnit {
 
 	// Use this for initialization
 	void Start () {

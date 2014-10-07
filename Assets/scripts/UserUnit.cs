@@ -3,52 +3,13 @@ using System.Collections;
 using DG.Tweening;
 using EnumSpace;
 
-public class UserPlayer : Unit {
+public class UserUnit : Unit {
 
 	public UnitSkillsManager unitSkills;
 
-	private Vector3 direction = new Vector3(0,0,0);
 	// Use this for initialization
 	void Start () {
-		gameObject.AddComponent<BaseMelee>();
-	}
-	
-	// Update is called once per frame
-	public override void Update () {
 
-		if(UnitAction == unitActions.moving)
-		{
-			MoveUnit();
-		}
-
-		base.Update();
-	}
-	
-	public override void EndTurn ()
-	{
-		base.EndTurn ();
-	}
-
-	public void MoveUnit()
-	{
-		if (positionQueue.Count > 0) {
-			direction = (positionQueue[0] - transform.position).normalized;
-			direction.y = 0;
-			
-			transform.rotation = Quaternion.Lerp(transform.rotation,(Quaternion.LookRotation((direction).normalized)),0.1f);
-			transform.position += (positionQueue[0] - transform.position).normalized * moveSpeed * Time.deltaTime;
-			if (!animation.IsPlaying("Run")) {animation.CrossFade("Run", 0.2F);}
-			if (Vector3.Distance(positionQueue[0], transform.position) <= 0.1f) {
-				positionQueue.RemoveAt(0);
-				if (positionQueue.Count == 0) {
-					animation.Stop();
-					animation.CrossFade("Idle", 0.2F);
-					actionPoints--;
-					UnitAction = unitActions.idle;
-					checkAP();
-				}
-			}	
-		}
 	}
 
 	public void tryMove ()
@@ -102,14 +63,6 @@ public class UserPlayer : Unit {
 
 	}
 
-//	public void EndTurn ()
-//	{
-//		GameManager.instance.removeTileHighlights ();
-//		actionPoints = 2;
-//		currentUnitAction = unitActions.idle;
-//		GameManager.instance.nextTurn ();
-//	}
-
 	public void StunAttack ()
 	{
 		GameManager.instance.removeTileHighlights ();
@@ -120,6 +73,6 @@ public class UserPlayer : Unit {
 			GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.PoisonExplode;
 			UnitAction = unitActions.rangedAttack;
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
-	}
+		}
 	}
 }

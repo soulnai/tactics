@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour {
 	public int unitsCountAI;
 	//prefabs
 	public GameObject TilePrefab;
-	public GameObject[] UserPlayerPrefab;
+	public GameObject[] UserUnitPrefab;
 	public GameObject AIPlayerPrefab;
 	//public string MagicPrefab;
 	//public string MagicExplosionPrefab;
@@ -35,6 +35,14 @@ public class GameManager : MonoBehaviour {
 	public List <Unit> units = new List<Unit>();
 	public int currentUnitIndex = 0;
 	public int currentPlayerIndex = 0;
+	public Unit currentUnit{
+		set{
+
+		}
+		get{
+			return units[currentUnitIndex];
+		}
+	}
 
 	public GameObject pointer;
 
@@ -51,7 +59,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {		
 		generateMap();
-		generatePlayers();
+		generateUnits();
 		unitSelection = (GameObject)Instantiate(selectionRing, units[0].transform.position, Quaternion.Euler(0,0,0));
 		unitSelection.transform.parent = units [0].transform;
 		Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
@@ -315,20 +323,20 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	void generatePlayers() {
-		UserPlayer player;
+	void generateUnits() {
+		UserUnit unit;
 		AIPlayer ai;
 		for(int i=0; i< unitsCountPlayer;i++)
 		{
 			Vector2 position = getRandoMapTileXY(true);
-			player = ((GameObject)Instantiate(UserPlayerPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<UserPlayer>();
-			player.gridPosition = position;
-			player.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
-			player.unitName = "Alice-"+i;				
-			units.Add(player);
+			unit = ((GameObject)Instantiate(UserUnitPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<UserUnit>();
+			unit.gridPosition = position;
+			unit.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
+			unit.unitName = "Alice-"+i;				
+			units.Add(unit);
 		}
 
-		for(int i=0; i< unitsCountPlayer;i++)
+		for(int i=0; i< unitsCountAI;i++)
 		{
 			Vector2 position = getRandoMapTileXY(true);
 			ai = ((GameObject)Instantiate(AIPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<AIPlayer>();

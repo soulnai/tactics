@@ -9,7 +9,7 @@ public class GUImanager : MonoBehaviour {
 	public GameManager gameManager;
 	public GameObject controlsPanel;
 	public GameObject statsPanel;
-	public UserPlayer unit;
+	public UserUnit unit;
 	public bool mouseOverGUI = false;
 	public List<Button> skillsButtonsList;
 
@@ -25,7 +25,7 @@ public class GUImanager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//убрать потом из апдейта
-		unit = gameManager.units[gameManager.currentUnitIndex] as UserPlayer;
+		unit = gameManager.units[gameManager.currentUnitIndex] as UserUnit;
 	}
 
 	public void setMouseOverGUI(bool over)

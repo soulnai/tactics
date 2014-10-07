@@ -5,8 +5,7 @@ using System.Linq;
 using EnumSpace;
 
 public class AIPlayer : Unit {
-
-	private Vector3 direction = new Vector3(0,0,0);
+	
 	// Use this for initialization
 	void Start () {
 	
@@ -14,33 +13,14 @@ public class AIPlayer : Unit {
 	
 	// Update is called once per frame
 	public override void Update () {
-		if (GameManager.instance.units[GameManager.instance.currentUnitIndex] == this) {
-			transform.renderer.material.color = Color.green;
-		} else {
-			transform.renderer.material.color = Color.white;
-		}
+		if(GameManager.instance.currentUnit == this)
+			AIturn();
 		base.Update();
 	}
 	
-	public void TurnUpdate ()
+	public void AIturn ()
 	{
-		if (positionQueue.Count > 0) {
-			direction = (positionQueue[0] - transform.position).normalized;
-			direction.y = 0;
-			transform.rotation = Quaternion.Lerp(transform.rotation,(Quaternion.LookRotation((direction).normalized)),0.1f);
-			transform.position += (positionQueue[0] - transform.position).normalized * moveSpeed * Time.deltaTime;
-			if (!animation.IsPlaying("Run")) {animation.CrossFade("Run", 0.2F);}
-			if (Vector3.Distance(positionQueue[0], transform.position) <= 0.1f) {
-				transform.position = positionQueue[0];
-				positionQueue.RemoveAt(0);
-				if (positionQueue.Count == 0) {
-					animation.Stop();
-					animation.CrossFade("Idle", 0.2F);
-					actionPoints--;
-				}
-			}
-			
-		} else {
+		if (UnitAction != unitActions.moving){
 			//priority queue
 			List<Tile> attacktilesInRange = TileHighlightAtack.FindHighlight(GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y], attackRange);
 			List<Tile> movementToAttackTilesInRange = TileHighlight.FindHighlight(GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y], movementPerActionPoint + attackRange);
@@ -87,9 +67,6 @@ public class AIPlayer : Unit {
 				GameManager.instance.moveCurrentPlayer(path[(int)Mathf.Min(Mathf.Max (path.Count - 1 - 1, 0), movementPerActionPoint - 1)]);
 			}
 		}
-	}
-	
-	public override void TurnOnGUI () {
-		base.TurnOnGUI ();
+		checkAP();
 	}
 }
