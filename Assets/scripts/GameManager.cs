@@ -222,8 +222,12 @@ public class GameManager : MonoBehaviour {
 			}
 			
 			if (target != null && (target.UnitState != unitStates.dead)) {
+				Vector3 targetPos = target.transform.position;
+				targetPos.y = 0;
+				Vector3 attackerPos = currentUnit.transform.position;
+				attackerPos.y = 0;
 
-				var newRotation = Quaternion.LookRotation((target.transform.position - units[currentUnitIndex].transform.position).normalized);
+				Quaternion newRotation = Quaternion.LookRotation(targetPos- attackerPos);
 
 				magic = ((GameObject)Instantiate(MagicPrefab, units[currentUnitIndex].transform.position+0.5f*Vector3.up, Quaternion.identity));
 

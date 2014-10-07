@@ -40,7 +40,7 @@ public class Unit : MonoBehaviour {
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
-	private Vector3 direction = Vector3.zero;
+	private Vector3 lookDirection = Vector3.zero;
 
 	void Awake () {
 		moveDestination = transform.position;
@@ -65,10 +65,10 @@ public class Unit : MonoBehaviour {
 	public void MoveUnit()
 	{
 		if (positionQueue.Count > 0) {
-			direction = (positionQueue[0] - transform.position).normalized;
-			direction.y = 0;
+			lookDirection = (positionQueue[0] - transform.position).normalized;
+			lookDirection.y = 0;
 			
-			transform.rotation = Quaternion.Lerp(transform.rotation,(Quaternion.LookRotation((direction).normalized)),0.1f);
+			transform.rotation = Quaternion.Lerp(transform.rotation,(Quaternion.LookRotation((lookDirection).normalized)),0.1f);
 			transform.position += (positionQueue[0] - transform.position).normalized * moveSpeed * Time.deltaTime;
 			if (!animation.IsPlaying("Run")) {animation.CrossFade("Run", 0.2F);}
 			if (Vector3.Distance(positionQueue[0], transform.position) <= 0.1f) {
