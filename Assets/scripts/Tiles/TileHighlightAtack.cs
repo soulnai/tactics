@@ -36,7 +36,7 @@ public class TileHighlightAtack {
 			closed.Add(current.lastTile);
 			
 			foreach (Tile t in current.lastTile.neighbors) {	
-				if (t.impassible || occupied.Contains(t.gridPosition)) continue;
+				if (occupied.Contains(t.gridPosition)) continue;
 				TilePathAtack newTilePath = new TilePathAtack(current);
 				newTilePath.addTile(t);
 				open.Add(newTilePath);
