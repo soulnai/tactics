@@ -192,12 +192,9 @@ public class GameManager : MonoBehaviour {
 
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
 
-<<<<<<< HEAD
 				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
-=======
-				units[currentUnitIndex].actionPoints = 0;
->>>>>>> origin/master
-				units[currentUnitIndex].checkAP();
+
+//				units[currentUnitIndex].checkAP();
 			}
 		} else {
 			Debug.Log ("target invalid");
@@ -266,13 +263,9 @@ public class GameManager : MonoBehaviour {
 
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
 
-<<<<<<< HEAD
+
 				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
 //				units[currentUnitIndex].checkAP();
-=======
-				units[currentUnitIndex].actionPoints = 0;
-				units[currentUnitIndex].checkAP();
->>>>>>> origin/master
 			}
 		} else {
 			Debug.Log ("destination invalid");
