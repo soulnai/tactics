@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour {
 	public int unitsCountAI;
 	//prefabs
 	public GameObject TilePrefab;
-	public GameObject UserPlayerPrefab;
+	public GameObject[] UserPlayerPrefab;
 	public GameObject AIPlayerPrefab;
 	//public string MagicPrefab;
 	//public string MagicExplosionPrefab;
@@ -161,10 +161,8 @@ public class GameManager : MonoBehaviour {
 				if (units[currentUnitIndex].gridPosition.x >= target.gridPosition.x - units[currentUnitIndex].attackRange && units[currentUnitIndex].gridPosition.x <= target.gridPosition.x + units[currentUnitIndex].attackRange &&
 				    units[currentUnitIndex].gridPosition.y >= target.gridPosition.y - units[currentUnitIndex].attackRange && units[currentUnitIndex].gridPosition.y <= target.gridPosition.y + units[currentUnitIndex].attackRange) {
 
-					
 					removeTileHighlights();
 								
-
 					units[currentUnitIndex].animation.Play("Attack");
 					StartCoroutine(WaitAndCallback(units[currentUnitIndex].animation["Attack"].length));
 					bool hit = Random.Range(0.0f, 1.0f) <= units[currentUnitIndex].attackChance;
@@ -183,9 +181,9 @@ public class GameManager : MonoBehaviour {
 						} else {
 							target.animation.CrossFade("Idle", 1f);
 						}
-						Debug.Log(units[currentUnitIndex].playerName + " successfuly hit " + target.playerName + " for " + amountOfDamage + " damage!");
+						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
-						Debug.Log(units[currentUnitIndex].playerName + " missed " + target.playerName + "!");
+						Debug.Log(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
 						target.animation.Play("Damage");
 						target.animation.CrossFade("Idle", 1f);
 					}
@@ -249,10 +247,10 @@ public class GameManager : MonoBehaviour {
 
 						target.HP -= amountOfDamage;
 
-						Debug.Log(units[currentUnitIndex].playerName + " successfuly hit " + target.playerName + " for " + amountOfDamage + " damage!");
+						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
 						magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
-						Debug.Log(units[currentUnitIndex].playerName + " missed " + target.playerName + "!");
+						Debug.Log(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
 
 					}
 				} else {
@@ -323,10 +321,10 @@ public class GameManager : MonoBehaviour {
 		for(int i=0; i< unitsCountPlayer;i++)
 		{
 			Vector2 position = getRandoMapTileXY(true);
-			player = ((GameObject)Instantiate(UserPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<UserPlayer>();
+			player = ((GameObject)Instantiate(UserPlayerPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<UserPlayer>();
 			player.gridPosition = position;
 			player.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
-			player.playerName = "Alice-"+i;				
+			player.unitName = "Alice-"+i;				
 			units.Add(player);
 		}
 
@@ -336,7 +334,7 @@ public class GameManager : MonoBehaviour {
 			ai = ((GameObject)Instantiate(AIPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<AIPlayer>();
 			ai.gridPosition = position;
 			ai.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
-			ai.playerName = "Bot-"+i;				
+			ai.unitName = "Bot-"+i;				
 			units.Add(ai);
 		}
 	}

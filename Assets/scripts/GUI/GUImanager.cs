@@ -8,6 +8,7 @@ public class GUImanager : MonoBehaviour {
 	public static GUImanager instance;
 	public GameManager gameManager;
 	public GameObject controlsPanel;
+	public GameObject statsPanel;
 	public UserPlayer unit;
 	public bool mouseOverGUI = false;
 	public List<Button> skillsButtonsList;
@@ -23,6 +24,7 @@ public class GUImanager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		//убрать потом из апдейта
 		unit = gameManager.units[gameManager.currentUnitIndex] as UserPlayer;
 	}
 
@@ -85,5 +87,10 @@ public class GUImanager : MonoBehaviour {
 			skillsButtonsList[i].gameObject.SetActive(true);
 //			skillsButtonsList[i].onClick();
 		}
+	}
+
+	public void updateStatsPanel()
+	{
+
 	}
 }

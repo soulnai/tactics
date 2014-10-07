@@ -18,7 +18,7 @@ public class Unit : MonoBehaviour {
 	public int attackRange = 1;
 	public int attackDistance = 5;
 	
-	public string playerName = "George";
+	public string unitName = "George";
 	public int HP = 25;
 	public int MP = 25;
 	public int Strength = 2;
