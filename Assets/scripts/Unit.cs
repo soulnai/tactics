@@ -113,6 +113,15 @@ public class Unit : MonoBehaviour {
 		Debug.Log(actionPoints);
 	}
 
+	public void takeDamage(int damage)
+	{
+		HP -= damage;
+		if (HP<=0)
+			makeDead();
+		else
+			animation.CrossFade("Damage");
+	}
+
 	IEnumerator WaitAndCallback(float waitTime){	
 		yield return new WaitForSeconds(waitTime);
 	}

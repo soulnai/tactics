@@ -5,6 +5,7 @@ using EnumSpace;
 [System.Serializable]
 public class BaseAttack {
 	public string attackID;
+	public int APcost;
 	public attackTypes attackType;
 	public int range;
 	public bool areaDamage;

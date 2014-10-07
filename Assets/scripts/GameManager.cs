@@ -179,21 +179,12 @@ public class GameManager : MonoBehaviour {
 					if (hit) {
 						//damage logic
 						int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
-						
-						target.HP -= amountOfDamage;
 
-						target.animation.Play("Damage");
-						if (target.HP <= 0) {
-							target.makeDead();
-//							target.animation.CrossFade("Death", 1f);
-						} else {
-							target.animation.CrossFade("Idle", 1f);
-						}
+						target.takeDamage(amountOfDamage);
+
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
 						Debug.Log(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
-						target.animation.Play("Damage");
-						target.animation.CrossFade("Idle", 1f);
 					}
 				} else {
 					Debug.Log ("Target is not adjacent!");
@@ -201,7 +192,7 @@ public class GameManager : MonoBehaviour {
 
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
 
-				units[currentUnitIndex].actionPoints--;
+				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
 				units[currentUnitIndex].checkAP();
 			}
 		} else {
@@ -271,8 +262,8 @@ public class GameManager : MonoBehaviour {
 
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
 
-				units[currentUnitIndex].actionPoints--;
-				units[currentUnitIndex].checkAP();
+				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
+//				units[currentUnitIndex].checkAP();
 			}
 		} else {
 			Debug.Log ("destination invalid");
@@ -382,9 +373,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	IEnumerator WaitAndCallback(float waitTime){
-		
-		yield return new WaitForSeconds(waitTime);
 
+		yield return new WaitForSeconds(waitTime);
+//		units[currentUnitIndex].checkAP();
 		
 	}
 
