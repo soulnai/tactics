@@ -12,6 +12,7 @@ public class GUImanager : MonoBehaviour {
 	public UserUnit unit;
 	public bool mouseOverGUI = false;
 	public List<Button> skillsButtonsList;
+	public Text turnsIndicator;
 
 	// Use this for initialization
 	void Awake()
@@ -26,6 +27,7 @@ public class GUImanager : MonoBehaviour {
 	void Update () {
 		//убрать потом из апдейта
 		unit = gameManager.units[gameManager.currentUnitIndex] as UserUnit;
+		turnsIndicator.text = "Turn - "+gameManager.turnsCounter;
 	}
 
 	public void setMouseOverGUI(bool over)
@@ -35,12 +37,13 @@ public class GUImanager : MonoBehaviour {
 
 	public void OnMoveClick()
 	{
-		unit.tryMove();
+		Unit u = gameManager.units[gameManager.currentUnitIndex] as Unit;
+		u.tryMove();
 	}
 
 	public void OnAttackClick()
 	{
-		unit.MeleeAttack();
+		unit.MeleeAttack() ;
 	}
 
 	public void OnStunAttackClick()
@@ -60,7 +63,8 @@ public class GUImanager : MonoBehaviour {
 
 	public void OnEndTurnClick()
 	{
-		unit.EndTurn();
+		Unit u = gameManager.units[gameManager.currentUnitIndex] as Unit;
+		u.EndTurn();
 	}
 
 	public void ShowHideGUI()

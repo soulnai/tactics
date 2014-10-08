@@ -45,8 +45,6 @@ public class AIPlayer : Unit {
 
 				GameManager.instance.removeTileHighlights();
 
-				UnitAction = unitActions.moving;
-
 				GameManager.instance.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
 
 				List<Tile> path = TilePathFinder.FindPath (GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], GameManager.instance.units.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());

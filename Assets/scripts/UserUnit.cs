@@ -12,14 +12,7 @@ public class UserUnit : Unit {
 
 	}
 
-	public void tryMove ()
-	{
-		GameManager.instance.removeTileHighlights ();
-		if(actionPoints > 0){
-			UnitAction = unitActions.readyToMove;
-			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
-		}
-	}
+
 
 	public void MagicAttack ()
 	{

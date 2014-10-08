@@ -5,7 +5,11 @@ using System.Linq;
 using DG.Tweening;
 using EnumSpace;
 
+//Events
+public delegate void VictoryState(GameManager gm,Player p);
+
 public class GameManager : MonoBehaviour {
+	public event VictoryState OnVictoryState;
 	public static GameManager instance;
 	//units count
 	public int unitsCountPlayer;
@@ -53,10 +57,12 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public GameObject pointer;
+	public int turnsCounter = 1;
 
 	private RaycastHit hit;
 	private RaycastHit target;
 	private GameObject unitSelection;
+
 
 	void Awake() {
 		instance = this;
@@ -90,6 +96,7 @@ public class GameManager : MonoBehaviour {
 			currentUnitIndex++;
 		} 
 		else {
+			turnsCounter++;
 			currentUnitIndex = 0;
 		}
 		units[currentUnitIndex].actionPoints = units[currentUnitIndex].maxActionPoints;
@@ -457,6 +464,27 @@ public class GameManager : MonoBehaviour {
 			}
 			else
 				Debug.Log(target.transform.name);
+		}
+	}
+
+	public void checkVictory()
+	{
+		int deadCount = 0;
+		foreach(Player p in players){ 
+			foreach(Unit u in p.units){
+				if(u.UnitState == unitStates.dead)
+					deadCount++;
+			}
+			if(deadCount == p.units.Count){
+				if(OnVictoryState != null)
+				{
+					OnVictoryState(this,p);
+				}
+			}
+			else
+			{
+				deadCount = 0;
+			}
 		}
 	}
 }

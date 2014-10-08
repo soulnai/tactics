@@ -73,6 +73,15 @@ public class Unit : MonoBehaviour {
 		StartCoroutine(WaitAndCallback(animation["Attack"].length));
 	}
 
+	public void tryMove ()
+	{
+		GameManager.instance.removeTileHighlights ();
+		if(actionPoints > 0){
+			UnitAction = unitActions.readyToMove;
+			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
+		}
+	}
+
 	public void MoveUnit()
 	{
 		if (positionQueue.Count > 0) {
@@ -100,6 +109,7 @@ public class Unit : MonoBehaviour {
 		HP = 0;
 		actionPoints = 0;
 		UnitState = unitStates.dead;
+		GameManager.instance.checkVictory();
 		animation.CrossFade("Death");
 		StartCoroutine(WaitAndCallback(animation["Death"].length));
 	}
@@ -130,7 +140,10 @@ public class Unit : MonoBehaviour {
 		if (HP<=0)
 			makeDead();
 		else
+		{
 			animation.CrossFade("Damage");
+			StartCoroutine(WaitAndCallback(animation["Damage"].length));
+		}
 	}
 
 	IEnumerator WaitAndCallback(float waitTime){

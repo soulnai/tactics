@@ -14,6 +14,7 @@ public class EventsListener : MonoBehaviour {
 			AddListener(u);
 //			Debug.Log("Added");
 		}
+		AddListener(GameManager.instance);
 	}
 	
 	// Update is called once per frame
@@ -24,6 +25,16 @@ public class EventsListener : MonoBehaviour {
 	private void AddListener(Unit u)
 	{
 		u.OnUnitAnimationEnd += HandleOnUnitAnimationEnd;
+	}
+
+	private void AddListener(GameManager gm)
+	{
+		gm.OnVictoryState += HandleOnVictoryState;	
+	}
+
+	void HandleOnVictoryState (GameManager gm,Player p)
+	{
+		Debug.Log("Victory - "+p.playerName);
 	}
 
 	private void RemoveListener(Unit u)
