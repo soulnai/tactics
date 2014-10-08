@@ -179,7 +179,7 @@ public class GameManager : MonoBehaviour {
 				}
 			}
 
-			if (target != null) {
+			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
 
 				var newRotation = Quaternion.LookRotation((target.transform.position - units[currentUnitIndex].transform.position).normalized);
 				units[currentUnitIndex].transform.rotation = Quaternion.Slerp(units[currentUnitIndex].transform.rotation, newRotation, 1);
@@ -230,6 +230,7 @@ public class GameManager : MonoBehaviour {
 			}
 			
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
+				Debug.Log(target.unitName);
 				Vector3 targetPos = target.transform.position;
 				targetPos.y = 0;
 				Vector3 attackerPos = currentUnit.transform.position;
