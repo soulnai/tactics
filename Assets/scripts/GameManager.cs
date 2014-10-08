@@ -229,7 +229,7 @@ public class GameManager : MonoBehaviour {
 				}
 			}
 			
-			if (target != null && (target.UnitState != unitStates.dead) && (target.GetComponent<AIPlayer>())) {
+			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
 				Vector3 targetPos = target.transform.position;
 				targetPos.y = 0;
 				Vector3 attackerPos = currentUnit.transform.position;
