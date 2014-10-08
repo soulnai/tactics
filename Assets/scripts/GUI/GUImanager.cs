@@ -97,6 +97,7 @@ public class GUImanager : MonoBehaviour {
 	public void showAbilities()
 	{
 		GameManager gm = GameManager.instance;
+		if(gm.units[gm.currentUnitIndex].GetComponent<UnitSkillsManager>() != null){
 		List<BaseAbility> abilitiesList = gm.units[gm.currentUnitIndex].GetComponent<UnitSkillsManager>().abilities;
 
 		foreach(Button b in abilitiesButtonsList)
@@ -112,6 +113,7 @@ public class GUImanager : MonoBehaviour {
 			abilitiesButtonsList[j].onClick.RemoveAllListeners();
 			abilitiesButtonsList[j].onClick.AddListener(delegate{onAbilityClick(abilitiesList[j]);});
 			Debug.Log(abilitiesList[j].attackID);
+		}
 		}
 	}
 
