@@ -45,16 +45,18 @@ public class Unit : MonoBehaviour {
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
+	public UnitSkillsManager unitAbilities;
 
 	private Vector3 lookDirection = Vector3.zero;
 
 	void Awake () {
 		moveDestination = transform.position;
+		actionPoints = maxActionPoints;
 	}
 	
 	// Use this for initialization
 	void Start () {
-		actionPoints = maxActionPoints;
+
 	}
 	
 	// Update is called once per frame
@@ -65,6 +67,47 @@ public class Unit : MonoBehaviour {
 		if(UnitAction == unitActions.moving)
 		{
 			MoveUnit();
+		}
+	}
+
+	public void onAbility(BaseAbility a)
+	{
+		GameManager.instance.removeTileHighlights ();
+		if((actionPoints > 0)&&(MP >= a.MPCost)){
+//			Debug.Log(unitAbilities.abilities.Contains(a));
+			if (unitAbilities.abilities.Contains(a)) {
+
+				attackDistance = a.range;
+				damageBase = a.baseDamage;
+				//magic
+				if(a.attackType == attackTypes.magic){
+					UnitAction = unitActions.magicAttack;
+					GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Freeze;
+					GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FreezeExplode;
+				}
+				//ranged
+				else if(a.attackType == attackTypes.ranged){
+					UnitAction = unitActions.rangedAttack;
+					GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
+					GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
+				}
+				//melee
+				else if(a.attackType == attackTypes.melee){
+					UnitAction = unitActions.meleeAttack;
+				}
+				//stun
+				else if(a.attackType == attackTypes.ranged){
+					UnitAction = unitActions.rangedAttack;
+					GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Poison;
+					GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.PoisonExplode;
+				}
+
+			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+			}
+			else
+			{
+				Debug.Log("No such ability - " + a.attackID);
+			}
 		}
 	}
 

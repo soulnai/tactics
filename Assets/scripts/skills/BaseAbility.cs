@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using EnumSpace;
 
 [System.Serializable]
-public class BaseAttack {
+public class BaseAbility {
 	public string attackID;
 	public int APcost;
 	public attackTypes attackType;

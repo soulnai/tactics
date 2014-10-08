@@ -6,15 +6,15 @@ using System.Collections.Generic;
 public class AbilitiesManager : MonoBehaviour {
 
 	public static AbilitiesManager instance;
-	public List<BaseAttack> attacks;
+	public List<BaseAbility> abilities;
 
 	public void Awake()
 	{
 		instance = this;
 	}
 
-	public BaseAttack getAbility(string ID)
+	public BaseAbility getAbility(string ID)
 	{
-		return attacks.Find(BaseAttack => BaseAttack.attackID == ID); 
+		return abilities.Find(BaseAttack => BaseAttack.attackID == ID); 
 	}
 }

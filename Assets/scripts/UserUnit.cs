@@ -18,7 +18,7 @@ public class UserUnit : Unit {
 	{
 		GameManager.instance.removeTileHighlights ();
 		if(actionPoints > 0){
-			if (unitSkills.skillsList.Contains ("baseMagic")) {
+			if (unitSkills.abilitiesList.Contains ("baseMagic")) {
 				attackDistance = AbilitiesManager.instance.getAbility("baseMagic").range;
 				damageBase = AbilitiesManager.instance.getAbility("baseMagic").baseDamage;
 				GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Freeze;
@@ -35,7 +35,7 @@ public class UserUnit : Unit {
 	{
 		GameManager.instance.removeTileHighlights ();
 		if(actionPoints > 0){
-			if (unitSkills.skillsList.Contains ("baseMelee")) {
+			if (unitSkills.abilitiesList.Contains ("baseMelee")) {
 				UnitAction = unitActions.meleeAttack;
 				attackDistance = AbilitiesManager.instance.getAbility("baseMelee").range;
 				damageBase = AbilitiesManager.instance.getAbility("baseMelee").baseDamage;
@@ -48,7 +48,7 @@ public class UserUnit : Unit {
 	{
 		GameManager.instance.removeTileHighlights ();
 		if(actionPoints > 0){
-			if (unitSkills.skillsList.Contains ("baseRanged")) {
+			if (unitSkills.abilitiesList.Contains ("baseRanged")) {
 				attackDistance = AbilitiesManager.instance.getAbility("baseRanged").range;
 				damageBase = AbilitiesManager.instance.getAbility("baseRanged").baseDamage;
 				GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
@@ -64,7 +64,7 @@ public class UserUnit : Unit {
 	{
 		GameManager.instance.removeTileHighlights ();
 		if(actionPoints > 0){
-			if (unitSkills.skillsList.Contains ("baseStun")) {
+			if (unitSkills.abilitiesList.Contains ("baseStun")) {
 				attackDistance = AbilitiesManager.instance.getAbility("baseStun").range;
 				damageBase = AbilitiesManager.instance.getAbility("baseStun").baseDamage;
 				GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Poison;

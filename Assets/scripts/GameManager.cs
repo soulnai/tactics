@@ -100,6 +100,7 @@ public class GameManager : MonoBehaviour {
 			turnsCounter++;
 			currentUnitIndex = 0;
 		}
+		GUImanager.instance.showAbilities();
 		units[currentUnitIndex].actionPoints = units[currentUnitIndex].maxActionPoints;
 		removeTileHighlights();
 
@@ -325,12 +326,12 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void generateUnits() {
-		UserUnit unit;
+		Unit unit;
 		AIPlayer ai;
 		for(int i=0; i< unitsCountPlayer;i++)
 		{
 			Vector2 position = getRandoMapTileXY(true);
-			unit = ((GameObject)Instantiate(UserUnitPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<UserUnit>();
+			unit = ((GameObject)Instantiate(UserUnitPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<Unit>();
 			unit.placeUnit(position);
 			unit.unitName = "Alice-"+i;				
 			units.Add(unit);
@@ -346,6 +347,7 @@ public class GameManager : MonoBehaviour {
 			units.Add(ai);
 			players[1].addUnit(ai);
 		}
+
 	}
 
 	public void Explode (Unit target, GameObject magictodestroy) {
