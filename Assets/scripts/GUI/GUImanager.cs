@@ -25,6 +25,7 @@ public class GUImanager : MonoBehaviour {
 		{
 			b.gameObject.SetActive(false);
 		}
+		showAbilities();
 //		abilityTest.onClick.RemoveAllListeners();
 //		abilityTest.onClick.AddListener(delegate{onAbilityClick();});
 	}

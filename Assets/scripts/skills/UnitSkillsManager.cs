@@ -16,7 +16,7 @@ public class UnitSkillsManager : MonoBehaviour {
 		GUImanager.instance.showAbilities();
 	}
 
-	void initAbilities (){
+	public void initAbilities (){
 		for(int i=0;i<abilitiesList.Count;i++)
 		{
 			abilities.Add(AbilitiesManager.instance.getAbility(abilitiesList[i]));
