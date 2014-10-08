@@ -156,6 +156,7 @@ public class GameManager : MonoBehaviour {
 			if ((highlightedTiles.Contains(destTile)) && !destTile.impassible && units[currentUnitIndex].positionQueue.Count == 0) {
 			removeTileHighlights();
 			units[currentUnitIndex].UnitAction = unitActions.moving;
+			units[currentUnitIndex].currentTile.unitInTile = null;
 			foreach(Tile t in TilePathFinder.FindPath(map[(int)units[currentUnitIndex].gridPosition.x][(int)units[currentUnitIndex].gridPosition.y],destTile, units.Where(x => x.gridPosition != destTile.gridPosition && x.gridPosition != units[currentUnitIndex].gridPosition).Select(x => x.gridPosition).ToArray())) {
 				units[currentUnitIndex].positionQueue.Add(map[(int)t.gridPosition.x][(int)t.gridPosition.y].transform.position + 0.5f * Vector3.up);
 				Debug.Log("(" + units[currentUnitIndex].positionQueue[units[currentUnitIndex].positionQueue.Count - 1].x + "," + units[currentUnitIndex].positionQueue[units[currentUnitIndex].positionQueue.Count - 1].y + ")");
@@ -171,13 +172,7 @@ public class GameManager : MonoBehaviour {
 	public void attackWithCurrentPlayer(Tile destTile) {
 		if ((highlightedTiles.Contains(destTile)) && !destTile.impassible) {
 			
-			Unit target = null;
-			foreach (Unit p in units) {
-				if (p.gridPosition == destTile.gridPosition) {
-					target = p;
-
-				}
-			}
+			Unit target = destTile.unitInTile;
 
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
 
@@ -220,17 +215,11 @@ public class GameManager : MonoBehaviour {
 
 	public void distanceAttackWithCurrentPlayer(Tile destTile) {
 		if ((highlightedTiles.Contains(destTile)) && !destTile.impassible) {
-			
-			Unit target = null;
-			foreach (Unit p in units) {
-				if (p.gridPosition == destTile.gridPosition) {
-					target = p;
-					targetPub = p;
-				}
-			}
+
+			Unit target = destTile.unitInTile;
 			
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
-				Debug.Log(target.unitName);
+				targetPub = target;
 				Vector3 targetPos = target.transform.position;
 				targetPos.y = 0;
 				Vector3 attackerPos = currentUnit.transform.position;
@@ -342,8 +331,7 @@ public class GameManager : MonoBehaviour {
 		{
 			Vector2 position = getRandoMapTileXY(true);
 			unit = ((GameObject)Instantiate(UserUnitPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<UserUnit>();
-			unit.gridPosition = position;
-			unit.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
+			unit.placeUnit(position);
 			unit.unitName = "Alice-"+i;				
 			units.Add(unit);
 			players[0].addUnit(unit);
@@ -353,8 +341,7 @@ public class GameManager : MonoBehaviour {
 		{
 			Vector2 position = getRandoMapTileXY(true);
 			ai = ((GameObject)Instantiate(AIPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<AIPlayer>();
-			ai.gridPosition = position;
-			ai.transform.position = map[(int)position.x][(int)position.y].transform.position + new Vector3(0,0.5f,0);
+			ai.placeUnit(position);
 			ai.unitName = "Bot-"+i;				
 			units.Add(ai);
 			players[1].addUnit(ai);
@@ -363,6 +350,8 @@ public class GameManager : MonoBehaviour {
 
 	public void Explode (Unit target, GameObject magictodestroy) {
 
+		Debug.Log(MagicExplosionPrefab.name);
+		Debug.Log(target.name);
 		GameObject magicExposion = ((GameObject)Instantiate(MagicExplosionPrefab, target.transform.position+0.5f*Vector3.up, Quaternion.identity));
 		Debug.Log ("explosion");
 		Destroy (magictodestroy);

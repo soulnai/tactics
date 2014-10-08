@@ -40,6 +40,7 @@ public class Unit : MonoBehaviour {
 
 	public EnumSpace.unitStates UnitState;
 	public EnumSpace.unitActions UnitAction;
+	public Tile currentTile;
 
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
@@ -148,6 +149,13 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
+	public void placeUnit(Vector2 position)
+	{
+		gridPosition = position;
+		currentTile = GameManager.instance.map[(int)position.x][(int)position.y];
+		currentTile.unitInTile = this;
+		transform.position = currentTile.transform.position + new Vector3(0,0.5f,0);
+	}
 	IEnumerator WaitAndCallback(float waitTime){
 		Debug.Log("Started");
 		yield return new WaitForSeconds(waitTime);
