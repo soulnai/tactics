@@ -18,6 +18,8 @@ public class Tile : MonoBehaviour {
 	
 	public List<Tile> neighbors = new List<Tile>();
 
+	public Unit unitInTile;
+
 	// Use this for initialization
 	void Start () {
 		if (Application.loadedLevelName == "gameScene") generateNeighbors();

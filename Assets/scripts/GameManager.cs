@@ -161,6 +161,7 @@ public class GameManager : MonoBehaviour {
 				Debug.Log("(" + units[currentUnitIndex].positionQueue[units[currentUnitIndex].positionQueue.Count - 1].x + "," + units[currentUnitIndex].positionQueue[units[currentUnitIndex].positionQueue.Count - 1].y + ")");
 			}			
 			units[currentUnitIndex].gridPosition = destTile.gridPosition;
+			destTile.unitInTile = units[currentUnitIndex];
 
 		} else {
 			Debug.Log ("destination invalid");
@@ -228,7 +229,7 @@ public class GameManager : MonoBehaviour {
 				}
 			}
 			
-			if (target != null && (target.UnitState != unitStates.dead)) {
+			if (target != null && (target.UnitState != unitStates.dead) && (target.GetComponent<AIPlayer>())) {
 				Vector3 targetPos = target.transform.position;
 				targetPos.y = 0;
 				Vector3 attackerPos = currentUnit.transform.position;
