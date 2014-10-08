@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour {
 		unitSelection.transform.parent = units [0].transform;
 		Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+		//reset AP
 		units[0].actionPoints = units[0].maxActionPoints;
 	}
 	
@@ -102,6 +103,7 @@ public class GameManager : MonoBehaviour {
 			currentUnitIndex = 0;
 		}
 		GUImanager.instance.showAbilities();
+		//reset AP
 		units[currentUnitIndex].actionPoints = units[currentUnitIndex].maxActionPoints;
 		removeTileHighlights();
 
@@ -175,7 +177,7 @@ public class GameManager : MonoBehaviour {
 		if ((highlightedTiles.Contains(destTile)) && !destTile.impassible) {
 			
 			Unit target = destTile.unitInTile;
-
+			if(currentUnit.actionPoints > 0){
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
 				targetPub = target;
 				Vector3 targetPos = target.transform.position;
@@ -212,9 +214,8 @@ public class GameManager : MonoBehaviour {
 				}
 
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
-
-				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
 			}
+		}
 		} else {
 			Debug.Log ("target invalid");
 		}
@@ -225,7 +226,7 @@ public class GameManager : MonoBehaviour {
 		if ((highlightedTiles.Contains(destTile)) && !destTile.impassible) {
 
 			Unit target = destTile.unitInTile;
-			
+			if(currentUnit.actionPoints > 0){
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
 				targetPub = target;
 				Vector3 targetPos = target.transform.position;
@@ -261,7 +262,7 @@ public class GameManager : MonoBehaviour {
 						//damage logic
 						int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
 
-						target.HP -= amountOfDamage;
+						target.takeDamage(amountOfDamage);
 
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
@@ -274,10 +275,7 @@ public class GameManager : MonoBehaviour {
 				}
 
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
-
-
-				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
-				//units[currentUnitIndex].checkAP();
+			}
 			}
 		} else {
 			Debug.Log ("destination invalid");

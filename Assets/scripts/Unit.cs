@@ -74,7 +74,6 @@ public class Unit : MonoBehaviour {
 	{
 		GameManager.instance.removeTileHighlights ();
 		if((actionPoints > 0)&&(MP >= a.MPCost)){
-//			Debug.Log(unitAbilities.abilities.Contains(a));
 			if (unitAbilities.abilities.Contains(a)) {
 
 				attackDistance = a.range;

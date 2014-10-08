@@ -13,6 +13,7 @@ public class GUImanager : MonoBehaviour {
 	public bool mouseOverGUI = false;
 	public List<Button> abilitiesButtonsList;
 	public Text turnsIndicator;
+	public Text playerIndicator;
 	public Button abilityTest;
 	// Use this for initialization
 	void Awake()
@@ -32,8 +33,6 @@ public class GUImanager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//убрать потом из апдейта
-		unit = gameManager.units[gameManager.currentUnitIndex];
 		turnsIndicator.text = "Turn - "+gameManager.turnsCounter;
 	}
 
