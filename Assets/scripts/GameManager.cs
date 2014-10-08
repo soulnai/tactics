@@ -85,7 +85,8 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		drawPointer();
-		AttackOnMouseClick ();
+		if(currentUnit.UnitAction != unitActions.idle)
+			AttackOnMouseClick ();
 	}
 
 	public void Turn(){
@@ -176,8 +177,14 @@ public class GameManager : MonoBehaviour {
 			Unit target = destTile.unitInTile;
 
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
+				targetPub = target;
+				Vector3 targetPos = target.transform.position;
+				targetPos.y = 0;
+				Vector3 attackerPos = currentUnit.transform.position;
+				attackerPos.y = 0;
+				
+				Quaternion newRotation = Quaternion.LookRotation(targetPos - attackerPos);
 
-				var newRotation = Quaternion.LookRotation((target.transform.position - units[currentUnitIndex].transform.position).normalized);
 				units[currentUnitIndex].transform.rotation = Quaternion.Slerp(units[currentUnitIndex].transform.rotation, newRotation, 1);
 
 				if (units[currentUnitIndex].gridPosition.x >= target.gridPosition.x - units[currentUnitIndex].attackRange && units[currentUnitIndex].gridPosition.x <= target.gridPosition.x + units[currentUnitIndex].attackRange &&
@@ -226,7 +233,7 @@ public class GameManager : MonoBehaviour {
 				Vector3 attackerPos = currentUnit.transform.position;
 				attackerPos.y = 0;
 
-				Quaternion newRotation = Quaternion.LookRotation(targetPos- attackerPos);
+				Quaternion newRotation = Quaternion.LookRotation(targetPos - attackerPos);
 
 				magic = ((GameObject)Instantiate(MagicPrefab, units[currentUnitIndex].transform.position+0.5f*Vector3.up, Quaternion.identity));
 
