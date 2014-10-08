@@ -277,6 +277,7 @@ public class GameManager : MonoBehaviour {
 
 
 				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
+				units[currentUnitIndex].checkAP();
 			}
 		} else {
 			Debug.Log ("destination invalid");
