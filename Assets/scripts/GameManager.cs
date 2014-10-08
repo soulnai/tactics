@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour {
 		unitSelection.transform.parent = units [0].transform;
 		Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+		units[0].actionPoints = units[0].maxActionPoints;
 	}
 	
 	// Update is called once per frame
@@ -277,7 +278,7 @@ public class GameManager : MonoBehaviour {
 
 
 				units[currentUnitIndex].actionPoints -= AbilitiesManager.instance.getAbility("baseMagic").APcost;
-				units[currentUnitIndex].checkAP();
+				//units[currentUnitIndex].checkAP();
 			}
 		} else {
 			Debug.Log ("destination invalid");
