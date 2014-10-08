@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour {
 	public void removeTileHighlights() {
 		for (int i = 0; i < mapSize; i++) {
 			for (int j = 0; j < mapSize; j++) {
-				if (!map[i][j].impassible) map[i][j].visual.transform.renderer.materials[1].color = Color.white;
+				map[i][j].visual.transform.renderer.materials[1].color = Color.white;
 			}
 		}
 	}

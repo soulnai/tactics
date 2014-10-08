@@ -71,6 +71,8 @@ public class Unit : MonoBehaviour {
 	{
 		animation.Play("Attack");
 		StartCoroutine(WaitAndCallback(animation["Attack"].length));
+		actionPoints=0;
+		checkAP ();
 	}
 
 	public void tryMove ()
