@@ -227,6 +227,9 @@ public class GameManager : MonoBehaviour {
 
 			Unit target = destTile.unitInTile;
 			if(currentUnit.actionPoints > 0){
+
+			if (units[currentUnitIndex].UnitAction != unitActions.healAttack) {
+
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
 				targetPub = target;
 				Vector3 targetPos = target.transform.position;
@@ -276,6 +279,59 @@ public class GameManager : MonoBehaviour {
 
 				units[currentUnitIndex].animation.CrossFade("Idle", 1f);
 			}
+				} else {
+					//Heal
+					Debug.Log("Heal");
+					if (target != null && (target.UnitState != unitStates.dead) && (players[currentPlayerIndex].units.Contains(target))) {
+						targetPub = target;
+						Vector3 targetPos = target.transform.position;
+						targetPos.y = 0;
+						Vector3 attackerPos = currentUnit.transform.position;
+						attackerPos.y = 0;
+						
+						Quaternion newRotation = Quaternion.LookRotation(targetPos - attackerPos);
+						
+						magic = ((GameObject)Instantiate(MagicPrefab, units[currentUnitIndex].transform.position+0.5f*Vector3.up, Quaternion.identity));
+						
+						units[currentUnitIndex].transform.rotation = Quaternion.Slerp(units[currentUnitIndex].transform.rotation, newRotation, 1);
+						
+						if (units[currentUnitIndex].gridPosition.x >= target.gridPosition.x - units[currentUnitIndex].attackDistance && units[currentUnitIndex].gridPosition.x <= target.gridPosition.x + units[currentUnitIndex].attackDistance &&
+						    units[currentUnitIndex].gridPosition.y >= target.gridPosition.y - units[currentUnitIndex].attackDistance && units[currentUnitIndex].gridPosition.y <= target.gridPosition.y + units[currentUnitIndex].attackDistance) {
+							
+							
+							removeTileHighlights();
+							
+							currentUnit.Attack(target);	
+							
+							units[currentUnitIndex].MP -= AbilitiesManager.instance.getAbility("baseMagic").MPCost;
+							//attack logic
+							//roll to hit
+							bool hit = Random.Range(0.0f, 1.0f) <= units[currentUnitIndex].attackChance;
+							
+							if (hit) {
+								
+								//damage types goes here
+								
+								magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
+								magiceffect = true;
+								//damage logic
+								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
+								
+								target.takeDamage(amountOfDamage);
+								
+								Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
+							} else {
+								magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
+								Debug.Log(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
+								
+							}
+						} else {
+							Debug.Log ("Target is not adjacent!");
+						}
+						
+						units[currentUnitIndex].animation.CrossFade("Idle", 1f);
+					}
+				}
 			}
 		} else {
 			Debug.Log ("destination invalid");
@@ -444,6 +500,9 @@ public class GameManager : MonoBehaviour {
 					}
 					if (units[currentUnitIndex].UnitAction == unitActions.magicAttack) {
 						GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
+					}
+					if (units[currentUnitIndex].UnitAction == unitActions.healAttack) {
+						GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<Unit> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<Unit> ().gridPosition.y]);
 					}
 
 				}

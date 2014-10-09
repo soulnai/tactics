@@ -106,6 +106,11 @@ public class Unit : MonoBehaviour {
 					GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Poison;
 					GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.PoisonExplode;
 				}
+				else if(a.attackType == attackTypes.heal){
+					UnitAction = unitActions.healAttack;
+					GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Heal;
+					GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.HealExplode;
+				}
 
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 			}

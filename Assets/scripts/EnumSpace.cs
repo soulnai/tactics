@@ -17,7 +17,8 @@ namespace EnumSpace {
 		meleeAttack,
 		rangedAttack,
 		magicAttack,
-		skillAttack
+		skillAttack,
+		healAttack
 	}
 
 	public enum damageTypes{
@@ -38,7 +39,8 @@ namespace EnumSpace {
 	public enum attackTypes{
 		melee,
 		ranged,
-		magic
+		magic,
+		heal
 	}
 
 	public enum areaPatterns{

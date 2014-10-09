@@ -12,6 +12,9 @@ public class MagicPrefabHolder : MonoBehaviour {
 	public GameObject PoisonExplode;
 	public GameObject Freeze;
 	public GameObject FreezeExplode;
+	public GameObject Heal;
+	public GameObject HealExplode;
+
 	
 	void Awake() {
 		instance = this;

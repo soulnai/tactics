@@ -77,6 +77,8 @@ public class Tile : MonoBehaviour {
 				GameManager.instance.distanceAttackWithCurrentPlayer(this);
 			} else if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.magicAttack) {
 				GameManager.instance.distanceAttackWithCurrentPlayer(this);
+			} else if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.healAttack) {
+				GameManager.instance.distanceAttackWithCurrentPlayer(this);
 			}
 		} else if (Application.loadedLevelName == "MapCreatorScene") {
 			setType(MapCreatorManager.instance.palletSelection);
