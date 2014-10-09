@@ -19,7 +19,13 @@ public class TilePath {
 	}
 	
 	public void addTile(Tile t) {
-		costOfPath += t.movementCost;
+		if (GameManager.instance.units [GameManager.instance.currentUnitIndex].currentTile == t) {
+						costOfPath += 0;
+				} else if (GameManager.instance.units [GameManager.instance.currentUnitIndex].isFlying == true) {
+						costOfPath += 1;
+				} else {
+			costOfPath += t.movementCost;
+				}
 		listOfTiles.Add(t);
 		lastTile = t;
 	}

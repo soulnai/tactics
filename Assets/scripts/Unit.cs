@@ -10,6 +10,8 @@ public delegate void UnitAnimationEnd(Unit unit);
 [System.Serializable]
 public class Unit : MonoBehaviour {
 
+	public bool isFlying = false;
+
 	//public AnimationClip[] animationsArray;
 	public event UnitAnimationEnd OnUnitAnimationEnd;
 
