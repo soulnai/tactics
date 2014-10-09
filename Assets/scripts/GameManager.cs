@@ -232,16 +232,16 @@ public class GameManager : MonoBehaviour {
 
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
 				targetPub = target;
+
 				Vector3 targetPos = target.transform.position;
 				targetPos.y = 0;
 				Vector3 attackerPos = currentUnit.transform.position;
 				attackerPos.y = 0;
-
 				Quaternion newRotation = Quaternion.LookRotation(targetPos - attackerPos);
-
-				magic = ((GameObject)Instantiate(MagicPrefab, units[currentUnitIndex].transform.position+0.5f*Vector3.up, Quaternion.identity));
-
 				units[currentUnitIndex].transform.rotation = Quaternion.Slerp(units[currentUnitIndex].transform.rotation, newRotation, 1);
+
+				
+				magic = ((GameObject)Instantiate(MagicPrefab, units[currentUnitIndex].transform.position+0.5f*Vector3.up, Quaternion.identity));
 
 				if (units[currentUnitIndex].gridPosition.x >= target.gridPosition.x - units[currentUnitIndex].attackDistance && units[currentUnitIndex].gridPosition.x <= target.gridPosition.x + units[currentUnitIndex].attackDistance &&
 				    units[currentUnitIndex].gridPosition.y >= target.gridPosition.y - units[currentUnitIndex].attackDistance && units[currentUnitIndex].gridPosition.y <= target.gridPosition.y + units[currentUnitIndex].attackDistance) {
@@ -312,7 +312,7 @@ public class GameManager : MonoBehaviour {
 								
 								//damage types goes here
 								
-								magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
+								magic.transform.DOMove(units[currentUnitIndex].transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
 								magiceffect = true;
 								//damage logic
 								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
