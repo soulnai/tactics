@@ -34,6 +34,7 @@ public class GUImanager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		turnsIndicator.text = "Turn - "+gameManager.turnsCounter;
+		playerIndicator.text = gameManager.currentPlayer.playerName;
 	}
 
 	public void onAbilityClick(BaseAbility a) {
