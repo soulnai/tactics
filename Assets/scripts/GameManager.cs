@@ -98,10 +98,15 @@ public class GameManager : MonoBehaviour {
 	public void nextTurn() {
 		if (currentUnitIndex + 1 < units.Count) {
 			currentUnitIndex++;
+			if(!currentPlayer.units.Contains(currentUnit))
+				currentPlayerIndex++;
+				if(currentPlayerIndex + 1 > players.Count)
+				currentPlayerIndex = 0;
 		} 
 		else {
 			turnsCounter++;
 			currentUnitIndex = 0;
+			currentPlayerIndex = 0;
 		}
 		GUImanager.instance.showAbilities();
 		//reset AP
@@ -179,7 +184,9 @@ public class GameManager : MonoBehaviour {
 			
 			Unit target = destTile.unitInTile;
 			if(currentUnit.actionPoints > 0){
+			Debug.Log(currentPlayerIndex);
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
+
 				targetPub = target;
 				Vector3 targetPos = target.transform.position;
 				targetPos.y = 0;

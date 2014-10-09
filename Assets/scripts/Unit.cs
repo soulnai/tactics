@@ -156,6 +156,7 @@ public class Unit : MonoBehaviour {
 				}
 			}	
 		}
+//		UnitAction = unitActions.idle;
 	}
 
 	public void makeDead()
@@ -183,7 +184,7 @@ public class Unit : MonoBehaviour {
 
 	public void checkAP()
 	{
-		Debug.Log(actionPoints);
+//		Debug.Log(actionPoints);
 	}
 
 	public void takeDamage(int damage)
