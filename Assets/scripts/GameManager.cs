@@ -364,10 +364,6 @@ public class GameManager : MonoBehaviour {
 				tile.gridPosition = new Vector2(i, j);
 				tile.setType((TileType)container.tiles.Where(x => x.locX == i && x.locY == j).First().id);
 				tile.height = tileHeight;
-
-				Vector3 temp = new Vector3(0,tile.height,0 );
-				tile.transform.position += temp;
-
 				row.Add (tile);
 			}
 			map.Add(row);
