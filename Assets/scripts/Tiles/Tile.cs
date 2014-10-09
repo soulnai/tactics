@@ -14,15 +14,20 @@ public class Tile : MonoBehaviour {
 	public Vector2 gridPosition = Vector2.zero;
 	
 	public int movementCost = 1;
+	public int height = 0;
 	public bool impassible = false;
 	
 	public List<Tile> neighbors = new List<Tile>();
 
 	public Unit unitInTile;
 
+	private GameManager gm;
 	// Use this for initialization
 	void Start () {
-		if (Application.loadedLevelName == "gameScene") generateNeighbors();
+		if (Application.loadedLevelName == "gameScene") {
+			gm = GameManager.instance;
+			generateNeighbors();
+		}
 	}
 	
 	public void generateNeighbors() {		
@@ -31,23 +36,31 @@ public class Tile : MonoBehaviour {
 		//up
 		if (gridPosition.y > 0) {
 			Vector2 n = new Vector2(gridPosition.x, gridPosition.y - 1);
-			neighbors.Add(GameManager.instance.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			if (Mathf.Abs(height - gm.map[(int)n.x][(int)n.y].height) <= gm.maxHeighDiff){
+				neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			}
 		}
 		//down
-		if (gridPosition.y < GameManager.instance.mapSize - 1) {
+		if (gridPosition.y < gm.mapSize - 1) {
 			Vector2 n = new Vector2(gridPosition.x, gridPosition.y + 1);
-			neighbors.Add(GameManager.instance.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			if (Mathf.Abs(height - gm.map[(int)n.x][(int)n.y].height) <= gm.maxHeighDiff){
+				neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			}
 		}		
 		
 		//left
 		if (gridPosition.x > 0) {
 			Vector2 n = new Vector2(gridPosition.x - 1, gridPosition.y);
-			neighbors.Add(GameManager.instance.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			if (Mathf.Abs(height - gm.map[(int)n.x][(int)n.y].height) <= gm.maxHeighDiff){
+				neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			}
 		}
 		//right
-		if (gridPosition.x < GameManager.instance.mapSize - 1) {
+		if (gridPosition.x < gm.mapSize - 1) {
 			Vector2 n = new Vector2(gridPosition.x + 1, gridPosition.y);
-			neighbors.Add(GameManager.instance.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			if (Mathf.Abs(height - gm.map[(int)n.x][(int)n.y].height) <= gm.maxHeighDiff){
+				neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			}
 		}
 	}
 	
@@ -69,16 +82,16 @@ public class Tile : MonoBehaviour {
 	
 	void OnMouseDown() {
 		if ((Application.loadedLevelName == "gameScene")&&(!GUImanager.instance.mouseOverGUI)) {
-			if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.readyToMove) {
-				GameManager.instance.moveCurrentPlayer(this);
-			} else if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.meleeAttack) {
-				GameManager.instance.attackWithCurrentPlayer(this);
-			} else if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.rangedAttack) {
-				GameManager.instance.distanceAttackWithCurrentPlayer(this);
-			} else if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.magicAttack) {
-				GameManager.instance.distanceAttackWithCurrentPlayer(this);
-			} else if (GameManager.instance.units[GameManager.instance.currentUnitIndex].UnitAction == unitActions.healAttack) {
-				GameManager.instance.distanceAttackWithCurrentPlayer(this);
+			if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.readyToMove) {
+				gm.moveCurrentPlayer(this);
+			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.meleeAttack) {
+				gm.attackWithCurrentPlayer(this);
+			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.rangedAttack) {
+				gm.distanceAttackWithCurrentPlayer(this);
+			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.magicAttack) {
+				gm.distanceAttackWithCurrentPlayer(this);
+			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.healAttack) {
+				gm.distanceAttackWithCurrentPlayer(this);
 			}
 		} else if (Application.loadedLevelName == "MapCreatorScene") {
 			setType(MapCreatorManager.instance.palletSelection);
@@ -91,24 +104,28 @@ public class Tile : MonoBehaviour {
 		switch(t) {
 			case TileType.Normal:
 				movementCost = 1;
+				height=0;
 				impassible = false;
 				PREFAB = PrefabHolder.instance.TILE_NORMAL_PREFAB;
 				break;
 			
 			case TileType.Difficult:
-				movementCost = 2;
+				movementCost = 1;
+				height=1;
 				impassible = false;
 				PREFAB = PrefabHolder.instance.TILE_DIFFICULT_PREFAB;
 				break;
 				
 			case TileType.VeryDifficult:
-				movementCost = 4;
+				movementCost = 1;
+				height=2;
 				impassible = false;
 				PREFAB = PrefabHolder.instance.TILE_VERY_DIFFICULT_PREFAB;
 				break;
 				
 			case TileType.Impassible:
-				movementCost = 9999;
+				movementCost = 1;
+				height=3;
 				impassible = true;
 				PREFAB = PrefabHolder.instance.TILE_IMPASSIBLE_PREFAB;
 				break;
@@ -132,7 +149,7 @@ public class Tile : MonoBehaviour {
 
 		GameObject newVisual = (GameObject)Instantiate(PREFAB, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
 		newVisual.transform.parent = container.transform;
-		//newVisual.renderer.material.SetTexture("_MainTex", GameManager.instance.ImpasTex);
+		//newVisual.renderer.material.SetTexture("_MainTex", gm.ImpasTex);
 		visual = newVisual;
 	}
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="windows-1251"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <MapCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" size="22">
   <Tiles>
     <Tile id="0" locX="0" locY="0" />
@@ -188,8 +188,8 @@
     <Tile id="0" locX="8" locY="8" />
     <Tile id="1" locX="8" locY="9" />
     <Tile id="1" locX="8" locY="10" />
-    <Tile id="0" locX="8" locY="11" />
-    <Tile id="0" locX="8" locY="12" />
+    <Tile id="1" locX="8" locY="11" />
+    <Tile id="1" locX="8" locY="12" />
     <Tile id="0" locX="8" locY="13" />
     <Tile id="0" locX="8" locY="14" />
     <Tile id="0" locX="8" locY="15" />
@@ -211,7 +211,7 @@
     <Tile id="1" locX="9" locY="9" />
     <Tile id="2" locX="9" locY="10" />
     <Tile id="2" locX="9" locY="11" />
-    <Tile id="0" locX="9" locY="12" />
+    <Tile id="1" locX="9" locY="12" />
     <Tile id="0" locX="9" locY="13" />
     <Tile id="3" locX="9" locY="14" />
     <Tile id="3" locX="9" locY="15" />
@@ -233,7 +233,7 @@
     <Tile id="1" locX="10" locY="9" />
     <Tile id="2" locX="10" locY="10" />
     <Tile id="2" locX="10" locY="11" />
-    <Tile id="0" locX="10" locY="12" />
+    <Tile id="1" locX="10" locY="12" />
     <Tile id="0" locX="10" locY="13" />
     <Tile id="3" locX="10" locY="14" />
     <Tile id="3" locX="10" locY="15" />
@@ -254,8 +254,8 @@
     <Tile id="0" locX="11" locY="8" />
     <Tile id="1" locX="11" locY="9" />
     <Tile id="1" locX="11" locY="10" />
-    <Tile id="0" locX="11" locY="11" />
-    <Tile id="0" locX="11" locY="12" />
+    <Tile id="1" locX="11" locY="11" />
+    <Tile id="1" locX="11" locY="12" />
     <Tile id="0" locX="11" locY="13" />
     <Tile id="0" locX="11" locY="14" />
     <Tile id="0" locX="11" locY="15" />

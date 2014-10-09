@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour {
 	public bool magiceffect = false;
 	
 	public int mapSize = 22;
+	public int maxHeighDiff = 2;
 	public Transform mapTransform;
 	Transform tileTransform;
 	

@@ -181,8 +181,6 @@ public class Unit : MonoBehaviour {
 
 	public void checkAP()
 	{
-		if(actionPoints <= 0)
-			EndTurn();
 		Debug.Log(actionPoints);
 	}
 
