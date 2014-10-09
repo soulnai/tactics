@@ -8,6 +8,7 @@ public class GUImanager : MonoBehaviour {
 	public static GUImanager instance;
 	public GameManager gameManager;
 	public GameObject controlsPanel;
+	public GameObject abilitiesPanel;
 	public GameObject statsPanel;
 	public Unit unit;
 	public bool mouseOverGUI = false;
@@ -39,6 +40,12 @@ public class GUImanager : MonoBehaviour {
 	public void onAbilityClick(BaseAbility a) {
 		Debug.Log(a.attackID);
 		GameManager.instance.currentUnit.onAbility(a);
+
+	/*	if (abilitiesPanel.activeSelf == false) {
+						abilitiesPanel.SetActive (true);
+				} else {
+			abilitiesPanel.SetActive (false);
+				}*/
 	}
 
 	public void setMouseOverGUI(bool over)
