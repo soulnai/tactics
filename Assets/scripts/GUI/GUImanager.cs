@@ -28,8 +28,6 @@ public class GUImanager : MonoBehaviour {
 			b.gameObject.SetActive(false);
 		}
 		showAbilities();
-//		abilityTest.onClick.RemoveAllListeners();
-//		abilityTest.onClick.AddListener(delegate{onAbilityClick();});
 	}
 	
 	// Update is called once per frame
@@ -40,12 +38,12 @@ public class GUImanager : MonoBehaviour {
 	public void onAbilityClick(BaseAbility a) {
 		Debug.Log(a.attackID);
 		GameManager.instance.currentUnit.onAbility(a);
+		abilitiesPanel.SetActive (false);
+	}
 
-	/*	if (abilitiesPanel.activeSelf == false) {
-						abilitiesPanel.SetActive (true);
-				} else {
-			abilitiesPanel.SetActive (false);
-				}*/
+	public void OnOff()
+	{
+		abilitiesPanel.SetActive (!abilitiesPanel.activeInHierarchy);
 	}
 
 	public void setMouseOverGUI(bool over)

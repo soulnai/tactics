@@ -73,11 +73,6 @@ public class Unit : MonoBehaviour {
 	public void onAbility(BaseAbility a)
 	{
 		GameManager.instance.removeTileHighlights ();
-		if (GUImanager.instance.abilitiesPanel.activeSelf == false) {
-			GUImanager.instance.abilitiesPanel.SetActive (true);
-		} else {
-			GUImanager.instance.abilitiesPanel.SetActive (false);
-		}
 
 		if((actionPoints > 0)&&(MP >= a.MPCost)){
 			if (unitAbilities.abilities.Contains(a)) {
