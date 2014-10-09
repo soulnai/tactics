@@ -317,7 +317,7 @@ public class GameManager : MonoBehaviour {
 								//damage logic
 								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
 								
-								target.takeDamage(amountOfDamage);
+								target.takeHeal(amountOfDamage);
 								
 								Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 							} else {

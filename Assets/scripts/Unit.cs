@@ -23,6 +23,7 @@ public class Unit : MonoBehaviour {
 	public int attackDistance = 5;
 	
 	public string unitName = "George";
+	public int MaxHP = 25;
 	public int HP = 25;
 	public int MP = 25;
 	public int Strength = 2;
@@ -190,6 +191,18 @@ public class Unit : MonoBehaviour {
 		HP -= damage;
 		if (HP<=0)
 			makeDead();
+		else
+		{
+			animation.CrossFade("Damage");
+			StartCoroutine(WaitAndCallback(animation["Damage"].length));
+		}
+	}
+
+	public void takeHeal(int heal)
+	{
+		HP += heal;
+		if (HP<=MaxHP)
+			HP = MaxHP;
 		else
 		{
 			animation.CrossFade("Damage");
