@@ -28,6 +28,7 @@ public class GUImanager : MonoBehaviour {
 			b.gameObject.SetActive(false);
 		}
 		showAbilities();
+		abilitiesPanel.SetActive (!abilitiesPanel.activeInHierarchy);
 	}
 	
 	// Update is called once per frame
