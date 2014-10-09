@@ -201,7 +201,7 @@ public class Unit : MonoBehaviour {
 	public void takeHeal(int heal)
 	{
 		HP += heal;
-		if (HP<=MaxHP)
+		if (HP>=MaxHP)
 			HP = MaxHP;
 		else
 		{
