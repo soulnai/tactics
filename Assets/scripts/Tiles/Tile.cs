@@ -14,7 +14,7 @@ public class Tile : MonoBehaviour {
 	public Vector2 gridPosition = Vector2.zero;
 	
 	public int movementCost = 1;
-	public int height = 0;
+	public float height = 0;
 	public bool impassible = false;
 	
 	public List<Tile> neighbors = new List<Tile>();
@@ -71,7 +71,10 @@ public class Tile : MonoBehaviour {
 	
 	void OnMouseEnter() {
 		if (Application.loadedLevelName == "MapCreatorScene" && Input.GetMouseButton(0)) {
+			if(MapCreatorManager.instance.editorState == editorStates.setType)
 			setType(MapCreatorManager.instance.palletSelection);
+			else if(MapCreatorManager.instance.editorState == editorStates.setHeight)
+				changeHeight(MapCreatorManager.instance.up);
 		}
 	}
 	
@@ -94,8 +97,25 @@ public class Tile : MonoBehaviour {
 				gm.distanceAttackWithCurrentPlayer(this);
 			}
 		} else if (Application.loadedLevelName == "MapCreatorScene") {
+			if(MapCreatorManager.instance.editorState == editorStates.setType)
 			setType(MapCreatorManager.instance.palletSelection);
+			else if(MapCreatorManager.instance.editorState == editorStates.setHeight)
+				changeHeight(MapCreatorManager.instance.up);
 		}
+	}
+
+	public void changeHeight(bool up)
+	{
+		Vector3 tempHeight = new Vector3(0,0.2f,0 );
+		if(up == true)
+		{
+			transform.position += tempHeight;
+		}
+		else
+		{
+			transform.position -= tempHeight;
+		}
+		height = transform.position.y;
 	}
 
 	public void setType(TileType t) {
@@ -104,28 +124,24 @@ public class Tile : MonoBehaviour {
 		switch(t) {
 			case TileType.Normal:
 				movementCost = 1;
-				height=0;
 				impassible = false;
 				PREFAB = PrefabHolder.instance.TILE_NORMAL_PREFAB;
 				break;
 			
 			case TileType.Difficult:
-				movementCost = 1;
-				height=1;
+				movementCost = 2;
 				impassible = false;
 				PREFAB = PrefabHolder.instance.TILE_DIFFICULT_PREFAB;
 				break;
 				
 			case TileType.VeryDifficult:
-				movementCost = 1;
-				height=2;
+				movementCost = 3;
 				impassible = false;
 				PREFAB = PrefabHolder.instance.TILE_VERY_DIFFICULT_PREFAB;
 				break;
 				
 			case TileType.Impassible:
-				movementCost = 1;
-				height=3;
+				movementCost = 999;
 				impassible = true;
 				PREFAB = PrefabHolder.instance.TILE_IMPASSIBLE_PREFAB;
 				break;
@@ -147,9 +163,8 @@ public class Tile : MonoBehaviour {
 			Destroy (container.transform.GetChild(i).gameObject);
 		}
 
-		GameObject newVisual = (GameObject)Instantiate(PREFAB, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
+		GameObject newVisual = (GameObject)Instantiate(PREFAB, transform.position, Quaternion.identity);
 		newVisual.transform.parent = container.transform;
-		//newVisual.renderer.material.SetTexture("_MainTex", gm.ImpasTex);
 		visual = newVisual;
 	}
 }

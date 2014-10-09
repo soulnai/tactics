@@ -61,4 +61,9 @@ namespace EnumSpace {
 		nextUnitTurn
 	}
 
+	public enum editorStates{
+		setType,
+		setHeight
+	}
+
 }

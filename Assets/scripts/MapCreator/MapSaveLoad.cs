@@ -9,7 +9,8 @@ using System.IO;
 public class TileXml {
 	[XmlAttribute("id")]
 	public int id;
-
+	[XmlAttribute("height")]
+	public float height;
 	[XmlAttribute("locX")]
 	public int locX;
 
@@ -47,6 +48,7 @@ public static class MapSaveLoad {
 	public static TileXml CreateTileXml(Tile tile) {
 		return new TileXml() {
 			id = (int)tile.type,
+			height = (float)tile.height,
 			locX = (int)tile.gridPosition.x,
 			locY = (int)tile.gridPosition.y
 		};

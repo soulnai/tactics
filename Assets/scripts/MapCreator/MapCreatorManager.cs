@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using EnumSpace;
 
 public class MapCreatorManager : MonoBehaviour {
 	public static MapCreatorManager instance;
@@ -10,7 +11,8 @@ public class MapCreatorManager : MonoBehaviour {
 	public List <List<Tile>> map = new List<List<Tile>>();
 
 	public TileType palletSelection = TileType.Normal;
-
+	public EnumSpace.editorStates editorState;
+	public bool up;
 	Transform mapTransform;
 
 	// Use this for initialization
@@ -63,10 +65,12 @@ public class MapCreatorManager : MonoBehaviour {
 		for (int i = 0; i < mapSize; i++) {
 			List <Tile> row = new List<Tile>();
 			for (int j = 0; j < mapSize; j++) {
-				Tile tile = ((GameObject)Instantiate(PrefabHolder.instance.BASE_TILE_PREFAB, new Vector3(i - Mathf.Floor(mapSize/2),0, -j + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<Tile>();
+				float tileHeight = container.tiles.Where(x => x.locX == i && x.locY == j).First().height;
+				Tile tile = ((GameObject)Instantiate(PrefabHolder.instance.BASE_TILE_PREFAB, new Vector3(i - Mathf.Floor(mapSize/2),tileHeight, -j + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<Tile>();
 				tile.transform.parent = mapTransform;
 				tile.gridPosition = new Vector2(i, j);
 				tile.setType((TileType)container.tiles.Where(x => x.locX == i && x.locY == j).First().id);
+				tile.height = tileHeight;
 				row.Add (tile);
 			}
 			map.Add(row);
@@ -83,24 +87,28 @@ public class MapCreatorManager : MonoBehaviour {
 		Rect rect = new Rect(10, Screen.height - 80, 100, 60);
 
 		if (GUI.Button(rect, "Normal")) {
+			editorState = editorStates.setType;
 			palletSelection = TileType.Normal;
 		}
 
 		rect = new Rect(10 + (100 + 10) * 1, Screen.height - 80, 100, 60);
 		
 		if (GUI.Button(rect, "Difficult")) {
+			editorState = editorStates.setType;
 			palletSelection = TileType.Difficult;
 		}
 
 		rect = new Rect(10 + (100 + 10) * 2, Screen.height - 80, 100, 60);
 		
 		if (GUI.Button(rect, "VeryDifficult")) {
+			editorState = editorStates.setType;
 			palletSelection = TileType.VeryDifficult;
 		}
 
 		rect = new Rect(10 + (100 + 10) * 3, Screen.height - 80, 100, 60);
 		
 		if (GUI.Button(rect, "Impassible")) {
+			editorState = editorStates.setType;
 			palletSelection = TileType.Impassible;
 		}
 		//
@@ -125,5 +133,11 @@ public class MapCreatorManager : MonoBehaviour {
 		}
 		//
 
+	}
+
+	public void setUP(bool u)
+	{
+		editorState = editorStates.setHeight;
+		up = u;
 	}
 }

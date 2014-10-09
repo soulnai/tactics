@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
 	public bool magiceffect = false;
 	
 	public int mapSize = 22;
-	public int maxHeighDiff = 2;
+	public float maxHeighDiff = 2;
 	public Transform mapTransform;
 	Transform tileTransform;
 	
@@ -357,29 +357,17 @@ public class GameManager : MonoBehaviour {
 		for (int i = 0; i < mapSize; i++) {
 			List <Tile> row = new List<Tile>();
 			for (int j = 0; j < mapSize; j++) {
-				Tile tile = ((GameObject)Instantiate(PrefabHolder.instance.BASE_TILE_PREFAB, new Vector3(i - Mathf.Floor(mapSize/2),0, -j + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<Tile>();
+				float tileHeight = container.tiles.Where(x => x.locX == i && x.locY == j).First().height;
+				Tile tile = ((GameObject)Instantiate(PrefabHolder.instance.BASE_TILE_PREFAB, new Vector3(i - Mathf.Floor(mapSize/2),tileHeight, -j + Mathf.Floor(mapSize/2)), Quaternion.Euler(new Vector3()))).GetComponent<Tile>();
 
 				tile.transform.parent = mapTransform;
 				tile.gridPosition = new Vector2(i, j);
 				tile.setType((TileType)container.tiles.Where(x => x.locX == i && x.locY == j).First().id);
-				 
-				if (tile.type == TileType.Difficult) {
-					int height = 1;
-					Vector3 temp = new Vector3(0, height,0 );
-					tile.transform.position += temp;
-				}
+				tile.height = tileHeight;
 
-				if (tile.type == TileType.VeryDifficult) {
-					int height = 2;
-					Vector3 temp = new Vector3(0, height,0 );
-					tile.transform.position += temp;
-				}
+				Vector3 temp = new Vector3(0,tile.height,0 );
+				tile.transform.position += temp;
 
-				if (tile.type == TileType.Impassible) {
-
-					Vector3 temp = new Vector3(0, -1,0 );
-					tile.transform.position += temp;
-				}
 				row.Add (tile);
 			}
 			map.Add(row);
