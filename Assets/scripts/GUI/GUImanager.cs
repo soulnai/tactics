@@ -16,6 +16,7 @@ public class GUImanager : MonoBehaviour {
 	public Text turnsIndicator;
 	public Text playerIndicator;
 	public Button abilityTest;
+	public Text battleLog;
 	// Use this for initialization
 	void Awake()
 	{

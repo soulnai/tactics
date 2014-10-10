@@ -21,7 +21,7 @@ public class MakeItSnow : MonoBehaviour {
 				Tile t = hit.transform.gameObject.GetComponent<Tile>();
 				t.visual.transform.renderer.materials[1].mainTexture = snowTexture;
 
-							Debug.Log("Tile hitted");
+//							Debug.Log("Tile hitted");
 						}
 			if (snow == false) {
 				GameObject blizzard = (GameObject)Instantiate(snowPrefab,transform.position+ new Vector3(0,5f,0),Quaternion.identity);
