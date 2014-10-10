@@ -67,7 +67,10 @@ public class GameManager : MonoBehaviour {
 
 	void Awake() {
 		instance = this;
-
+		UserUnitPrefab [0] = StartScreenPersistentObj.instance.UserUnitPrefab [0];
+		UserUnitPrefab [1] = StartScreenPersistentObj.instance.UserUnitPrefab [1];
+		UserUnitPrefab [2] = StartScreenPersistentObj.instance.UserUnitPrefab [2];
+		UserUnitPrefab [3] = StartScreenPersistentObj.instance.UserUnitPrefab [3];
 		mapTransform = transform.FindChild("Map");
 		generateMap();
 		generateUnits();
