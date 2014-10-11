@@ -51,9 +51,10 @@ public class CameraOrbit : MonoBehaviour
 			// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 			// scroll wheel used to zoom in/out
 			float scroll = Input.GetAxis("Mouse ScrollWheel");
-
+			if(!GUImanager.instance.mouseOverGUI){
 			if (scroll > 0.0f) targetDistance -= zoomSpeed;
 			else if (scroll < 0.0f) targetDistance += zoomSpeed;
+			}
 			targetDistance = Mathf.Clamp(targetDistance, minDistance, maxDistance);
 
 			// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
