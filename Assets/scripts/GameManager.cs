@@ -216,7 +216,7 @@ public class GameManager : MonoBehaviour {
 
 						target.takeDamage(amountOfDamage);
 
-							GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " successfuly hit by the sword " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!\n";
+							GUImanager.instance.battleLog.text += "<b>"+units[currentUnitIndex].unitName+":</b>" + " successfuly hit by the sword " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!\n";
 
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
@@ -281,7 +281,7 @@ public class GameManager : MonoBehaviour {
 
 						target.takeDamage(amountOfDamage);
 
-								GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!\n";
+								GUImanager.instance.battleLog.text += "<b>"+units[currentUnitIndex].unitName+":</b>" + " successfuly hit " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!\n";
 
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
@@ -335,7 +335,7 @@ public class GameManager : MonoBehaviour {
 								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
 								
 								target.takeHeal(amountOfDamage);
-								GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName+" successfuly <b><color=green>healed " + target.unitName + " for " + amountOfDamage + "</color></b> damage!\n";
+								GUImanager.instance.battleLog.text += "<b>"+units[currentUnitIndex].unitName+":</b>"+" successfuly <b><color=green>healed " + target.unitName + " for " + amountOfDamage + "</color></b> damage!\n";
 								Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 							} else {
 								magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
