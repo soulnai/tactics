@@ -215,7 +215,7 @@ public class GameManager : MonoBehaviour {
 						int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
 
 						target.takeDamage(amountOfDamage);
-							GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " <b>successfuly hit by the sword " + target.unitName + " for <b>" + amountOfDamage + " damage</b>!\n";
+							GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " successfuly hit by the sword " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!\n";
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
 							GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " missed " + target.unitName + "!\n";
@@ -278,7 +278,7 @@ public class GameManager : MonoBehaviour {
 								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase * (units[currentUnitIndex].Magic/100) + Random.Range(0, units[currentUnitIndex].damageRollSides));
 
 						target.takeDamage(amountOfDamage);
-								GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " <b>successfuly hit " + target.unitName + " for <b>" + amountOfDamage + " damage</b>!\n";
+								GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!\n";
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
 						GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " missed " + target.unitName + "!\n";
