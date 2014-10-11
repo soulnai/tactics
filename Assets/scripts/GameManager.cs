@@ -215,7 +215,11 @@ public class GameManager : MonoBehaviour {
 						int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
 
 						target.takeDamage(amountOfDamage);
-							GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " <b>successfuly hit by the sword " + target.unitName + " for <b>" + amountOfDamage + " damage</b>!\n";
+							GUImanager.instance.battleLog.fontStyle = FontStyle.Bold;
+							GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName;
+							GUImanager.instance.battleLog.fontStyle = FontStyle.Normal;
+							GUImanager.instance.battleLog.text +=" successfuly hit by the sword " + target.unitName + " for " + amountOfDamage + " damage!\n";
+
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
 							GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " missed " + target.unitName + "!\n";
@@ -278,7 +282,10 @@ public class GameManager : MonoBehaviour {
 								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase * (units[currentUnitIndex].Magic/100) + Random.Range(0, units[currentUnitIndex].damageRollSides));
 
 						target.takeDamage(amountOfDamage);
-								GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " <b>successfuly hit " + target.unitName + " for <b>" + amountOfDamage + " damage</b>!\n";
+								GUImanager.instance.battleLog.fontStyle = FontStyle.Bold;
+								GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName;
+								GUImanager.instance.battleLog.fontStyle = FontStyle.Normal;
+								GUImanager.instance.battleLog.text +=" successfuly hit by magic " + target.unitName + " for " + amountOfDamage + " damage!\n";
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
 						GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " missed " + target.unitName + "!\n";
@@ -331,7 +338,10 @@ public class GameManager : MonoBehaviour {
 								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
 								
 								target.takeHeal(amountOfDamage);
-								GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " successfuly healed " + target.unitName + " for " + amountOfDamage + " hit points!\n";
+								GUImanager.instance.battleLog.fontStyle = FontStyle.Bold;
+								GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName;
+								GUImanager.instance.battleLog.fontStyle = FontStyle.Normal;
+								GUImanager.instance.battleLog.text +=" successfuly healed " + target.unitName + " for " + amountOfDamage + " damage!\n";
 								Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 							} else {
 								magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
