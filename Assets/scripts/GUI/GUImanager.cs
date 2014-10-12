@@ -40,7 +40,7 @@ public class GUImanager : MonoBehaviour {
 	}
 
 	public void onAbilityClick(BaseAbility a) {
-		Debug.Log(a.attackID);
+		Debug.Log(a.abilityID);
 		GameManager.instance.currentUnit.onAbility(a);
 		abilitiesPanel.SetActive (false);
 	}
@@ -119,7 +119,7 @@ public class GUImanager : MonoBehaviour {
 		{
 			int j = i;
 			abilitiesButtonsList[j].gameObject.SetActive(true);
-			abilitiesButtonsList[j].GetComponent<buttonTextController>().setText(abilitiesList[j].attackID);
+			abilitiesButtonsList[j].GetComponent<buttonTextController>().setText(abilitiesList[j].abilityID);
 			abilitiesButtonsList[j].onClick.RemoveAllListeners();
 			abilitiesButtonsList[j].onClick.AddListener(delegate{onAbilityClick(abilitiesList[j]);});
 //			Debug.Log(abilitiesList[j].attackID);

@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		drawPointer();
-		if(currentUnit.UnitAction != unitActions.idle)
+		if((currentUnit.UnitAction != unitActions.idle)&&(currentUnit.UnitAction != unitActions.moving)&&(currentUnit.UnitAction != unitActions.readyToMove))
 			AttackOnMouseClick ();
 	}
 
@@ -188,13 +188,102 @@ public class GameManager : MonoBehaviour {
 			Debug.Log ("destination invalid");
 		}
 	}
-	
-	public void attackWithCurrentPlayer(Tile destTile,BaseAbility a = null) {
-		if ((highlightedTiles.Contains(destTile)) && !destTile.impassible) {
+	public void useAbility(BaseAbility ability,Unit unitOwner,Tile targetTile = null,Unit targetUnit = null){
+		unitOwner.attackRange = ability.range;
+		Unit _target = null;
+		//used on target tile or unit
+		if(targetTile != null){
+			if (highlightedTiles.Contains(targetTile)) {
+				_target = targetTile.unitInTile;
+			}
+		}
+		if(targetUnit != null){
+			_target = targetUnit;
+		}
+		//used on self
+		if(unitOwner == targetUnit){
+			_target = currentUnit;
+		}
+		if(_target==null)
+		{
+//			_target = unitOwner;
+			Debug.Log("No target selected");
+		}
+		targetPub = _target;
+		//find new look angle
+		Quaternion newOwnerRotation;
+		if(_target != null)
+			newOwnerRotation = getNewLookRotation(unitOwner,_target);
+		else
+			newOwnerRotation = unitOwner.transform.rotation;
+		//rotate to target if needed
+		if(newOwnerRotation != unitOwner.transform.rotation)
+			unitOwner.transform.rotation = Quaternion.Slerp(unitOwner.transform.rotation, newOwnerRotation, 1f);
+
+		//check Ability distance
+		if(_target != null){
+		if(checkAbilityRange(ability,unitOwner,_target))
+		{
+			removeTileHighlights();
+			unitOwner.Ability(_target);
+
+			//ckeck if hit
+			bool hit = Random.Range(0.0f, 1.0f) <= unitOwner.attackChance;//replace with Ability chance
+
+			//if hit
+			if (hit) {
+				//damage logic
+				int amountOfDamage = (int)Mathf.Floor(unitOwner.damageBase + Random.Range(0, unitOwner.damageRollSides));
+				
+				_target.takeDamage(amountOfDamage);
+				
+				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 			
+			//if missed
+			} else {
+				_target.activateReactionEnd();
+				GUImanager.instance.Log.addText(unitOwner.unitName + " missed " + _target.unitName + "!");
+			}
+		}
+		else
+		{
+			Debug.Log("Ability range is less than target");
+		}
+		}
+
+	}
+
+	public bool checkAbilityRange (BaseAbility ability, Unit owner,Unit target)
+	{
+		if(owner == target)
+			return true;
+		else if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange &&
+		    owner.gridPosition.y >= target.gridPosition.y - owner.attackRange && owner.gridPosition.y <= target.gridPosition.y + owner.attackRange) {
+			return true;
+		}
+		else
+			return false;
+	}
+
+	Quaternion getNewLookRotation (Unit owner, Unit target)
+	{
+		if(owner != target){
+			Vector3 targetPos = target.transform.position;
+			targetPos.y = 0;
+			Vector3 attackerPos = currentUnit.transform.position;
+			attackerPos.y = 0;
+			Quaternion newRotation = Quaternion.LookRotation(targetPos - attackerPos);
+			return newRotation;
+		}
+		else
+			return owner.transform.rotation;
+	}
+
+	public void attackWithCurrentPlayer(Tile destTile,BaseAbility a = null) {
+		if (highlightedTiles.Contains(destTile)) {
 			Unit target = destTile.unitInTile;
 			if(currentUnit.AP > 0){
-			Debug.Log(currentPlayerIndex);
+
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
 
 				targetPub = target;
@@ -212,7 +301,7 @@ public class GameManager : MonoBehaviour {
 
 					removeTileHighlights();
 
-					currentUnit.Attack(target);		
+					currentUnit.Ability(target);		
 
 					bool hit = Random.Range(0.0f, 1.0f) <= units[currentUnitIndex].attackChance;
 
@@ -271,7 +360,7 @@ public class GameManager : MonoBehaviour {
 					
 					removeTileHighlights();
 							
-					currentUnit.Attack(target);	
+					currentUnit.Ability(target);	
 
 							units[currentUnitIndex].MP -= units[currentUnitIndex].currentAbility.MPCost;
 					//attack logic
@@ -282,7 +371,7 @@ public class GameManager : MonoBehaviour {
 
 						//damage types goes here
 					
-						magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
+						magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(RangedAttackCompleted);
 						magiceffect = true;
 						//damage logic
 								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase * (units[currentUnitIndex].Magic/100) + Random.Range(0, units[currentUnitIndex].damageRollSides));
@@ -293,8 +382,8 @@ public class GameManager : MonoBehaviour {
 
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
-								GUImanager.instance.Log.addText(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
-						magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
+						GUImanager.instance.Log.addText(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
+								magic.transform.DOMove(target.transform.position+new Vector3(Random.Range(-2,2),0,Random.Range(-2,2))+1.0f*Vector3.up, 1f).OnComplete(RangedAttackCompleted);
 						Debug.Log(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
 
 					}
@@ -326,7 +415,7 @@ public class GameManager : MonoBehaviour {
 							
 							removeTileHighlights();
 							
-							currentUnit.Attack(target);	
+							currentUnit.Ability(target);	
 							
 							units[currentUnitIndex].MP -= AbilitiesManager.instance.getAbility("baseMagic").MPCost;
 							//attack logic
@@ -337,7 +426,7 @@ public class GameManager : MonoBehaviour {
 								
 								//damage types goes here
 								
-								magic.transform.DOMove(units[currentUnitIndex].transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
+								magic.transform.DOMove(units[currentUnitIndex].transform.position+1.0f*Vector3.up, 1f).OnComplete(RangedAttackCompleted);
 								magiceffect = true;
 								//damage logic
 								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
@@ -346,7 +435,7 @@ public class GameManager : MonoBehaviour {
 								GUImanager.instance.Log.addText("<b>"+units[currentUnitIndex].unitName+":</b>"+" successfuly <b><color=green>healed " + target.unitName + " for " + amountOfDamage + "</color></b> damage!");
 								Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 							} else {
-								magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
+								magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(RangedAttackCompleted);
 								Debug.Log(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
 								
 							}
@@ -438,7 +527,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public void MoveCompleted (){
+	public void RangedAttackCompleted (){
 		Explode(targetPub, magic);
 	}
 
@@ -494,23 +583,48 @@ public class GameManager : MonoBehaviour {
 				
 		if ((Input.GetMouseButtonDown(0))&&(!GUImanager.instance.mouseOverGUI))
 		{
+			BaseAbility ability = currentUnit.currentAbility;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			if(ability.requireTarget == true){
+				if(Physics.Raycast(ray,out hit))
+				{
+					Tile targetTile = null;
+					Unit targetUnit = null;
+					if(hit.collider.GetComponent<Tile>())
+					{
+						targetTile = hit.collider.GetComponent<Tile>();
+						targetUnit = targetTile.unitInTile;
+					}
+					if(hit.collider.GetComponent<Unit>())
+					{
+						targetUnit = hit.collider.GetComponent<Unit>();
+						targetTile = targetUnit.currentTile;
+					}
 
-			if(Physics.Raycast(ray,out hit))
-			{
-				if ((hit.collider.gameObject.GetComponent<AIPlayer>() != null)&&(hit.collider.gameObject.GetComponent<AIPlayer> ().UnitState != unitStates.dead)){
-					ckeckLineofSign(hit.collider.gameObject.GetComponent<AIPlayer>());
-					if (units[currentUnitIndex].UnitAction == unitActions.rangedAttack) {
-					GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
+					if(ability.selfUse == true)
+					{
+						if(currentUnit == targetUnit){
+							GameManager.instance.useAbility(ability,currentUnit,targetTile,targetUnit);
+						}
+						else
+							Debug.Log("Not self selected");
 					}
-					if (units[currentUnitIndex].UnitAction == unitActions.meleeAttack) {
-					GameManager.instance.attackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
+
+					if(ability.allyUse == true)
+					{
+						if((currentPlayer.units.Contains(targetUnit))&&(currentUnit != targetUnit)){
+							GameManager.instance.useAbility(ability,currentUnit,targetTile,targetUnit);
+						}
+						else
+							Debug.Log("Not ally selected");
 					}
-					if (units[currentUnitIndex].UnitAction == unitActions.magicAttack) {
-						GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<AIPlayer> ().gridPosition.y]);
-					}
-					if (units[currentUnitIndex].UnitAction == unitActions.healAttack) {
-						GameManager.instance.distanceAttackWithCurrentPlayer (map[(int)hit.collider.gameObject.GetComponent<Unit> ().gridPosition.x][(int)hit.collider.gameObject.GetComponent<Unit> ().gridPosition.y]);
+					else
+					{
+						if((!currentPlayer.units.Contains(targetUnit))&&(currentUnit != targetUnit)){
+							GameManager.instance.useAbility(ability,currentUnit,targetTile,targetUnit);
+						}
+						else
+							Debug.Log("Ally selected");
 					}
 
 				}
@@ -521,17 +635,17 @@ public class GameManager : MonoBehaviour {
 
 	public void ckeckLineofSign(AIPlayer ai)
 	{
-
-		if(Physics.Raycast(units[currentUnitIndex].transform.position+new Vector3(0,0.5f,0),units[currentUnitIndex].transform.position+new Vector3(0,0.5f,0)-ai.transform.position,out target,100f))
-		{
-			if(target.transform == ai.transform)
-			{
-				Debug.Log("Line of sign-"+target.transform.name);
-				Debug.Break();
-			}
-			else
-				Debug.Log(target.transform.name);
-		}
+//
+//		if(Physics.Raycast(units[currentUnitIndex].transform.position+new Vector3(0,0.5f,0),units[currentUnitIndex].transform.position+new Vector3(0,0.5f,0)-ai.transform.position,out target,100f))
+//		{
+//			if(target.transform == ai.transform)
+//			{
+//				Debug.Log("Line of sign-"+target.transform.name);
+//				Debug.Break();
+//			}
+//			else
+//				Debug.Log(target.transform.name);
+//		}
 	}
 
 	public void checkVictory()

@@ -87,15 +87,16 @@ public class Tile : MonoBehaviour {
 		if ((Application.loadedLevelName == "gameScene")&&(!GUImanager.instance.mouseOverGUI)) {
 			if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.readyToMove) {
 				gm.moveCurrentPlayer(this);
-			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.meleeAttack) {
-				gm.attackWithCurrentPlayer(this);
-			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.rangedAttack) {
-				gm.distanceAttackWithCurrentPlayer(this);
-			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.magicAttack) {
-				gm.distanceAttackWithCurrentPlayer(this);
-			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.healAttack) {
-				gm.distanceAttackWithCurrentPlayer(this);
 			}
+//			else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.meleeAttack) {
+//				gm.attackWithCurrentPlayer(this);
+//			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.rangedAttack) {
+//				gm.distanceAttackWithCurrentPlayer(this);
+//			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.magicAttack) {
+//				gm.distanceAttackWithCurrentPlayer(this);
+//			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.healAttack) {
+//				gm.distanceAttackWithCurrentPlayer(this);
+//			}
 		} else if (Application.loadedLevelName == "MapCreatorScene") {
 			if(MapCreatorManager.instance.editorState == editorStates.setType)
 			setType(MapCreatorManager.instance.palletSelection);

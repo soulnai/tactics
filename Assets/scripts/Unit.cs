@@ -135,11 +135,11 @@ public class Unit : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log("No such ability - " + a.attackID);
+			Debug.Log("No such ability - " + a.abilityID);
 		}
 	}
 
-	public void Attack(Unit target)
+	public void Ability(Unit target)
 	{
 		UnitEvents.onUnitReactionEnd += ReactionsEnd;
 
@@ -220,7 +220,7 @@ public class Unit : MonoBehaviour {
 			makeDead();
 		else
 		{
-			animation.CrossFade("Damage");
+			animation.CrossFade("Damage",0.2f);
 			StartCoroutine(WaitAnimationEnd(animation["Damage"].length+delayAfterAnim,true));
 		}
 	}
@@ -242,14 +242,12 @@ public class Unit : MonoBehaviour {
 		transform.position = currentTile.transform.position + new Vector3(0,0.5f,0);
 	}
 	IEnumerator WaitAnimationEnd(float waitTime,bool target = false){
-//		Debug.Log("Started");
 		yield return new WaitForSeconds(waitTime);
 		if(target){
 			UnitEvents.ReactionEnd(this);
-//			ReactionsEnd(this);
 		}
-//		Debug.Log("Animation Ended");
-
+		if(UnitState != unitStates.dead)
+			animation.CrossFade("Idle",0.2f);
 	}
 
 	public void activateReactionEnd(){

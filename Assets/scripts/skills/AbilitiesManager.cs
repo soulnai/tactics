@@ -15,6 +15,6 @@ public class AbilitiesManager : MonoBehaviour {
 
 	public BaseAbility getAbility(string ID)
 	{
-		return abilities.Find(BaseAttack => BaseAttack.attackID == ID); 
+		return abilities.Find(BaseAttack => BaseAttack.abilityID == ID); 
 	}
 }

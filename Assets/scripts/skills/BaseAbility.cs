@@ -4,10 +4,14 @@ using EnumSpace;
 
 [System.Serializable]
 public class BaseAbility {
-	public string attackID;
+	public string abilityID;
+	public string abilityName;
 	public int APcost;
 	public bool endsUnitTurn = true;
 	public attackTypes attackType;
+	public bool requireTarget = true;
+	public bool allyUse = false;
+	public bool selfUse = false;
 	public int range;
 	public bool areaDamage;
 	public areaPatterns areaPattern;
