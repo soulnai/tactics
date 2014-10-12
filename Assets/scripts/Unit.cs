@@ -27,7 +27,7 @@ public class Unit : MonoBehaviour {
 			_AP = value;
 			if(AP <= 0)
 			{
-
+				//send event no AP
 			}
 		}
 	}
@@ -58,7 +58,7 @@ public class Unit : MonoBehaviour {
 
 	private int _AP;
 	private Vector3 lookDirection = Vector3.zero;
-	private float delayAfterAnim = 1f;
+	private float delayAfterAnim = 0.5f;
 	void Awake () {
 		moveDestination = transform.position;
 		AP = maxActionPoints;
@@ -68,7 +68,8 @@ public class Unit : MonoBehaviour {
 	public void ReactionsEnd (Unit unit)
 	{
 		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
-		EndTurn();
+		if(AP <= 0)
+			EndTurn();
 		Debug.Log("This - "+this.unitName+" // target - " +unit.unitName+"Reaction End");
 	}
 	
@@ -92,8 +93,8 @@ public class Unit : MonoBehaviour {
 	{
 		GameManager.instance.removeTileHighlights ();
 
-		if((AP > 0)&&(MP >= a.MPCost)){
-			if (unitAbilities.abilities.Contains(a)) {
+		if (unitAbilities.abilities.Contains(a)) {
+			if((AP > 0)&&(MP >= a.MPCost)){
 				currentAbility = a;
 				attackDistance = a.range;
 				damageBase = a.baseDamage;
@@ -129,8 +130,12 @@ public class Unit : MonoBehaviour {
 			}
 			else
 			{
-				Debug.Log("No such ability - " + a.attackID);
+				GUImanager.instance.Log.addText("Not enought <b><color=blue>MP</color></b>");
 			}
+		}
+		else
+		{
+			Debug.Log("No such ability - " + a.attackID);
 		}
 	}
 
@@ -245,5 +250,9 @@ public class Unit : MonoBehaviour {
 		}
 //		Debug.Log("Animation Ended");
 
+	}
+
+	public void activateReactionEnd(){
+		UnitEvents.ReactionEnd(this);
 	}
 }

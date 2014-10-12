@@ -113,20 +113,25 @@ public class GameManager : MonoBehaviour {
 			currentUnitIndex = 0;
 			currentPlayerIndex = 0;
 		}
-		GUImanager.instance.showAbilities();
-		//reset AP
-		units[currentUnitIndex].AP = units[currentUnitIndex].maxActionPoints;
-		removeTileHighlights();
+		if(currentUnit.UnitState == unitStates.dead)
+		{
+			nextTurn();
+		}
+		else
+		{
+			GUImanager.instance.showAbilities();
+			//reset AP
+			units[currentUnitIndex].AP = units[currentUnitIndex].maxActionPoints;
+			removeTileHighlights();
 
-		//reset & focus camera
-		Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
-		Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
-		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
-		//set selection ring
-		unitSelection.transform.position = units [currentUnitIndex].transform.position;
-		unitSelection.transform.parent = units [currentUnitIndex].transform;
-		//set state
-		if (units[currentUnitIndex].UnitState!=unitStates.dead) {
+			//reset & focus camera
+			Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
+			Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
+			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+			//set selection ring
+			unitSelection.transform.position = units [currentUnitIndex].transform.position;
+			unitSelection.transform.parent = units [currentUnitIndex].transform;
+			//set state
 			units[currentUnitIndex].UnitAction = unitActions.idle;
 		}
 	}
@@ -218,11 +223,12 @@ public class GameManager : MonoBehaviour {
 
 						target.takeDamage(amountOfDamage);
 
-							GUImanager.instance.battleLog.text += "<b>"+units[currentUnitIndex].unitName+":</b>" + " successfuly hit by the sword " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!\n";
+							GUImanager.instance.Log.addText("<b>"+units[currentUnitIndex].unitName+":</b>" + " successfuly hit by the sword " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
-							GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " missed " + target.unitName + "!\n";
+							target.activateReactionEnd();
+							GUImanager.instance.Log.addText(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
 						Debug.Log(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
 					}
 				} else {
@@ -283,11 +289,11 @@ public class GameManager : MonoBehaviour {
 
 						target.takeDamage(amountOfDamage);
 
-								GUImanager.instance.battleLog.text += "<b>"+units[currentUnitIndex].unitName+":</b>" + " successfuly hit " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!\n";
+								GUImanager.instance.Log.addText("<b>"+units[currentUnitIndex].unitName+":</b>" + " successfuly hit " + target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 
 						Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 					} else {
-						GUImanager.instance.battleLog.text += units[currentUnitIndex].unitName + " missed " + target.unitName + "!\n";
+								GUImanager.instance.Log.addText(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
 						magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
 						Debug.Log(units[currentUnitIndex].unitName + " missed " + target.unitName + "!");
 
@@ -337,7 +343,7 @@ public class GameManager : MonoBehaviour {
 								int amountOfDamage = (int)Mathf.Floor(units[currentUnitIndex].damageBase + Random.Range(0, units[currentUnitIndex].damageRollSides));
 								
 								target.takeHeal(amountOfDamage);
-								GUImanager.instance.battleLog.text += "<b>"+units[currentUnitIndex].unitName+":</b>"+" successfuly <b><color=green>healed " + target.unitName + " for " + amountOfDamage + "</color></b> damage!\n";
+								GUImanager.instance.Log.addText("<b>"+units[currentUnitIndex].unitName+":</b>"+" successfuly <b><color=green>healed " + target.unitName + " for " + amountOfDamage + "</color></b> damage!");
 								Debug.Log(units[currentUnitIndex].unitName + " successfuly hit " + target.unitName + " for " + amountOfDamage + " damage!");
 							} else {
 								magic.transform.DOMove(target.transform.position+1.0f*Vector3.up, 1f).OnComplete(MoveCompleted);
@@ -421,9 +427,10 @@ public class GameManager : MonoBehaviour {
 		Destroy (magictodestroy);
 		magiceffect = false;
 		if (target.HP > 0) {
-						target.animation.Play ("Damage");
-						StartCoroutine (WaitAnimationEnd (target.animation ["Damage"].length));
-						target.animation.CrossFade ("Idle", 2f);
+			target.animation.Play ("Damage");
+			target.activateReactionEnd();
+			StartCoroutine (WaitAnimationEnd (target.animation ["Damage"].length));
+			target.animation.CrossFade ("Idle", 2f);
 		}
 		else
 		{

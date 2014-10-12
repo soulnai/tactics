@@ -16,7 +16,8 @@ public class GUImanager : MonoBehaviour {
 	public Text turnsIndicator;
 	public Text playerIndicator;
 	public Button abilityTest;
-	public Text battleLog;
+	public LogController Log;
+
 	// Use this for initialization
 	void Awake()
 	{
@@ -56,6 +57,7 @@ public class GUImanager : MonoBehaviour {
 
 	public void OnMoveClick()
 	{
+		abilitiesPanel.SetActive (false);
 		Unit u = gameManager.units[gameManager.currentUnitIndex] as Unit;
 		u.tryMove();
 	}
@@ -82,6 +84,7 @@ public class GUImanager : MonoBehaviour {
 
 	public void OnEndTurnClick()
 	{
+		abilitiesPanel.SetActive (false);
 		Unit u = gameManager.units[gameManager.currentUnitIndex] as Unit;
 		u.EndTurn();
 	}
