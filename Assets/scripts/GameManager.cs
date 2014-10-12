@@ -67,10 +67,12 @@ public class GameManager : MonoBehaviour {
 
 	void Awake() {
 		instance = this;
-		UserUnitPrefab [0] = StartScreenPersistentObj.instance.UserUnitPrefab [0];
-		UserUnitPrefab [1] = StartScreenPersistentObj.instance.UserUnitPrefab [1];
-		UserUnitPrefab [2] = StartScreenPersistentObj.instance.UserUnitPrefab [2];
-		UserUnitPrefab [3] = StartScreenPersistentObj.instance.UserUnitPrefab [3];
+		if(StartScreenPersistentObj.instance != null){
+			UserUnitPrefab [0] = StartScreenPersistentObj.instance.UserUnitPrefab [0];
+			UserUnitPrefab [1] = StartScreenPersistentObj.instance.UserUnitPrefab [1];
+			UserUnitPrefab [2] = StartScreenPersistentObj.instance.UserUnitPrefab [2];
+			UserUnitPrefab [3] = StartScreenPersistentObj.instance.UserUnitPrefab [3];
+		}
 		mapTransform = transform.FindChild("Map");
 		generateMap();
 		generateUnits();
@@ -84,7 +86,7 @@ public class GameManager : MonoBehaviour {
 		Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 		//reset AP
-		units[0].actionPoints = units[0].maxActionPoints;
+		units[0].AP = units[0].maxActionPoints;
 	}
 	
 	// Update is called once per frame
@@ -113,7 +115,7 @@ public class GameManager : MonoBehaviour {
 		}
 		GUImanager.instance.showAbilities();
 		//reset AP
-		units[currentUnitIndex].actionPoints = units[currentUnitIndex].maxActionPoints;
+		units[currentUnitIndex].AP = units[currentUnitIndex].maxActionPoints;
 		removeTileHighlights();
 
 		//reset & focus camera
@@ -182,11 +184,11 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	
-	public void attackWithCurrentPlayer(Tile destTile) {
+	public void attackWithCurrentPlayer(Tile destTile,BaseAbility a = null) {
 		if ((highlightedTiles.Contains(destTile)) && !destTile.impassible) {
 			
 			Unit target = destTile.unitInTile;
-			if(currentUnit.actionPoints > 0){
+			if(currentUnit.AP > 0){
 			Debug.Log(currentPlayerIndex);
 			if (target != null && (target.UnitState != unitStates.dead) && (!players[currentPlayerIndex].units.Contains(target))) {
 
@@ -236,11 +238,11 @@ public class GameManager : MonoBehaviour {
 	}
 
 
-	public void distanceAttackWithCurrentPlayer(Tile destTile) {
+	public void distanceAttackWithCurrentPlayer(Tile destTile,BaseAbility a = null) {
 		if ((highlightedTiles.Contains(destTile)) && !destTile.impassible) {
 
 			Unit target = destTile.unitInTile;
-			if(currentUnit.actionPoints > 0){
+			if(currentUnit.AP > 0){
 
 			if (units[currentUnitIndex].UnitAction != unitActions.healAttack) {
 
@@ -414,10 +416,8 @@ public class GameManager : MonoBehaviour {
 
 	public void Explode (Unit target, GameObject magictodestroy) {
 
-		Debug.Log(MagicExplosionPrefab.name);
-		Debug.Log(target.name);
 		GameObject magicExposion = ((GameObject)Instantiate(MagicExplosionPrefab, target.transform.position+0.5f*Vector3.up, Quaternion.identity));
-		Debug.Log ("explosion");
+		Debug.Log ("Ranged Hit - "+target.name+" with - "+MagicExplosionPrefab.name);
 		Destroy (magictodestroy);
 		magiceffect = false;
 		if (target.HP > 0) {

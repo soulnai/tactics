@@ -6,6 +6,7 @@ using EnumSpace;
 public class BaseAbility {
 	public string attackID;
 	public int APcost;
+	public bool endsUnitTurn = true;
 	public attackTypes attackType;
 	public int range;
 	public bool areaDamage;

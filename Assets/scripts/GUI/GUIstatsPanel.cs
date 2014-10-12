@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -19,7 +19,7 @@ public class GUIstatsPanel : MonoBehaviour {
 	void Update () {
 		currentUnit = gm.units[gm.currentUnitIndex];
 		Name.text ="Name - " + currentUnit.unitName;
-		AP.text = "AP - " + currentUnit.actionPoints;
+		AP.text = "AP - " + currentUnit.AP;
 		MP.text = "MP - " + currentUnit.MP;
 		HP.text = "HP - " + currentUnit.HP;
 	}

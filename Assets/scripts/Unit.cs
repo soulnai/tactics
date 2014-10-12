@@ -3,17 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using EnumSpace;
 
-//Events
-public delegate void UnitAnimationEnd(Unit unit);
-//
-
 [System.Serializable]
 public class Unit : MonoBehaviour {
 
 	public bool isFlying = false;
-
-	//public AnimationClip[] animationsArray;
-	public event UnitAnimationEnd OnUnitAnimationEnd;
 
 	public Vector2 gridPosition = Vector2.zero;
 	
@@ -27,6 +20,17 @@ public class Unit : MonoBehaviour {
 	public string unitName = "George";
 	public int MaxHP = 25;
 	public int HP = 25;
+	public int AP
+	{
+		get {return _AP;}
+		set {
+			_AP = value;
+			if(AP <= 0)
+			{
+
+			}
+		}
+	}
 	public int MP = 25;
 	public int Strength = 2;
 	public int Magic = 2;
@@ -39,22 +43,33 @@ public class Unit : MonoBehaviour {
 	public float damageRollSides = 6; //d6
 	
 	public int maxActionPoints = 2;
-	public int actionPoints;
+
 
 	public EnumSpace.unitStates UnitState;
 	public EnumSpace.unitActions UnitAction;
 	public Tile currentTile;
+	public BaseAbility currentAbility;
+	public Unit currentTarget;
 
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
 	public UnitSkillsManager unitAbilities;
 
+	private int _AP;
 	private Vector3 lookDirection = Vector3.zero;
 
 	void Awake () {
 		moveDestination = transform.position;
-		actionPoints = maxActionPoints;
+		AP = maxActionPoints;
+
+	}
+
+	public void ReactionsEnd (Unit unit)
+	{
+		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
+//		if(unit != this)
+			Debug.Log("This - "+this.unitName+" // target - " +unit.unitName+"Reaction End");
 	}
 	
 	// Use this for initialization
@@ -77,9 +92,9 @@ public class Unit : MonoBehaviour {
 	{
 		GameManager.instance.removeTileHighlights ();
 
-		if((actionPoints > 0)&&(MP >= a.MPCost)){
+		if((AP > 0)&&(MP >= a.MPCost)){
 			if (unitAbilities.abilities.Contains(a)) {
-
+				currentAbility = a;
 				attackDistance = a.range;
 				damageBase = a.baseDamage;
 				//magic
@@ -121,16 +136,24 @@ public class Unit : MonoBehaviour {
 
 	public void Attack(Unit target)
 	{
+		UnitEvents.onUnitReactionEnd += ReactionsEnd;
+
+		if(currentAbility.endsUnitTurn){
+			AP = 0;
+		}
+		else
+		{
+			AP -= currentAbility.APcost;
+		}
+
 		animation.Play("Attack");
-		StartCoroutine(WaitAndCallback(animation["Attack"].length));
-		actionPoints=0;
-//		checkAP ();
+		StartCoroutine(WaitAnimationEnd(animation["Attack"].length));
 	}
 
 	public void tryMove ()
 	{
 		GameManager.instance.removeTileHighlights ();
-		if(actionPoints > 0){
+		if(AP > 0){
 			UnitAction = unitActions.readyToMove;
 			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
 		}
@@ -150,7 +173,7 @@ public class Unit : MonoBehaviour {
 				if (positionQueue.Count == 0) {
 					animation.Stop();
 					animation.CrossFade("Idle", 0.2F);
-					actionPoints--;
+					AP--;
 					UnitAction = unitActions.idle;
 					checkAP();
 				}
@@ -162,16 +185,14 @@ public class Unit : MonoBehaviour {
 	public void makeDead()
 	{
 		HP = 0;
-		actionPoints = 0;
 		UnitState = unitStates.dead;
 		GameManager.instance.checkVictory();
 		animation.CrossFade("Death");
-		StartCoroutine(WaitAndCallback(animation["Death"].length));
+		StartCoroutine(WaitAnimationEnd(animation["Death"].length,true));
 	}
 
 	public virtual void EndTurn () {
 		GameManager.instance.removeTileHighlights ();
-		actionPoints = 0;
 		UnitAction = unitActions.idle;
 		GameManager.instance.nextTurn ();
 	}
@@ -195,7 +216,7 @@ public class Unit : MonoBehaviour {
 		else
 		{
 			animation.CrossFade("Damage");
-			StartCoroutine(WaitAndCallback(animation["Damage"].length));
+			StartCoroutine(WaitAnimationEnd(animation["Damage"].length,true));
 		}
 	}
 
@@ -207,7 +228,7 @@ public class Unit : MonoBehaviour {
 		else
 		{
 			animation.CrossFade("Damage");
-			StartCoroutine(WaitAndCallback(animation["Damage"].length));
+			StartCoroutine(WaitAnimationEnd(animation["Damage"].length,true));
 		}
 	}
 
@@ -218,13 +239,14 @@ public class Unit : MonoBehaviour {
 		currentTile.unitInTile = this;
 		transform.position = currentTile.transform.position + new Vector3(0,0.5f,0);
 	}
-	IEnumerator WaitAndCallback(float waitTime){
-		Debug.Log("Started");
+	IEnumerator WaitAnimationEnd(float waitTime,bool target = false){
+//		Debug.Log("Started");
 		yield return new WaitForSeconds(waitTime);
-//		Debug.Log("Animation Ended");
-		if(OnUnitAnimationEnd != null)
-		{
-			OnUnitAnimationEnd(this);
+		if(target){
+			UnitEvents.ReactionEnd(this);
+//			ReactionsEnd(this);
 		}
+//		Debug.Log("Animation Ended");
+
 	}
 }

@@ -17,7 +17,7 @@ public class UserUnit : Unit {
 	public void MagicAttack ()
 	{
 		GameManager.instance.removeTileHighlights ();
-		if(actionPoints > 0){
+		if(AP > 0){
 			if (unitSkills.abilitiesList.Contains ("baseMagic")) {
 				attackDistance = AbilitiesManager.instance.getAbility("baseMagic").range;
 				damageBase = AbilitiesManager.instance.getAbility("baseMagic").baseDamage;
@@ -34,7 +34,7 @@ public class UserUnit : Unit {
 	public void MeleeAttack ()
 	{
 		GameManager.instance.removeTileHighlights ();
-		if(actionPoints > 0){
+		if(AP > 0){
 			if (unitSkills.abilitiesList.Contains ("baseMelee")) {
 				UnitAction = unitActions.meleeAttack;
 				attackDistance = AbilitiesManager.instance.getAbility("baseMelee").range;
@@ -47,7 +47,7 @@ public class UserUnit : Unit {
 	public void RangedAttack ()
 	{
 		GameManager.instance.removeTileHighlights ();
-		if(actionPoints > 0){
+		if(AP > 0){
 			if (unitSkills.abilitiesList.Contains ("baseRanged")) {
 				attackDistance = AbilitiesManager.instance.getAbility("baseRanged").range;
 				damageBase = AbilitiesManager.instance.getAbility("baseRanged").baseDamage;
@@ -63,7 +63,7 @@ public class UserUnit : Unit {
 	public void StunAttack ()
 	{
 		GameManager.instance.removeTileHighlights ();
-		if(actionPoints > 0){
+		if(AP > 0){
 			if (unitSkills.abilitiesList.Contains ("baseStun")) {
 				attackDistance = AbilitiesManager.instance.getAbility("baseStun").range;
 				damageBase = AbilitiesManager.instance.getAbility("baseStun").baseDamage;
