@@ -24,7 +24,7 @@ public class AIPlayer : Unit {
 		a = unitAbilities.abilities[Random.Range(0, unitAbilities.abilities.Count)];
 		//onAbility (ability);
 
-		if ((actionPoints > 0) && (MP >= a.MPCost)) {
+		if ((AP > 0) && (MP >= a.MPCost)) {
 						if (unitAbilities.abilities.Contains (a)) {
 				
 								attackRange = a.range;
