@@ -192,6 +192,7 @@ public class Unit : MonoBehaviour {
 	}
 
 	public virtual void EndTurn () {
+		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
 		GameManager.instance.removeTileHighlights ();
 		UnitAction = unitActions.idle;
 		GameManager.instance.nextTurn ();
