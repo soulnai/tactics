@@ -273,7 +273,7 @@ public class GameManager : MonoBehaviour {
 							
 					currentUnit.Attack(target);	
 
-					units[currentUnitIndex].MP -= AbilitiesManager.instance.getAbility("baseMagic").MPCost;
+							units[currentUnitIndex].MP -= units[currentUnitIndex].currentAbility.MPCost;
 					//attack logic
 					//roll to hit
 					bool hit = Random.Range(0.0f, 1.0f) <= units[currentUnitIndex].attackChance;
