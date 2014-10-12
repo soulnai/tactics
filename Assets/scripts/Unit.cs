@@ -58,7 +58,7 @@ public class Unit : MonoBehaviour {
 
 	private int _AP;
 	private Vector3 lookDirection = Vector3.zero;
-
+	private float delayAfterAnim = 1f;
 	void Awake () {
 		moveDestination = transform.position;
 		AP = maxActionPoints;
@@ -68,8 +68,8 @@ public class Unit : MonoBehaviour {
 	public void ReactionsEnd (Unit unit)
 	{
 		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
-//		if(unit != this)
-			Debug.Log("This - "+this.unitName+" // target - " +unit.unitName+"Reaction End");
+		EndTurn();
+		Debug.Log("This - "+this.unitName+" // target - " +unit.unitName+"Reaction End");
 	}
 	
 	// Use this for initialization
@@ -188,7 +188,7 @@ public class Unit : MonoBehaviour {
 		UnitState = unitStates.dead;
 		GameManager.instance.checkVictory();
 		animation.CrossFade("Death");
-		StartCoroutine(WaitAnimationEnd(animation["Death"].length,true));
+		StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim,true));
 	}
 
 	public virtual void EndTurn () {
@@ -216,7 +216,7 @@ public class Unit : MonoBehaviour {
 		else
 		{
 			animation.CrossFade("Damage");
-			StartCoroutine(WaitAnimationEnd(animation["Damage"].length,true));
+			StartCoroutine(WaitAnimationEnd(animation["Damage"].length+delayAfterAnim,true));
 		}
 	}
 
@@ -225,11 +225,8 @@ public class Unit : MonoBehaviour {
 		HP += heal;
 		if (HP>=MaxHP)
 			HP = MaxHP;
-		else
-		{
-			animation.CrossFade("Damage");
-			StartCoroutine(WaitAnimationEnd(animation["Damage"].length,true));
-		}
+		animation.CrossFade("Damage");
+		StartCoroutine(WaitAnimationEnd(animation["Damage"].length+delayAfterAnim,true));
 	}
 
 	public void placeUnit(Vector2 position)

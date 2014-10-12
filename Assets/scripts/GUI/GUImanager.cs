@@ -119,7 +119,7 @@ public class GUImanager : MonoBehaviour {
 			abilitiesButtonsList[j].GetComponent<buttonTextController>().setText(abilitiesList[j].attackID);
 			abilitiesButtonsList[j].onClick.RemoveAllListeners();
 			abilitiesButtonsList[j].onClick.AddListener(delegate{onAbilityClick(abilitiesList[j]);});
-			Debug.Log(abilitiesList[j].attackID);
+//			Debug.Log(abilitiesList[j].attackID);
 		}
 		}
 	}
