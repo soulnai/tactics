@@ -23,5 +23,6 @@ public class FXController : MonoBehaviour {
 
 	public void Kill(){
 		FXmanager.instance.OnFXMoveEnd(this.transform.position,ability,unitOwner,unitTarget);
+		Destroy(gameObject);
 	}
 }
