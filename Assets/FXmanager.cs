@@ -28,7 +28,7 @@ public class FXmanager : MonoBehaviour {
 		}
 		else
 		{
-			createFX(a.rangedFXprefab,startPos,startPos,a,owner,target);
+			createFX(a.hitFXprefab,startPos,startPos,a,owner,target);
 		}
 
 	}

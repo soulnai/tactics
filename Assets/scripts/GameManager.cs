@@ -248,7 +248,15 @@ public class GameManager : MonoBehaviour {
 					} else {
 				_target.takeDamage(amountOfDamage);
 					}
-				
+
+					if((ability.attackType != attackTypes.melee)&&(ability.rangedFXprefab != null))
+					{
+						FXmanager.instance.createAbilityFX(ability.rangedFXprefab,unitOwner.transform.position,targetUnit.transform.position,ability);
+					}
+					if((ability.attackType == attackTypes.melee)&&(ability.hitFXprefab != null))
+					{
+						FXmanager.instance.createAbilityFX(ability.hitFXprefab,targetUnit.transform.position,targetUnit.transform.position,ability);
+					}
 				
 				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 			
