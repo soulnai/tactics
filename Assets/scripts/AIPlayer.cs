@@ -102,9 +102,9 @@ public class AIPlayer : Unit {
 								GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackRange, true);
 
 								if (UnitAction == unitActions.rangedAttack || UnitAction == unitActions.magicAttack) {
-										GameManager.instance.distanceAttackWithCurrentPlayer (GameManager.instance.map [(int)opponent.gridPosition.x] [(int)opponent.gridPosition.y]); 
+										GameManager.instance.distanceAttackWithCurrentPlayer (GameManager.instance.map [(int)opponent.gridPosition.x] [(int)opponent.gridPosition.y],a); 
 								} else {
-										GameManager.instance.attackWithCurrentPlayer (GameManager.instance.map [(int)opponent.gridPosition.x] [(int)opponent.gridPosition.y]); 
+										GameManager.instance.attackWithCurrentPlayer (GameManager.instance.map [(int)opponent.gridPosition.x] [(int)opponent.gridPosition.y],a); 
 								}
 						}
 				//move toward nearest attack range of opponent
