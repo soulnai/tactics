@@ -129,8 +129,11 @@ public class Unit : MonoBehaviour {
 			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 			}
 			else
-			{
-				GUImanager.instance.Log.addText("Not enought <b><color=blue>MP</color></b>");
+			{	if(AP <= 0){
+					GUImanager.instance.Log.addText("Not enought <b><color=red>AP</color></b>");
+				} else if(MP < a.MPCost){
+					GUImanager.instance.Log.addText("Not enought <b><color=blue>MP</color></b>");
+				}
 			}
 		}
 		else
