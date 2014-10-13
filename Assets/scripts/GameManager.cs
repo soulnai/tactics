@@ -229,11 +229,20 @@ public class GameManager : MonoBehaviour {
 
 			//ckeck if hit
 			bool hit = Random.Range(0.0f, 1.0f) <= unitOwner.attackChance;//replace with Ability chance
-
+				if (Random.Range(0.0f, 1.0f) <= unitOwner.avoidChance){
+					hit = false;
+					GUImanager.instance.Log.addText("<b>"+_target.unitName+":</b>" + " successfuly avoided - "+ability.abilityID + " of " + unitOwner.unitName+"!");
+				}
 			//if hit
 			if (hit) {
 				//damage logic
-				int amountOfDamage = (int)Mathf.Floor(unitOwner.damageBase + Random.Range(0, unitOwner.damageRollSides));
+				//int amountOfDamage = (int)Mathf.Floor(unitOwner.damageBase + Random.Range(0, unitOwner.damageRollSides));
+					int amountOfDamage = 0;
+					if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal || ability.attackType == attackTypes.ranged) {
+						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDefense);
+					} else {
+						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDefense);
+					}
 				
 				_target.takeDamage(amountOfDamage);
 				
@@ -255,13 +264,15 @@ public class GameManager : MonoBehaviour {
 
 	public bool checkAbilityRange (BaseAbility ability, Unit owner,Unit target)
 	{
-		if(owner == target)
-			return true;
-		else if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange &&
-		    owner.gridPosition.y >= target.gridPosition.y - owner.attackRange && owner.gridPosition.y <= target.gridPosition.y + owner.attackRange) {
-			return true;
-		}
-		else
+		if (highlightedTiles.Contains (target.currentTile)) {
+						if (owner == target)
+								return true;
+						else if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange &&
+								owner.gridPosition.y >= target.gridPosition.y - owner.attackRange && owner.gridPosition.y <= target.gridPosition.y + owner.attackRange) {
+								return true;
+						} else
+								return false;
+		}	else
 			return false;
 	}
 
