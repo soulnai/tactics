@@ -243,8 +243,12 @@ public class GameManager : MonoBehaviour {
 					} else {
 						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDefense);
 					}
-				
+					if (ability.attackType == attackTypes.heal) {
+						_target.takeHeal(amountOfDamage);
+					} else {
 				_target.takeDamage(amountOfDamage);
+					}
+				
 				
 				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 			
@@ -264,10 +268,11 @@ public class GameManager : MonoBehaviour {
 
 	public bool checkAbilityRange (BaseAbility ability, Unit owner,Unit target)
 	{
+		if (owner == target)
+			return true;
 		if (highlightedTiles.Contains (target.currentTile)) {
-						if (owner == target)
-								return true;
-						else if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange &&
+						
+						if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange &&
 								owner.gridPosition.y >= target.gridPosition.y - owner.attackRange && owner.gridPosition.y <= target.gridPosition.y + owner.attackRange) {
 								return true;
 						} else
