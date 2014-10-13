@@ -11,7 +11,7 @@ public class Unit : MonoBehaviour {
 	public Vector2 gridPosition = Vector2.zero;
 	
 	public Vector3 moveDestination;
-	public float moveSpeed = 10.0f;
+	public float moveSpeed = 5.0f;
 	
 	public int movementPerActionPoint = 5;
 	public int attackRange = 1;
@@ -38,8 +38,11 @@ public class Unit : MonoBehaviour {
 	public int MagicDefense = 2;
 	
 	public float attackChance = 0.75f;
-	public float defenseReduction = 0.15f;
-	public int damageBase = 5;
+	public float avoidChance = 0.15f;
+	public float criticalChance = 0.1f;
+	public float criticalModifier = 1.5f;
+	public int damageBase = 1;
+	public int maxdamageBase = 5;
 	public float damageRollSides = 6; //d6
 	
 	public int maxActionPoints = 2;
