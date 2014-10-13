@@ -5,8 +5,7 @@ public class UnitEvents : MonoBehaviour {
 
 	public delegate void UnitEventHandler(Unit unit);
 	public delegate void UnitInteractionEventHandler(Unit owner,Unit target);
-
-	public static event UnitEventHandler onUnitReactionStart;
+	
 	public static event UnitEventHandler onUnitReactionEnd;
 	public static event UnitInteractionEventHandler onUnitFXEnd;
 

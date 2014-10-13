@@ -133,7 +133,19 @@ public class AIPlayer : Unit {
 				GameManager.instance.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
 				UnitAction = unitActions.moving;
 				List<Tile> path = TilePathFinder.FindPath (GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], GameManager.instance.units.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
-				GameManager.instance.moveCurrentPlayer(path[(int)Mathf.Min(Mathf.Max (path.Count - 1 - attackRange, 0), movementPerActionPoint - 1)]);
+				int movementCost = 0;
+				int pathPoint = 0;
+				for(int i=0;i<path.Count-1;i++)
+				{
+					movementCost +=path[i].movementCost;
+					if(movementCost <= movementPerActionPoint)
+					{
+						pathPoint = i;
+					}
+				}
+				Debug.Log(movementCost);
+				Debug.Log(pathPoint);
+				GameManager.instance.moveCurrentPlayer(path[(int)Mathf.Min(Mathf.Max (path.Count - 1 - attackRange, 0), pathPoint)]);
 			}
 		}
 	}

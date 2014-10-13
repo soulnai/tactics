@@ -259,8 +259,4 @@ public class Unit : MonoBehaviour {
 		yield return new WaitForSeconds(t);
 		EndTurn();
 	}
-
-	public void activateReactionEnd(){
-		UnitEvents.ReactionEnd(this);
-	}
 }
