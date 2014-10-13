@@ -15,7 +15,7 @@ public class FXController : MonoBehaviour {
 	
 	}
 
-	public void Init(BaseAbility a = null,Unit owner = null,Unit target = null){
+	public void Init(Vector3 startPos = default(Vector3), Vector3 endPos = default(Vector3),BaseAbility a = null,Unit owner = null,Unit target = null){
 		ability = a;
 		unitOwner = owner;
 		unitTarget = target;

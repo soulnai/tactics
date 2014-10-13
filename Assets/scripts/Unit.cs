@@ -160,11 +160,11 @@ public class Unit : MonoBehaviour {
 		animation.Play("Attack");
 		if((a.attackType != attackTypes.melee)&&(a.rangedFXprefab != null))
 		{
-			FXmanager.instance.createFX(a.rangedFXprefab,this.transform.position,target.transform.position,currentAbility);
+			FXmanager.instance.createAbilityFX(a.rangedFXprefab,this.transform.position,target.transform.position,currentAbility);
 		}
 		if((a.attackType == attackTypes.melee)&&(a.hitFXprefab != null))
 		{
-			FXmanager.instance.createFX(a.hitFXprefab,target.transform.position,target.transform.position,currentAbility);
+			FXmanager.instance.createAbilityFX(a.hitFXprefab,target.transform.position,target.transform.position,currentAbility);
 		}
 		
 		StartCoroutine(WaitAnimationEnd(animation["Attack"].length));
