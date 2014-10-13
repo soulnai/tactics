@@ -14,6 +14,7 @@ public class BaseAbility {
 
 	public bool endsUnitTurn = true;
 	public attackTypes attackType;
+	public unitActions unitAction;
 
 	//target flags
 	public bool requireTarget = true;

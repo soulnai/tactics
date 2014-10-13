@@ -25,10 +25,6 @@ public class Unit : MonoBehaviour {
 		get {return _AP;}
 		set {
 			_AP = value;
-			if(AP <= 0)
-			{
-				//send event no AP
-			}
 		}
 	}
 	public int MP = 25;
@@ -62,20 +58,37 @@ public class Unit : MonoBehaviour {
 	private int _AP;
 	private Vector3 lookDirection = Vector3.zero;
 	private float delayAfterAnim = 0.5f;
+	private bool canEndTurn = false;
+
 	void Awake () {
 		moveDestination = transform.position;
 		AP = maxActionPoints;
 
 	}
 
+	public void checkEndTurn()
+	{
+		if(GameManager.instance.currentUnit == this)
+		{
+			if((AP<=0)&&(canEndTurn == true))
+			{
+				canEndTurn = false;
+				StartCoroutine(delayedEndTurn(delayAfterAnim));
+			}
+			else if(UnitState == unitStates.dead)
+			{
+				EndTurn();
+			}
+		}
+	}
+
 	public void ReactionsEnd (Unit unit)
 	{
 		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
-		if(AP <= 0)
-			EndTurn();
+		canEndTurn = true;
 		Debug.Log("This - "+this.unitName+" // target - " +unit.unitName+"Reaction End");
 	}
-	
+
 	// Use this for initialization
 	void Start () {
 
@@ -83,12 +96,14 @@ public class Unit : MonoBehaviour {
 	
 	// Update is called once per frame
 	public virtual void Update () {		
-		if (UnitState == unitStates.dead&&(GameManager.instance.units[GameManager.instance.currentUnitIndex] == this)) {
-			EndTurn();
-		}
-		if(UnitAction == unitActions.moving)
+		if(GameManager.instance.currentUnit == this)
 		{
-			MoveUnit();
+			checkEndTurn();
+		
+			if(UnitAction == unitActions.moving)
+			{
+				MoveUnit();
+			}
 		}
 	}
 
@@ -101,35 +116,8 @@ public class Unit : MonoBehaviour {
 				currentAbility = a;
 				attackDistance = a.range;
 				damageBase = a.baseDamage;
-				//magic
-				if(a.attackType == attackTypes.magic){
-					UnitAction = unitActions.magicAttack;
-					GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Freeze;
-					GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FreezeExplode;
-				}
-				//ranged
-				else if(a.attackType == attackTypes.ranged){
-					UnitAction = unitActions.rangedAttack;
-					GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
-					GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
-				}
-				//melee
-				else if(a.attackType == attackTypes.melee){
-					UnitAction = unitActions.meleeAttack;
-				}
-				//stun
-				else if(a.attackType == attackTypes.ranged){
-					UnitAction = unitActions.rangedAttack;
-					GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Poison;
-					GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.PoisonExplode;
-				}
-				else if(a.attackType == attackTypes.heal){
-					UnitAction = unitActions.healAttack;
-					GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Heal;
-					GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.HealExplode;
-				}
-
-			GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+				UnitAction = a.unitAction;
+				GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 			}
 			else
 			{	if(AP <= 0){
@@ -145,8 +133,9 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	public void Ability(BaseAbility a,Unit target)
+	public void playAbility(BaseAbility a,Unit target)
 	{
+		canEndTurn = false;
 		UnitEvents.onUnitReactionEnd += ReactionsEnd;
 
 		if(a.endsUnitTurn){
@@ -175,6 +164,7 @@ public class Unit : MonoBehaviour {
 	public void MoveUnit()
 	{
 		if (positionQueue.Count > 0) {
+			canEndTurn = false;
 			lookDirection = (positionQueue[0] - transform.position).normalized;
 			lookDirection.y = 0;
 			
@@ -188,11 +178,10 @@ public class Unit : MonoBehaviour {
 					animation.CrossFade("Idle", 0.2F);
 					AP--;
 					UnitAction = unitActions.idle;
-					checkAP();
+					canEndTurn = true;
 				}
 			}	
 		}
-//		UnitAction = unitActions.idle;
 	}
 
 	public void makeDead()
@@ -206,7 +195,9 @@ public class Unit : MonoBehaviour {
 
 	public virtual void EndTurn () {
 		GameManager.instance.removeTileHighlights ();
-		UnitAction = unitActions.idle;
+		if(UnitState != unitStates.dead)
+			UnitAction = unitActions.idle;
+		canEndTurn = false;
 		GameManager.instance.nextTurn ();
 	}
 
@@ -214,11 +205,6 @@ public class Unit : MonoBehaviour {
 		//display HP
 		Vector3 location = Camera.main.WorldToScreenPoint(transform.position) + Vector3.up * 55;
 		GUI.Label(new Rect(location.x, Screen.height - location.y, 30, 20), HP.ToString());
-	}
-
-	public void checkAP()
-	{
-//		Debug.Log(actionPoints);
 	}
 
 	public void takeDamage(int damage)
@@ -256,6 +242,13 @@ public class Unit : MonoBehaviour {
 		}
 		if(UnitState != unitStates.dead)
 			animation.CrossFade("Idle",0.2f);
+	}
+
+	IEnumerator delayedEndTurn (float t)
+	{
+		yield return new WaitForSeconds(t);
+		EndTurn();
+		Debug.Log("End turn");
 	}
 
 	public void activateReactionEnd(){

@@ -134,6 +134,5 @@ public class AIPlayer : Unit {
 				GameManager.instance.moveCurrentPlayer(path[(int)Mathf.Min(Mathf.Max (path.Count - 1 - attackRange, 0), movementPerActionPoint - 1)]);
 			}
 		}
-		checkAP();
 	}
 }
