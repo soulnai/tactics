@@ -142,19 +142,23 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	public void Ability(Unit target)
+	public void Ability(BaseAbility a,Unit target)
 	{
 		UnitEvents.onUnitReactionEnd += ReactionsEnd;
 
-		if(currentAbility.endsUnitTurn){
+		if(a.endsUnitTurn){
 			AP = 0;
 		}
 		else
 		{
-			AP -= currentAbility.APcost;
+			AP -= a.APcost;
 		}
 
 		animation.Play("Attack");
+		if((a.attackType != attackTypes.melee)&&(a.rangedFXprefab != null))
+		{
+			FXmanager.instance.createFX(a.rangedFXprefab,this.transform.position,target.transform.position,currentAbility);
+		}
 		StartCoroutine(WaitAnimationEnd(animation["Attack"].length));
 	}
 

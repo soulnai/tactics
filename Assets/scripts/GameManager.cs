@@ -225,7 +225,7 @@ public class GameManager : MonoBehaviour {
 		if(checkAbilityRange(ability,unitOwner,_target))
 		{
 			removeTileHighlights();
-			unitOwner.Ability(_target);
+			unitOwner.Ability(ability,_target);
 
 			//ckeck if hit
 			bool hit = Random.Range(0.0f, 1.0f) <= unitOwner.attackChance;//replace with Ability chance
@@ -301,7 +301,7 @@ public class GameManager : MonoBehaviour {
 
 					removeTileHighlights();
 
-					currentUnit.Ability(target);		
+					currentUnit.Ability(a,target);		
 
 					bool hit = Random.Range(0.0f, 1.0f) <= units[currentUnitIndex].attackChance;
 
@@ -360,7 +360,7 @@ public class GameManager : MonoBehaviour {
 					
 					removeTileHighlights();
 							
-					currentUnit.Ability(target);	
+					currentUnit.Ability(a,target);	
 
 							units[currentUnitIndex].MP -= units[currentUnitIndex].currentAbility.MPCost;
 					//attack logic
@@ -415,7 +415,7 @@ public class GameManager : MonoBehaviour {
 							
 							removeTileHighlights();
 							
-							currentUnit.Ability(target);	
+							currentUnit.Ability(a,target);	
 							
 							units[currentUnitIndex].MP -= AbilitiesManager.instance.getAbility("baseMagic").MPCost;
 							//attack logic
