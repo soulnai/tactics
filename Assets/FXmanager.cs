@@ -30,7 +30,6 @@ public class FXmanager : MonoBehaviour {
 		{
 			createFX(a.hitFXprefab,startPos,startPos,a,owner,target);
 		}
-
 	}
 
 	public void createFX(GameObject FXprefab,Vector3 startPos = default(Vector3), Vector3 endPos = default(Vector3),BaseAbility a = null,Unit owner = null,Unit target = null)

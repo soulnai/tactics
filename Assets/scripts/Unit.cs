@@ -133,10 +133,11 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	public void playAbility(BaseAbility a,Unit target)
+	public void playAbility(BaseAbility a,bool missed = false)
 	{
 		canEndTurn = false;
 		UnitEvents.onUnitReactionEnd += ReactionsEnd;
+		UnitEvents.onUnitFXEnd += FXend;
 
 		if(a.endsUnitTurn){
 			AP = 0;
@@ -145,11 +146,19 @@ public class Unit : MonoBehaviour {
 		{
 			AP -= a.APcost;
 		}
-
 		animation.Play("Attack");
-
-		
 		StartCoroutine(WaitAnimationEnd(animation["Attack"].length));
+
+		if(missed)
+		{
+			StartCoroutine(WaitAnimationEnd(animation["Attack"].length,true));
+		}
+	}
+
+	public void FXend(Unit owner,Unit target)
+	{
+		if(owner = this)
+			Debug.Log("FX ended");
 	}
 
 	public void tryMove ()
@@ -235,9 +244,10 @@ public class Unit : MonoBehaviour {
 		currentTile.unitInTile = this;
 		transform.position = currentTile.transform.position + new Vector3(0,0.5f,0);
 	}
-	IEnumerator WaitAnimationEnd(float waitTime,bool target = false){
+
+	IEnumerator WaitAnimationEnd(float waitTime,bool triggerReactionEnd = false){
 		yield return new WaitForSeconds(waitTime);
-		if(target){
+		if(triggerReactionEnd){
 			UnitEvents.ReactionEnd(this);
 		}
 		if(UnitState != unitStates.dead)
@@ -248,7 +258,6 @@ public class Unit : MonoBehaviour {
 	{
 		yield return new WaitForSeconds(t);
 		EndTurn();
-		Debug.Log("End turn");
 	}
 
 	public void activateReactionEnd(){
