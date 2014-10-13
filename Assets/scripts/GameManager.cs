@@ -183,7 +183,7 @@ public class GameManager : MonoBehaviour {
 			}			
 			units[currentUnitIndex].gridPosition = destTile.gridPosition;
 			destTile.unitInTile = units[currentUnitIndex];
-
+			currentUnit.currentTile = destTile;
 		} else {
 			Debug.Log ("destination invalid");
 		}
