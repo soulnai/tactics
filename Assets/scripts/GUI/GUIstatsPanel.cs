@@ -2,7 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
+public enum track{
+	currentUnit,
+	currentTarget
+}
+
 public class GUIstatsPanel : MonoBehaviour {
+	public track t;
 	public Text Name;
 	public Text AP;
 	public Text MP;
@@ -17,10 +23,19 @@ public class GUIstatsPanel : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		currentUnit = gm.units[gm.currentUnitIndex];
-		Name.text ="Name - " + currentUnit.unitName;
-		AP.text = "AP - " + currentUnit.AP;
-		MP.text = "MP - " + currentUnit.MP;
-		HP.text = "HP - " + currentUnit.HP;
+		switch (t) {
+		case track.currentUnit:
+			currentUnit = gm.currentUnit;
+			break;
+		case track.currentTarget:
+			currentUnit = gm.targetPub;
+			break;
+		}
+		if(currentUnit != null){
+			Name.text ="Name - " + currentUnit.unitName;
+			AP.text = "AP - " + currentUnit.AP;
+			MP.text = "MP - " + currentUnit.MP;
+			HP.text = "HP - " + currentUnit.HP;
+		}
 	}
 }
