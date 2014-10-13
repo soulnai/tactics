@@ -162,6 +162,11 @@ public class Unit : MonoBehaviour {
 		{
 			FXmanager.instance.createFX(a.rangedFXprefab,this.transform.position,target.transform.position,currentAbility);
 		}
+		if((a.attackType == attackTypes.melee)&&(a.hitFXprefab != null))
+		{
+			FXmanager.instance.createFX(a.hitFXprefab,target.transform.position,target.transform.position,currentAbility);
+		}
+		
 		StartCoroutine(WaitAnimationEnd(animation["Attack"].length));
 	}
 
