@@ -26,6 +26,7 @@ public class BaseAbility {
 	public areaPatterns areaPattern;
 
 	public int baseDamage;
+	public string effectToApply;
 	public int effectDamage;
 	public float effectApplyChance;
 	public damageTypes damageType;
