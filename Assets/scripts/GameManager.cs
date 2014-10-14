@@ -122,6 +122,15 @@ public class GameManager : MonoBehaviour {
 			GUImanager.instance.showAbilities();
 			//reset AP
 			units[currentUnitIndex].AP = units[currentUnitIndex].maxActionPoints;
+			if (units[currentUnitIndex].currentStatusEffectDuration>0 || units[currentUnitIndex].UnitState != unitStates.normal) {
+				if (units[currentUnitIndex].UnitState == unitStates.stunned) {
+					units[currentUnitIndex].AP = 0;
+				}
+				units[currentUnitIndex].currentStatusEffectDuration--;
+				if (units[currentUnitIndex].currentStatusEffectDuration<=0 ){
+					units[currentUnitIndex].UnitState = unitStates.normal;
+				}
+			}
 			removeTileHighlights();
 
 			//reset & focus camera
@@ -164,7 +173,7 @@ public class GameManager : MonoBehaviour {
 
 				if (currentUnit.currentAbility.areaPattern == areaPatterns.line) {
 
-						RaycastHit[] hit;// = gameObject.transform.position;
+						RaycastHit[] hit;
 						LayerMask mask = 1 << LayerMask.NameToLayer ("tiles");
 			hit = (Physics.RaycastAll (currentUnit.transform.position- 0.5f * Vector3.up, currentUnit.transform.forward, 5f, mask));
 
@@ -173,8 +182,6 @@ public class GameManager : MonoBehaviour {
 						highlightedTiles.Add (hit[i].transform.gameObject.GetComponent<Tile> ());
 						Tile t = hit[i].transform.gameObject.GetComponent<Tile> ();
 						t.visual.transform.renderer.materials [1].color = highlightColor;
-						
-						Debug.Log("Tile hitted");
 					}
 				}
 								
@@ -305,9 +312,11 @@ public class GameManager : MonoBehaviour {
 
 	public void applyAbilityEffectToTarget (BaseAbility ability, Unit _target)
 	{
-		if (ability.damageType == damageTypes.blunt) {
+		if (ability.damageType == damageTypes.blunt && currentUnit.UnitState == unitStates.normal) {
 			if (Random.Range(0.0f, 1.0f) <= ability.effectApplyChance && Random.Range(0.0f, 1.0f)> _target.Strength/100) {
-				_target.UnitState = unitStates.stunned;}
+				_target.UnitState = unitStates.stunned;
+				_target.currentStatusEffectDuration = ability.duration;
+			}
 		}
 	}
 

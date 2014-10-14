@@ -49,6 +49,7 @@ public class Unit : MonoBehaviour {
 	public Tile currentTile;
 	public BaseAbility currentAbility;
 	public Unit currentTarget;
+	public int currentStatusEffectDuration;
 
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	

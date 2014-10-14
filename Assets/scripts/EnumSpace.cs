@@ -7,6 +7,7 @@ namespace EnumSpace {
 		stunned,
 		poisoned,
 		burning,
+		freezed,
 		dead
 	}
 
