@@ -142,27 +142,55 @@ public class GameManager : MonoBehaviour {
 
 	public void highlightTilesAt(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers) {
 
-		highlightedTiles = new List<Tile>();
 
-		if (ignorePlayers) highlightedTiles = TileHighlight.FindHighlight(map[(int)originLocation.x][(int)originLocation.y], distance);
-		else highlightedTiles = TileHighlight.FindHighlight(map[(int)originLocation.x][(int)originLocation.y], distance, units.Where(x => x.gridPosition != originLocation).Select(x => x.gridPosition).ToArray());
+
+
+						highlightedTiles = new List<Tile> ();
+
+						if (ignorePlayers)
+								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
+						else
+								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
 		
-		foreach (Tile t in highlightedTiles) {
-			t.visual.transform.renderer.materials[1].color = highlightColor;
-		}
+						foreach (Tile t in highlightedTiles) {
+								t.visual.transform.renderer.materials [1].color = highlightColor;
+						}
+				
 	}
 
 	public void AttackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers) {
-		
-		highlightedTiles = new List<Tile>();
-		
-		if (ignorePlayers) highlightedTiles = TileHighlightAtack.FindHighlight(map[(int)originLocation.x][(int)originLocation.y], distance);
-		else highlightedTiles = TileHighlightAtack.FindHighlight(map[(int)originLocation.x][(int)originLocation.y], distance, units.Where(x => x.gridPosition != originLocation).Select(x => x.gridPosition).ToArray());
 
-		foreach (Tile t in highlightedTiles) 
-			t.visual.transform.renderer.materials[1].color = highlightColor;
+				highlightedTiles = new List<Tile> ();
+
+				if (currentUnit.currentAbility.areaPattern == areaPatterns.line) {
+
+						RaycastHit[] hit;// = gameObject.transform.position;
+						LayerMask mask = 1 << LayerMask.NameToLayer ("tiles");
+			hit = (Physics.RaycastAll (currentUnit.transform.position- 0.5f * Vector3.up, currentUnit.transform.forward, 5f, mask));
+
+				for (int i=0; i<hit.Length; i++)	{
+					if (hit[i].transform.gameObject.GetComponent<Tile> () != null) {
+						highlightedTiles.Add (hit[i].transform.gameObject.GetComponent<Tile> ());
+						Tile t = hit[i].transform.gameObject.GetComponent<Tile> ();
+						t.visual.transform.renderer.materials [1].color = highlightColor;
+						
+						Debug.Log("Tile hitted");
+					}
+				}
+								
+			} else {
+
+
+								if (ignorePlayers)
+										highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
+								else
+										highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
+
+								foreach (Tile t in highlightedTiles) 
+										t.visual.transform.renderer.materials [1].color = highlightColor;
+						}
+				
 		}
-
 	
 	public void removeTileHighlights() {
 		for (int i = 0; i < mapSize; i++) {
@@ -254,7 +282,11 @@ public class GameManager : MonoBehaviour {
 					{
 						FXmanager.instance.createAbilityFX(ability.hitFXprefab,targetUnit.transform.position,targetUnit.transform.position,ability);
 					}
-				
+
+
+					applyAbilityEffectToTarget (ability, _target);
+
+
 				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 				unitOwner.playAbility(ability);
 			//if missed
@@ -268,6 +300,14 @@ public class GameManager : MonoBehaviour {
 		{
 			Debug.Log("Ability range is less than target");
 		}
+		}
+	}
+
+	public void applyAbilityEffectToTarget (BaseAbility ability, Unit _target)
+	{
+		if (ability.damageType == damageTypes.blunt) {
+			if (Random.Range(0.0f, 1.0f) <= ability.effectApplyChance && Random.Range(0.0f, 1.0f)> _target.Strength/100) {
+				_target.UnitState = unitStates.stunned;}
 		}
 	}
 

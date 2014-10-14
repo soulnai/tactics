@@ -27,6 +27,7 @@ public class BaseAbility {
 
 	public int baseDamage;
 	public int effectDamage;
+	public float effectApplyChance;
 	public damageTypes damageType;
 	public int duration;
 

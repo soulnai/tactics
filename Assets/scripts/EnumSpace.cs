@@ -46,7 +46,8 @@ namespace EnumSpace {
 	public enum areaPatterns{
 		line,
 		circle,
-		cross
+		cross,
+		standart
 	}
 
 	public enum playerTurnStates{
