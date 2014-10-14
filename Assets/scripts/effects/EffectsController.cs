@@ -5,7 +5,12 @@ using System.Collections.Generic;
 public class EffectsController : MonoBehaviour {
 	public List<BaseEffect> effects;
 
+	private Unit unit;
 	// Use this for initialization
+	void Awake(){
+		unit = GetComponent<Unit>();
+	}
+
 	void Start () {
 		
 	}
@@ -23,10 +28,13 @@ public class EffectsController : MonoBehaviour {
 
 	public void AddEffect(BaseEffect effect)
 	{
-		effects.Add(effect);
+		BaseEffect tempEffect = effect.getEffect();
+		effects.Add(tempEffect);
+		effect.Init(this,unit);
+		effect.Activate();
 	}
 
-	public void ActivateEffects()
+	public void ApplyEffects()
 	{
 		foreach(BaseEffect ef in effects)
 			ef.Activate();
@@ -52,5 +60,10 @@ public class EffectsController : MonoBehaviour {
 	public void DeleteAllEffects()
 	{
 		effects.Clear();
+	}
+
+	public BaseEffect getEffect(string ID)
+	{
+		return effects.Find(BaseEffect => BaseEffect.effectID == ID);
 	}
 }

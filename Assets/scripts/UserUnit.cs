@@ -5,7 +5,7 @@ using EnumSpace;
 
 public class UserUnit : Unit {
 
-	public UnitSkillsManager unitSkills;
+	public AbilitiesController unitSkills;
 
 	// Use this for initialization
 	void Start () {

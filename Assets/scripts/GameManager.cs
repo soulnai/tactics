@@ -119,6 +119,7 @@ public class GameManager : MonoBehaviour {
 		}
 		else
 		{
+			currentUnit.unitEffects.ApplyEffects();
 			GUImanager.instance.showAbilities();
 			//reset AP
 			units[currentUnitIndex].AP = units[currentUnitIndex].maxActionPoints;
@@ -186,16 +187,13 @@ public class GameManager : MonoBehaviour {
 				}
 								
 			} else {
-
-
-								if (ignorePlayers)
-										highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
-								else
-										highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
-
-								foreach (Tile t in highlightedTiles) 
-										t.visual.transform.renderer.materials [1].color = highlightColor;
-						}
+				if (ignorePlayers)
+					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
+				else
+					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
+				foreach (Tile t in highlightedTiles) 
+					t.visual.transform.renderer.materials [1].color = highlightColor;
+			}
 				
 		}
 	
@@ -327,6 +325,16 @@ public class GameManager : MonoBehaviour {
 		}
 		else {
 			_target.takeDamage (amountOfDamage);
+		}
+
+		//Apply Effect
+		if(ability.effectToApply != null)
+		{
+			BaseEffect ef = EffectsManager.instance.getEffect(ability.effectToApply);
+			//check - can be applied?
+			if (Random.Range(0.0f, 1.0f) <= ef.effectApplyChance && _target.ResistTo(ef)) {
+				_target.unitEffects.AddEffect(ef);
+			}
 		}
 	}
 

@@ -54,7 +54,8 @@ public class Unit : MonoBehaviour {
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
-	public UnitSkillsManager unitAbilities;
+	public AbilitiesController unitAbilities;
+	public EffectsController unitEffects;
 
 	private int _AP;
 	private Vector3 lookDirection = Vector3.zero;
@@ -64,7 +65,6 @@ public class Unit : MonoBehaviour {
 	void Awake () {
 		moveDestination = transform.position;
 		AP = maxActionPoints;
-
 	}
 
 	public void checkEndTurn()
@@ -244,6 +244,38 @@ public class Unit : MonoBehaviour {
 		currentTile = GameManager.instance.map[(int)position.x][(int)position.y];
 		currentTile.unitInTile = this;
 		transform.position = currentTile.transform.position + new Vector3(0,0.5f,0);
+	}
+
+	public bool ResistTo (BaseEffect ef)
+	{
+		damageTypes damageType = ef.damageType;
+		resistTypes resistType;
+		float resist = 0;
+
+		switch (damageType) {
+		case damageTypes.blunt:
+			resistType = resistTypes.strenght;
+			resist = Strength;
+			break;
+		case damageTypes.poison:
+			resistType = resistTypes.dexterity;
+			resist = Strength;
+			break;
+		case damageTypes.electricity:
+			resistType = resistTypes.magic;
+			resist = MagicDefense;
+			break;
+		case damageTypes.fire:
+			resistType = resistTypes.magic;
+			resist = MagicDefense;
+			break;
+		}
+
+		//compare
+		if (Random.Range(0.0f, 1.0f)> resist/100)
+			return true;
+		else
+			return false;
 	}
 
 	IEnumerator WaitAnimationEnd(float waitTime,bool triggerReactionEnd = false){

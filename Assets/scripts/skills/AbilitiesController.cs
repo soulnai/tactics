@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class UnitSkillsManager : MonoBehaviour {
+public class AbilitiesController : MonoBehaviour {
 
 	public List<string> abilitiesList;
 	public List<BaseAbility> abilities = new List<BaseAbility>();

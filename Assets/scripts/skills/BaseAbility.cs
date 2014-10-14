@@ -4,7 +4,6 @@ using EnumSpace;
 
 [System.Serializable]
 public class BaseAbility {
-
 	public string abilityID;
 	public string abilityName;
 

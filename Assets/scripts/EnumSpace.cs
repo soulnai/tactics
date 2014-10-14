@@ -22,6 +22,12 @@ namespace EnumSpace {
 		healAttack
 	}
 
+	public enum resistTypes{
+		strenght,
+		dexterity,
+		magic
+	}
+
 	public enum damageTypes{
 		poison,
 		fire,
@@ -67,5 +73,4 @@ namespace EnumSpace {
 		setType,
 		setHeight
 	}
-
 }

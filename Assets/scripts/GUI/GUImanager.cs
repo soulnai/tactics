@@ -107,8 +107,8 @@ public class GUImanager : MonoBehaviour {
 	public void showAbilities()
 	{
 		GameManager gm = GameManager.instance;
-		if(gm.units[gm.currentUnitIndex].GetComponent<UnitSkillsManager>() != null){
-		List<BaseAbility> abilitiesList = gm.units[gm.currentUnitIndex].GetComponent<UnitSkillsManager>().abilities;
+		if(gm.units[gm.currentUnitIndex].GetComponent<AbilitiesController>() != null){
+		List<BaseAbility> abilitiesList = gm.units[gm.currentUnitIndex].GetComponent<AbilitiesController>().abilities;
 
 		foreach(Button b in abilitiesButtonsList)
 		{
