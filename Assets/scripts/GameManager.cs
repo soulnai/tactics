@@ -175,7 +175,7 @@ public class GameManager : MonoBehaviour {
 
 						RaycastHit[] hit;
 						LayerMask mask = 1 << LayerMask.NameToLayer ("tiles");
-			hit = (Physics.RaycastAll (currentUnit.transform.position- 0.5f * Vector3.up, currentUnit.transform.forward, 5f, mask));
+			hit = (Physics.RaycastAll (currentUnit.transform.position- 0.5f * Vector3.up, currentUnit.transform.forward, (float)currentUnit.currentAbility.range, mask));
 
 				for (int i=0; i<hit.Length; i++)	{
 					if (hit[i].transform.gameObject.GetComponent<Tile> () != null) {
@@ -459,6 +459,18 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	public void AttackOnMouseClick () {
+
+		if ((Input.GetMouseButtonDown (2)) && (!GUImanager.instance.mouseOverGUI)) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			if(Physics.Raycast(ray,out hit))
+			{
+				Quaternion newRotation = Quaternion.LookRotation(hit.transform.position - currentUnit.transform.position);
+				currentUnit.transform.rotation = Quaternion.Slerp(currentUnit.transform.rotation, newRotation, 1f);
+				//currentUnit.transform.rotation = newRotation;
+				Debug.Log("click");
+			}
+		}
+
 				
 		if ((Input.GetMouseButtonDown(0))&&(!GUImanager.instance.mouseOverGUI))
 		{
