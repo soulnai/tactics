@@ -9,11 +9,11 @@ public class TileHighlight {
 		
 	}
 
-	public static List<Tile> FindHighlight(Tile originTile, int movementPoints) {
-		return FindHighlight(originTile, movementPoints, new Vector2[0]);
+	public static List<Tile> FindHighlight(Tile originTile, int movementPoints, float maxHeightDiff = 100f) {
+		return FindHighlight(originTile, movementPoints, new Vector2[0],maxHeightDiff);
 	}
 
-	public static List<Tile> FindHighlight(Tile originTile, int movementPoints, Vector2[] occupied) {
+	public static List<Tile> FindHighlight(Tile originTile, int movementPoints, Vector2[] occupied,float maxHeightDiff = 100f) {
 		List<Tile> closed = new List<Tile>();
 		List<TilePath> open = new List<TilePath>();
 		
@@ -36,7 +36,7 @@ public class TileHighlight {
 			closed.Add(current.lastTile);
 			
 			foreach (Tile t in current.lastTile.neighbors) {	
-				if (t.impassible || occupied.Contains(t.gridPosition) ) continue;
+				if (t.impassible || occupied.Contains(t.gridPosition) || Mathf.Abs(current.lastTile.height-t.height)>maxHeightDiff) continue;
 				TilePath newTilePath = new TilePath(current);
 				newTilePath.addTile(t);
 				open.Add(newTilePath);

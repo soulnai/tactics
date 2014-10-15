@@ -62,26 +62,6 @@ public class GUImanager : MonoBehaviour {
 		u.tryMove();
 	}
 
-	public void OnAttackClick()
-	{
-//		unit.MeleeAttack() ;
-	}
-
-	public void OnStunAttackClick()
-	{
-//		unit.StunAttack ();
-	}
-
-	public void OnRangedAttackClick()
-	{
-//		unit.RangedAttack ();
-	}
-
-	public void OnMagicAttackClick()
-	{
-//		unit.MagicAttack();
-	}
-
 	public void OnEndTurnClick()
 	{
 		abilitiesPanel.SetActive (false);

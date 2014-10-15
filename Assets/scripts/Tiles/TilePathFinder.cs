@@ -7,7 +7,7 @@ public class TilePathFinder : MonoBehaviour {
 	public static List<Tile> FindPath(Tile originTile, Tile destinationTile) {
 		return FindPath(originTile, destinationTile, new Vector2[0]);
 	}
-	public static List<Tile> FindPath(Tile originTile, Tile destinationTile, Vector2[] occupied) {
+	public static List<Tile> FindPath(Tile originTile, Tile destinationTile, Vector2[] occupied,float maxHeightDiff = 100f) {
 		List<Tile> closed = new List<Tile>();
 		List<TilePath> open = new List<TilePath>();
 		
@@ -33,7 +33,7 @@ public class TilePathFinder : MonoBehaviour {
 			closed.Add(current.lastTile);
 			
 			foreach (Tile t in current.lastTile.neighbors) {
-				if (t.impassible || occupied.Contains(t.gridPosition)) continue;
+				if (t.impassible || occupied.Contains(t.gridPosition) || Mathf.Abs(current.lastTile.height-t.height)>maxHeightDiff) continue;
 				TilePath newTilePath = new TilePath(current);
 				newTilePath.addTile(t);
 				open.Add(newTilePath);

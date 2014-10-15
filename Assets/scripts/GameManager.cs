@@ -32,7 +32,6 @@ public class GameManager : MonoBehaviour {
 	public bool magiceffect = false;
 	
 	public int mapSize = 22;
-	public float maxHeighDiff = 2;
 	public Transform mapTransform;
 	Transform tileTransform;
 	
@@ -87,7 +86,7 @@ public class GameManager : MonoBehaviour {
 		Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 		//reset AP
-		units[0].AP = units[0].maxActionPoints;
+		units[0].AP = units[0].APmax;
 	}
 	
 	// Update is called once per frame
@@ -123,7 +122,7 @@ public class GameManager : MonoBehaviour {
 			currentUnit.unitEffects.ApplyEffects();
 			GUImanager.instance.showAbilities();
 			//reset AP
-			units[currentUnitIndex].AP = units[currentUnitIndex].maxActionPoints;
+			units[currentUnitIndex].AP = units[currentUnitIndex].APmax;
 			if (units[currentUnitIndex].currentStatusEffectDuration>0 || units[currentUnitIndex].UnitState != unitStates.normal) {
 				if (units[currentUnitIndex].UnitState == unitStates.stunned) {
 					units[currentUnitIndex].AP = 0;
@@ -151,17 +150,13 @@ public class GameManager : MonoBehaviour {
 		highlightTilesAt(originLocation, highlightColor, distance, true);
 	}
 
-	public void highlightTilesAt(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers) {
-
-
-
-
+	public void highlightTilesAt(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers, float maxHeightDiff = 100f) {
 						highlightedTiles = new List<Tile> ();
 
 						if (ignorePlayers)
-								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
+								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, maxHeightDiff);
 						else
-								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
+								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray (), maxHeightDiff);
 		
 						foreach (Tile t in highlightedTiles) {
 								t.visual.transform.renderer.materials [1].color = highlightColor;
@@ -211,7 +206,7 @@ public class GameManager : MonoBehaviour {
 			removeTileHighlights();
 			units[currentUnitIndex].UnitAction = unitActions.moving;
 			units[currentUnitIndex].currentTile.unitInTile = null;
-			foreach(Tile t in TilePathFinder.FindPath(map[(int)units[currentUnitIndex].gridPosition.x][(int)units[currentUnitIndex].gridPosition.y],destTile, units.Where(x => x.gridPosition != destTile.gridPosition && x.gridPosition != units[currentUnitIndex].gridPosition).Select(x => x.gridPosition).ToArray())) {
+			foreach(Tile t in TilePathFinder.FindPath(map[(int)units[currentUnitIndex].gridPosition.x][(int)units[currentUnitIndex].gridPosition.y],destTile, units.Where(x => x.gridPosition != destTile.gridPosition && x.gridPosition != units[currentUnitIndex].gridPosition).Select(x => x.gridPosition).ToArray(),currentUnit.maxHeightDiff)) {
 				units[currentUnitIndex].positionQueue.Add(map[(int)t.gridPosition.x][(int)t.gridPosition.y].transform.position + 0.5f * Vector3.up);
 				Debug.Log("(" + units[currentUnitIndex].positionQueue[units[currentUnitIndex].positionQueue.Count - 1].x + "," + units[currentUnitIndex].positionQueue[units[currentUnitIndex].positionQueue.Count - 1].y + ")");
 			}			

@@ -36,31 +36,23 @@ public class Tile : MonoBehaviour {
 		//up
 		if (gridPosition.y > 0) {
 			Vector2 n = new Vector2(gridPosition.x, gridPosition.y - 1);
-			if (Mathf.Abs(height - gm.map[(int)n.x][(int)n.y].height) <= gm.maxHeighDiff){
-				neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
-			}
+			neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
 		}
 		//down
 		if (gridPosition.y < gm.mapSize - 1) {
 			Vector2 n = new Vector2(gridPosition.x, gridPosition.y + 1);
-			if (Mathf.Abs(height - gm.map[(int)n.x][(int)n.y].height) <= gm.maxHeighDiff){
-				neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
-			}
+			neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
 		}		
 		
 		//left
 		if (gridPosition.x > 0) {
 			Vector2 n = new Vector2(gridPosition.x - 1, gridPosition.y);
-			if (Mathf.Abs(height - gm.map[(int)n.x][(int)n.y].height) <= gm.maxHeighDiff){
-				neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
-			}
+			neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
 		}
 		//right
 		if (gridPosition.x < gm.mapSize - 1) {
 			Vector2 n = new Vector2(gridPosition.x + 1, gridPosition.y);
-			if (Mathf.Abs(height - gm.map[(int)n.x][(int)n.y].height) <= gm.maxHeighDiff){
-				neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
-			}
+			neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
 		}
 	}
 	

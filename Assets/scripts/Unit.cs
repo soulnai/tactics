@@ -18,15 +18,11 @@ public class Unit : MonoBehaviour {
 	public int attackDistance = 5;
 	
 	public string unitName = "George";
-	public int MaxHP = 25;
+	public int HPmax = 25;
 	public int HP = 25;
-	public int AP
-	{
-		get {return _AP;}
-		set {
-			_AP = value;
-		}
-	}
+	public int APmax = 2;
+	public int AP = 2;
+	public int MPmax = 25;
 	public int MP = 25;
 	public int Strength = 2;
 	public int Magic = 2;
@@ -40,9 +36,7 @@ public class Unit : MonoBehaviour {
 	public int damageBase = 1;
 	public int maxdamageBase = 5;
 	public float damageRollSides = 6; //d6
-	
-	public int maxActionPoints = 2;
-
+	public float maxHeightDiff = 0.5f;
 
 	public EnumSpace.unitStates UnitState;
 	public EnumSpace.unitActions UnitAction;
@@ -57,14 +51,13 @@ public class Unit : MonoBehaviour {
 	public AbilitiesController unitAbilities;
 	public EffectsController unitEffects;
 
-	private int _AP;
 	private Vector3 lookDirection = Vector3.zero;
 	private float delayAfterAnim = 0.5f;
 	private bool canEndTurn = false;
 
 	void Awake () {
 		moveDestination = transform.position;
-		AP = maxActionPoints;
+		AP = APmax;
 	}
 
 	public void checkEndTurn()
@@ -167,7 +160,7 @@ public class Unit : MonoBehaviour {
 		GameManager.instance.removeTileHighlights ();
 		if(AP > 0){
 			UnitAction = unitActions.readyToMove;
-			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false);
+			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false, maxHeightDiff);
 		}
 	}
 
@@ -232,8 +225,8 @@ public class Unit : MonoBehaviour {
 	public void takeHeal(int heal)
 	{
 		HP += heal;
-		if (HP>=MaxHP)
-			HP = MaxHP;
+		if (HP>=HPmax)
+			HP = HPmax;
 		animation.CrossFade("Damage");
 		StartCoroutine(WaitAnimationEnd(animation["Damage"].length+delayAfterAnim,true));
 	}
