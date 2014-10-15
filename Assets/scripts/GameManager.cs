@@ -332,9 +332,11 @@ public class GameManager : MonoBehaviour {
 		if(ability.effectToApply != null)
 		{
 			BaseEffect ef = EffectsManager.instance.getEffect(ability.effectToApply);
-			//check - can be applied?
-			if (Random.Range(0.0f, 1.0f) <= ef.effectApplyChance && _target.ResistTo(ef)) {
-				_target.unitEffects.AddEffect(ef);
+			if(ef != null){
+				//check - can be applied?
+				if (Random.Range(0.0f, 1.0f) <= ef.effectApplyChance && _target.ResistTo(ef)) {
+					_target.unitEffects.AddEffect(ef);
+				}
 			}
 		}
 	}
