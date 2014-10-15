@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour {
 	public GameObject magic;
 	public GameObject selectionRing;
 	public Unit targetPub;
+	public List <Unit> targetsForAreaDamage;
 	public bool Loose = false;
 	public Texture ImpasTex;
 
@@ -172,7 +173,7 @@ public class GameManager : MonoBehaviour {
 
 				highlightedTiles = new List<Tile> ();
 
-				if (currentUnit.currentAbility.areaPattern == areaPatterns.line) {
+		/*		if (currentUnit.currentAbility.areaPattern == areaPatterns.line) {
 
 						RaycastHit[] hit;
 						LayerMask mask = 1 << LayerMask.NameToLayer ("tiles");
@@ -186,14 +187,14 @@ public class GameManager : MonoBehaviour {
 					}
 				}
 								
-			} else {
+			} else {*/
 				if (ignorePlayers)
 					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
 				else
 					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
 				foreach (Tile t in highlightedTiles) 
 					t.visual.transform.renderer.materials [1].color = highlightColor;
-			}
+			//}
 				
 		}
 	
@@ -444,6 +445,7 @@ public class GameManager : MonoBehaviour {
 
 	public void drawPointer()
 	{
+		targetsForAreaDamage = new List<Unit>();
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
 
@@ -464,6 +466,28 @@ public class GameManager : MonoBehaviour {
 		{
 			pointer.SetActive(false);
 		}
+
+		if (currentUnit.currentAbility.areaDamage == true && currentUnit.currentAbility.areaPattern == areaPatterns.circle) {
+						if ((Physics.Raycast (ray, out hit, 1000f, mask)) && (!GUImanager.instance.mouseOverGUI)) {
+				if(hit.transform.gameObject.GetComponent<Tile>() != null)
+				{
+					//Debug.Log ("tiles hitted");
+								//targetsForAreaDamage = new List<Unit>();
+								removeTileHighlights ();
+								Tile t = hit.transform.gameObject.GetComponent<Tile> ();
+								AttackhighlightTiles(t.gridPosition, Color.red, currentUnit.currentAbility.range, true);
+								highlightedTiles.Add(t);
+					foreach (Tile tile in highlightedTiles) {
+						if (tile.unitInTile != null) {
+							targetsForAreaDamage.Add (tile.unitInTile);
+						}
+					}
+					/*			highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)t.gridPosition.x] [(int)t.gridPosition.y], currentUnit.currentAbility.range);
+					foreach (Tile tile in highlightedTiles) 
+						t.visual.transform.renderer.materials [1].color = Color.red;*/
+				}		
+				}
+				}
 	}
 	
 	public void AttackOnMouseClick () {
@@ -509,6 +533,8 @@ public class GameManager : MonoBehaviour {
 							Debug.Log("Not self selected");
 					}
 
+
+
 					if(ability.allyUse == true)
 					{
 						if((currentPlayer.units.Contains(targetUnit))&&(currentUnit != targetUnit)){
@@ -526,6 +552,18 @@ public class GameManager : MonoBehaviour {
 							Debug.Log("Ally selected");
 					}
 
+				}
+			} else {
+				if(currentUnit.currentAbility.areaDamage == true && currentUnit.currentAbility.areaPattern == areaPatterns.circle)
+				{
+					foreach (Unit u in targetsForAreaDamage) {
+						//if(currentUnit == targetUnit){
+						GameManager.instance.useAbility(currentUnit.currentAbility,currentUnit,null ,u);
+						/*}
+						else
+							Debug.Log("Not area selected");
+						}*/
+					}
 				}
 			}
 		}

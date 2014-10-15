@@ -269,6 +269,10 @@ public class Unit : MonoBehaviour {
 			resistType = resistTypes.magic;
 			resist = MagicDefense;
 			break;
+		case damageTypes.ice:
+			resistType = resistTypes.magic;
+			resist = MagicDefense;
+			break;
 		}
 
 		//compare
