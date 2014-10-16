@@ -32,6 +32,16 @@ public class FXmanager : MonoBehaviour {
 		}
 	}
 
+	public void createEffectFX(GameObject FXprefab,Unit target)
+	{
+		GameObject fx;
+		fx = ((GameObject)Instantiate(FXprefab,target.transform.position+0.5f*Vector3.up, Quaternion.identity));
+		fx.transform.SetParent(target.transform);
+		FXController fxC = fx.AddComponent("FXController") as FXController;
+		fxC.Init(target);
+
+	}
+
 	public void createFX(GameObject FXprefab,Vector3 startPos = default(Vector3), Vector3 endPos = default(Vector3),BaseAbility a = null,Unit owner = null,Unit target = null)
 	{
 		GameObject fx;
@@ -44,7 +54,7 @@ public class FXmanager : MonoBehaviour {
 			fx.transform.DOMove(endPos+1.0f*Vector3.up, duration).OnComplete(fxC.Kill);
 		}
 	}
-
+	
 	public void OnFXMoveEnd (Vector3 position, BaseAbility ability, Unit unitOwner, Unit unitTarget)
 	{
 		if(ability.hitFXprefab != null)

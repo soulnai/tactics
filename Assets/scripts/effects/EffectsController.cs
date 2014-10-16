@@ -6,6 +6,7 @@ public class EffectsController : MonoBehaviour {
 	public List<BaseEffect> effects;
 
 	private Unit unit;
+	private List<BaseEffect> effectsToDelete = new List<BaseEffect>();
 	// Use this for initialization
 	void Awake(){
 		unit = GetComponent<Unit>();
@@ -28,22 +29,31 @@ public class EffectsController : MonoBehaviour {
 
 	public void AddEffect(BaseEffect effect)
 	{
-		BaseEffect tempEffect = effect.getEffect();
+		BaseEffect tempEffect = effect.Clone() as BaseEffect;
 		effects.Add(tempEffect);
-		effect.Init(this,unit);
-		effect.Activate();
+		tempEffect.Init(this,unit);
+		tempEffect.Activate(false);
 	}
 
-	public void ApplyEffects()
+	public void ActivateAllEffects()
 	{
 		foreach(BaseEffect ef in effects)
 			ef.Activate();
 	}
 
-	public void DeleteEffect(BaseEffect effect)
+	public void AddToDeleteList(BaseEffect effect)
 	{
 		if((effect != null)&&(effects.Contains(effect)))
-		effects.Remove(effect);
+			effectsToDelete.Add(effect);
+	}
+	
+	public void DeleteEffects()
+	{
+		foreach(BaseEffect ef in effectsToDelete)
+		{
+			effects.Remove(ef);
+		}
+		effectsToDelete.Clear();
 	}
 
 	public void Debuff()
@@ -52,9 +62,10 @@ public class EffectsController : MonoBehaviour {
 		{
 			if(ef.canBeDebuffed)
 			{
-				DeleteEffect(ef);
+				AddToDeleteList(ef);
 			}
 		}
+		DeleteEffects();
 	}
 
 	public void DeleteAllEffects()

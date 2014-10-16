@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using EnumSpace;
+using System;
 using System.Xml;
 using System.Xml.Serialization;
 
 [System.Serializable]
-public class BaseEffect {
+public class BaseEffect : ICloneable {
 
 	public string effectName;
 	public string effectID;
@@ -18,12 +19,18 @@ public class BaseEffect {
 	public bool canBeDebuffed = true;
 	public bool infinite;
 
+	//FX
+	public GameObject FXprefab;
+
 	private EffectsController controller;
 	private Unit targetUnit;
 
-	public void Activate()
+	public void Activate(bool decreaseDuration = true)
 	{
+		Debug.Log(targetUnit.unitName);
 		if((duration > 0)||(infinite)){
+			if(FXprefab != null)
+				FXmanager.instance.createEffectFX(FXprefab,targetUnit);
 			if((Stun)||(state == unitStates.stunned))
 			{
 				targetUnit.AP = 0;
@@ -39,11 +46,12 @@ public class BaseEffect {
 				targetUnit.takeHeal(damagePerTurn);
 				Debug.Log("Effect heal");
 			}
-			duration--;
+			if(decreaseDuration)
+				duration--;
 		}
 		else
 		{
-			controller.DeleteEffect(this);
+			controller.AddToDeleteList(this);
 		}
 	}
 
@@ -53,8 +61,9 @@ public class BaseEffect {
 		targetUnit = unit;
 	}
 
-	public BaseEffect getEffect()
+	public object Clone()
 	{
-		return this;
+		return this.MemberwiseClone();
 	}
+
 }

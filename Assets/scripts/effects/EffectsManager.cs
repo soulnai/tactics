@@ -21,7 +21,7 @@ public class EffectsManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		EffectsContainer ec = new EffectsContainer();
-		ec.Save("effects.xml",effectsList);
+//		ec.Save("effects.xml",effectsList);
 	}
 	
 	// Update is called once per frame

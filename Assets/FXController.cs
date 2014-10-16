@@ -15,6 +15,11 @@ public class FXController : MonoBehaviour {
 	
 	}
 
+	public void Init(Unit target){
+		Init(default(Vector3),default(Vector3),null,null,target);
+		transform.SetParent(target.transform);
+	}
+
 	public void Init(Vector3 startPos = default(Vector3), Vector3 endPos = default(Vector3),BaseAbility a = null,Unit owner = null,Unit target = null){
 		ability = a;
 		unitOwner = owner;

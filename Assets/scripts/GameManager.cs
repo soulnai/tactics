@@ -119,7 +119,7 @@ public class GameManager : MonoBehaviour {
 		}
 		else
 		{
-			currentUnit.unitEffects.ApplyEffects();
+			currentUnit.unitEffects.ActivateAllEffects();
 			GUImanager.instance.showAbilities();
 			//reset AP
 			units[currentUnitIndex].AP = units[currentUnitIndex].APmax;
