@@ -45,6 +45,7 @@ namespace EnumSpace {
 
 	public enum attackTypes{
 		melee,
+		backstab,
 		ranged,
 		magic,
 		heal

@@ -272,6 +272,30 @@ public class GameManager : MonoBehaviour {
 						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDefense);
 					} else {
 						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDefense);
+						float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
+						Debug.Log (angle);
+						if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab && Random.Range(0.0f, 1.0f) <= ability.effectApplyChance){
+							amountOfDamage = amountOfDamage*10;
+							Debug.Log ("backstab");
+						}
+						if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab){
+							amountOfDamage = amountOfDamage*5;
+							Debug.Log ("backstab");
+						}
+
+						if (angle <=30){
+							amountOfDamage = amountOfDamage*2;
+							Debug.Log ("backstab");
+						}
+						if (angle >=30 && angle <=90){
+							amountOfDamage = amountOfDamage*2;
+							Debug.Log ("flank attack");
+						}
+						if (angle >90){
+							amountOfDamage = amountOfDamage;
+							Debug.Log ("front attack");
+						}
+
 					}
 				
 					applyAbilityToTarget (ability, _target, amountOfDamage);
@@ -344,7 +368,7 @@ public class GameManager : MonoBehaviour {
 
 		if (highlightedTiles.Contains (target.currentTile) && currentUnit.currentAbility.areaDamage == true) {
 			
-			if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange - currentUnit.currentAbility.areaDamageRadius && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange - currentUnit.currentAbility.areaDamageRadius&&
+			if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange + currentUnit.currentAbility.areaDamageRadius && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange + currentUnit.currentAbility.areaDamageRadius&&
 			    owner.gridPosition.y >= target.gridPosition.y - owner.attackRange + currentUnit.currentAbility.areaDamageRadius&& owner.gridPosition.y <= target.gridPosition.y + owner.attackRange+ currentUnit.currentAbility.areaDamageRadius) {
 				return true;
 			} else
