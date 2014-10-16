@@ -277,13 +277,10 @@ public class GameManager : MonoBehaviour {
 						if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab && Random.Range(0.0f, 1.0f) <= ability.effectApplyChance){
 							amountOfDamage = amountOfDamage*10;
 							Debug.Log ("backstab");
-						}
-						if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab){
+						} else if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab){
 							amountOfDamage = amountOfDamage*5;
 							Debug.Log ("backstab");
-						}
-
-						if (angle <=30){
+						} else if (angle <=30){
 							amountOfDamage = amountOfDamage*2;
 							Debug.Log ("backstab");
 						}
