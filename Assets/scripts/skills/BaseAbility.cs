@@ -22,6 +22,7 @@ public class BaseAbility {
 
 	public int range;
 	public bool areaDamage;
+	public int areaDamageRadius;
 	public areaPatterns areaPattern;
 
 	public int baseDamage;

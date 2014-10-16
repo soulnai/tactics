@@ -442,6 +442,7 @@ public class GameManager : MonoBehaviour {
 
 	public void drawPointer()
 	{
+		Tile previousTile = map[0][0];
 		targetsForAreaDamage = new List<Unit>();
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
@@ -464,20 +465,23 @@ public class GameManager : MonoBehaviour {
 			pointer.SetActive(false);
 		}
 
-		if (currentUnit.currentAbility.areaDamage == true && currentUnit.currentAbility.areaPattern == areaPatterns.circle) {
-						if ((Physics.Raycast (ray, out hit, 1000f, mask)) && (!GUImanager.instance.mouseOverGUI)) {
-				if(hit.transform.gameObject.GetComponent<Tile>() != null)
+		if (currentUnit.currentAbility.areaDamage == true && currentUnit.currentAbility.areaPattern == areaPatterns.circle && currentUnit.UnitAction == unitActions.magicAttack) {
+
+			if ((Physics.Raycast (ray, out hit, 1000f, mask)) && (!GUImanager.instance.mouseOverGUI)) {
+				if(hit.transform.gameObject.GetComponent<Tile>() != null && hit.transform.gameObject.GetComponent<Tile>().gridPosition != previousTile.gridPosition )
 				{
 					//Debug.Log ("tiles hitted");
 								//targetsForAreaDamage = new List<Unit>();
 								removeTileHighlights ();
 								Tile t = hit.transform.gameObject.GetComponent<Tile> ();
-								AttackhighlightTiles(t.gridPosition, Color.red, currentUnit.currentAbility.range, true);
+								AttackhighlightTiles(currentUnit.gridPosition, Color.red, currentUnit.currentAbility.range, true);
+								AttackhighlightTiles(t.gridPosition, Color.green, currentUnit.currentAbility.areaDamageRadius, true);
 								highlightedTiles.Add(t);
 					foreach (Tile tile in highlightedTiles) {
-						if (tile.unitInTile != null) {
+						if (tile.unitInTile != null && tile.unitInTile != currentUnit) {
 							targetsForAreaDamage.Add (tile.unitInTile);
 						}
+						previousTile = hit.transform.gameObject.GetComponent<Tile>();
 					}
 					/*			highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)t.gridPosition.x] [(int)t.gridPosition.y], currentUnit.currentAbility.range);
 					foreach (Tile tile in highlightedTiles) 
@@ -489,7 +493,7 @@ public class GameManager : MonoBehaviour {
 	
 	public void AttackOnMouseClick () {
 
-		if ((Input.GetMouseButtonDown (2)) && (!GUImanager.instance.mouseOverGUI)) {
+	/*	if ((Input.GetMouseButtonDown (2)) && (!GUImanager.instance.mouseOverGUI)) {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if(Physics.Raycast(ray,out hit))
 			{
@@ -498,7 +502,7 @@ public class GameManager : MonoBehaviour {
 				//currentUnit.transform.rotation = newRotation;
 				Debug.Log("click");
 			}
-		}
+		}*/
 
 				
 		if ((Input.GetMouseButtonDown(0))&&(!GUImanager.instance.mouseOverGUI))
