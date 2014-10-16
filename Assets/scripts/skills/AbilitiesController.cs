@@ -19,7 +19,7 @@ public class AbilitiesController : MonoBehaviour {
 	public void initAbilities (){
 		for(int i=0;i<abilitiesList.Count;i++)
 		{
-			abilities.Add(AbilitiesManager.instance.getAbility(abilitiesList[i]));
+			abilities.Add(AbilitiesManager.instance.getAbility(abilitiesList[i]).Clone() as BaseAbility);
 		}
 	}
 	// Update is called once per frame

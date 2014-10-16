@@ -1,9 +1,10 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using EnumSpace;
 
 [System.Serializable]
-public class BaseAbility {
+public class BaseAbility : ICloneable{
 	public string abilityID;
 	public string abilityName;
 
@@ -35,6 +36,11 @@ public class BaseAbility {
 	//FX
 	public GameObject hitFXprefab;
 	public GameObject rangedFXprefab;
+
+	public object Clone()
+	{
+		return this.MemberwiseClone();
+	}
 }
 
 
