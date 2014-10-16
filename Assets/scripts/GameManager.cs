@@ -143,6 +143,7 @@ public class GameManager : MonoBehaviour {
 			unitSelection.transform.parent = units [currentUnitIndex].transform;
 			//set state
 			units[currentUnitIndex].UnitAction = unitActions.idle;
+			currentUnit.positionQueue.Clear();
 		}
 	}
 
