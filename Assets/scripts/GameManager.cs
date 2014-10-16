@@ -341,6 +341,16 @@ public class GameManager : MonoBehaviour {
 	{
 		if (owner == target)
 			return true;
+
+		if (highlightedTiles.Contains (target.currentTile) && currentUnit.currentAbility.areaDamage == true) {
+			
+			if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange - currentUnit.currentAbility.areaDamageRadius && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange - currentUnit.currentAbility.areaDamageRadius&&
+			    owner.gridPosition.y >= target.gridPosition.y - owner.attackRange + currentUnit.currentAbility.areaDamageRadius&& owner.gridPosition.y <= target.gridPosition.y + owner.attackRange+ currentUnit.currentAbility.areaDamageRadius) {
+				return true;
+			} else
+				return false;
+		}
+
 		if (highlightedTiles.Contains (target.currentTile)) {
 						
 						if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange &&
@@ -478,6 +488,12 @@ public class GameManager : MonoBehaviour {
 								AttackhighlightTiles(currentUnit.gridPosition, Color.red, currentUnit.currentAbility.range, true);
 								AttackhighlightTiles(t.gridPosition, Color.green, currentUnit.currentAbility.areaDamageRadius, true);
 								highlightedTiles.Add(t);
+
+
+							highlightedTiles.Remove(t);
+							t.visual.transform.renderer.materials[1].color = Color.white;
+
+
 					foreach (Tile tile in highlightedTiles) {
 						if (tile.unitInTile != null && tile.unitInTile != currentUnit) {
 							targetsForAreaDamage.Add (tile.unitInTile);
