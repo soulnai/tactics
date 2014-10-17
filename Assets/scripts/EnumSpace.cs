@@ -32,8 +32,16 @@ namespace EnumSpace {
 	}
 
 	public enum unitAttributes{
+		//Stats
+		HP,
+		MP,
+		AP,
+
+		//Attributes
 		strenght,
 		dexterity,
+
+		//Def
 		magic,
 		magicDef,
 		poisonDef,
