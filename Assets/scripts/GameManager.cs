@@ -528,7 +528,7 @@ public class GameManager : MonoBehaviour {
 			pointer.SetActive(false);
 		}
 
-		if (currentUnit.currentAbility.areaDamage == true && currentUnit.currentAbility.areaPattern == areaPatterns.circle && currentUnit.UnitAction == unitActions.magicAttack) {
+		if (currentUnit.UnitAction == unitActions.magicAttack && currentUnit.currentAbility.areaDamage == true && currentUnit.currentAbility.areaPattern == areaPatterns.circle && currentUnit.UnitAction == unitActions.magicAttack) {
 
 			if ((Physics.Raycast (ray, out hit, 1000f, mask)) && (!GUImanager.instance.mouseOverGUI)) {
 				if(hit.transform.gameObject.GetComponent<Tile>() != null && hit.transform.gameObject.GetComponent<Tile>().gridPosition != previousTile.gridPosition )
@@ -636,10 +636,12 @@ public class GameManager : MonoBehaviour {
 						targetUnit = targetTile.unitInTile;
 					}
 					if (highlightedTilesArea.Contains(targetTile)) {
+						currentUnit.UnitAction = unitActions.idle;
+						removeTileHighlights ();
 					foreach (Unit u in targetsForAreaDamage) {
 
 						GameManager.instance.useAbility(currentUnit.currentAbility,currentUnit,null ,u);
-						removeTileHighlights ();
+						
 						}
 					}
 				}
