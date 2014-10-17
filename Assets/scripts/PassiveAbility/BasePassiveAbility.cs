@@ -21,6 +21,8 @@ public class BasePassiveAbility : ICloneable {
 	public bool allyUse = false;
 	public bool selfUse = false;
 
+	public Unit owner;
+
 	public object Clone()
 	{
 		return this.MemberwiseClone();

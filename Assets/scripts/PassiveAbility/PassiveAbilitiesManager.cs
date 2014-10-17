@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class PassiveAbilityManager : MonoBehaviour {
+public class PassiveAbilitiesManager : MonoBehaviour {
 	
-	public static PassiveAbilityManager instance;
+	public static PassiveAbilitiesManager instance;
 	public List<BasePassiveAbility> passiveAbilities;
 	
 	public void Awake()

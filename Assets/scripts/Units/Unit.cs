@@ -49,7 +49,8 @@ public class Unit : MonoBehaviour {
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
 	public AbilitiesController unitAbilities;
-	public EffectsController unitEffects;
+	public PassiveAbilitiesController unitActivePassiveAbilities;
+	public EffectsController unitActiveEffects;
 
 	private Vector3 lookDirection = Vector3.zero;
 	private float delayAfterAnim = 0.5f;

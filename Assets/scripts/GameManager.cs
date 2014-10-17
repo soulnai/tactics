@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour {
 			AttackOnMouseClick ();
 	}
 
-	public void Turn(){
+	public void firstTurn(){
 
 	}
 
@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour {
 		}
 		else
 		{
-			currentUnit.unitEffects.ActivateAllEffects();
+			currentUnit.unitActiveEffects.ActivateAllEffects();
 			GUImanager.instance.showAbilities();
 			//reset AP
 			units[currentUnitIndex].AP = units[currentUnitIndex].APmax;
@@ -382,7 +382,7 @@ public class GameManager : MonoBehaviour {
 			if(ef != null){
 				//check - can be applied?
 				if (Random.Range(0.0f, 1.0f) <= ef.effectApplyChance && _target.ResistTo(ef)) {
-					_target.unitEffects.AddEffect(ef);
+					_target.unitActiveEffects.AddEffect(ef);
 				}
 			}
 		}
