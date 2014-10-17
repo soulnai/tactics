@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour {
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 		updatePassiveAbilities();
 		//reset AP
-//		units[0].AP = units[0].APmax;
+		units[0].AP = units[0].APmax;
 	}
 	
 	// Update is called once per frame
