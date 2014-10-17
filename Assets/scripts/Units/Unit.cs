@@ -25,7 +25,6 @@ public class Unit : MonoBehaviour {
 	public int MPmax = 25;
 	public int MP = 25;
 	public int Strength = 2;
-	public int Dexterity = 2;
 	public int Magic = 2;
 	public int PhysicalDefense = 2;
 	public int MagicDefense = 2;
@@ -50,13 +49,12 @@ public class Unit : MonoBehaviour {
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
 	public AbilitiesController unitAbilities;
-	public PassiveAbilitiesController unitPassiveAbilities;
+	public PassiveAbilitiesController unitActivePassiveAbilities;
 	public EffectsController unitActiveEffects;
 
 	private Vector3 lookDirection = Vector3.zero;
 	private float delayAfterAnim = 0.5f;
 	private bool canEndTurn = false;
-	private List<BasePassiveAbility> unitActivePassiveAbilities = new List<BasePassiveAbility>();	
 
 	void Awake () {
 		moveDestination = transform.position;
@@ -75,106 +73,6 @@ public class Unit : MonoBehaviour {
 			else if(UnitState == unitStates.dead)
 			{
 				EndTurn();
-			}
-		}
-	}
-
-	public void initAttributes(BasePassiveAbility pa)
-	{
-		if(unitActivePassiveAbilities.Contains(pa)){
-//		if(unitActivePassiveAbilities.Count > 0)
-//		{
-//			foreach(BasePassiveAbility pa in unitActivePassiveAbilities)
-//			{
-				foreach(BaseAttributeChanger ac in pa.affectedAttributes)
-				{
-					switch (ac.attribute) {
-					case unitAttributes.AP:
-							updateParameter (ac, ref APmax);
-						break;
-					case unitAttributes.MP:
-						updateParameter (ac, ref MPmax);
-						break;
-
-					case unitAttributes.HP:
-						updateParameter (ac, ref HPmax);
-						break;
-					case unitAttributes.dexterity:
-						updateParameter (ac, ref Dexterity);
-						break;
-					case unitAttributes.strenght:
-						updateParameter (ac, ref Strength);
-						break;
-					case unitAttributes.magic:
-						updateParameter (ac, ref Magic);
-						break;
-					case unitAttributes.magicDef:
-						updateParameter (ac, ref MagicDefense);
-						break;
-					}
-				}
-//			}
-//		}
-		}
-		// If no passive abilities applied
-//		else{
-//			UnitManager um = UnitManager.instance;
-//			Unit u = um.getUnit(this);
-//			HPmax = u.HPmax;
-//			HP = u.HPmax;
-//			APmax = u.APmax;
-//			AP = u.AP;
-//			MPmax = u.MPmax;
-//			MP = u.MP;
-//			Strength = u.Strength;
-//			Dexterity = u.Dexterity;
-//			Magic = u.Magic;
-//			PhysicalDefense = u.PhysicalDefense;
-//			MagicDefense = u.MagicDefense;
-//		}
-	}
-	/// <summary>
-	/// Float param
-	/// </summary>
-	public void updateParameter (BaseAttributeChanger ac, ref float parameter)
-	{
-		if (ac.multiply)
-			parameter = parameter * ac.value;
-		else
-			parameter = parameter + ac.value;
-	}
-
-	/// <summary>
-	/// Int param
-	/// </summary>
-	public void updateParameter (BaseAttributeChanger ac, ref int parameter)
-	{
-		if (ac.multiply)
-			parameter = Mathf.RoundToInt(parameter * ac.value);
-		else
-			parameter = Mathf.RoundToInt(parameter + ac.value);
-	}
-
-	public void updatePassiveAbilities()
-	{
-		foreach(BasePassiveAbility pa in unitPassiveAbilities.passiveAbilities)
-		{
-			List<Unit> affectedUnits = new List<Unit>();
-			if(pa.selfUse)
-				affectedUnits.Add(this);
-			if(pa.allyUse){
-				foreach(Unit u in GameManager.instance.currentPlayer.units)
-					if(u != this)
-						affectedUnits.Add(u);
-			}
-			if(pa.enemieUse){
-				foreach(Unit u in GameManager.instance.opponentPlayer.units)
-					affectedUnits.Add(u);
-			}
-			
-			foreach(Unit u in affectedUnits)
-			{
-				pa.AddUnit(u);
 			}
 		}
 	}
@@ -332,24 +230,6 @@ public class Unit : MonoBehaviour {
 			HP = HPmax;
 		animation.CrossFade("Damage");
 		StartCoroutine(WaitAnimationEnd(animation["Damage"].length+delayAfterAnim,true));
-	}
-
-	public void addPassiveAbility (BasePassiveAbility pa)
-	{
-		if(!unitActivePassiveAbilities.Contains(pa)){
-			unitActivePassiveAbilities.Add(pa);
-			initAttributes(pa);
-		}
-		else
-			Debug.Log("This unit already under the same passive ability");
-	}
-
-	public void removePassiveAbility (BasePassiveAbility pa)
-	{
-		if(unitActivePassiveAbilities.Contains(pa))
-			unitActivePassiveAbilities.Remove(pa);
-		else
-			Debug.Log("This unit does not affected by this passive ability");
 	}
 
 	public void placeUnit(Vector2 position)

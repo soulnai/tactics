@@ -58,18 +58,6 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public Player opponentPlayer{
-		set{
-			
-		}
-		get{
-			if(players[currentPlayerIndex+1] != null)
-				return players[currentPlayerIndex+1];
-			else
-				return players[0];
-		}
-	}
-
 	public GameObject pointer;
 	public int turnsCounter = 1;
 
@@ -98,9 +86,8 @@ public class GameManager : MonoBehaviour {
 		unitSelection.transform.parent = units [0].transform;
 		Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
-		updatePassiveAbilities();
 		//reset AP
-//		units[0].AP = units[0].APmax;
+		units[0].AP = units[0].APmax;
 	}
 	
 	// Update is called once per frame
@@ -110,14 +97,9 @@ public class GameManager : MonoBehaviour {
 			AttackOnMouseClick ();
 	}
 
-	public void updatePassiveAbilities(){
-		foreach(Unit u in units)
-		{
-			u.updatePassiveAbilities();
-		}
+	public void firstTurn(){
+
 	}
-
-
 
 	public void nextTurn() {
 		if (currentUnitIndex + 1 < units.Count) {
@@ -138,7 +120,6 @@ public class GameManager : MonoBehaviour {
 		}
 		else
 		{
-			updatePassiveAbilities();
 			currentUnit.unitActiveEffects.ActivateAllEffects();
 			GUImanager.instance.showAbilities();
 			//reset AP
