@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour {
 	public Texture ImpasTex;
 
 	public List<Tile> highlightedTiles;
+	public List<Tile> highlightedTilesArea;
 	public bool magiceffect = false;
 	
 	public int mapSize = 22;
@@ -193,6 +194,35 @@ public class GameManager : MonoBehaviour {
 			//}
 				
 		}
+
+	public void AttackhighlightTilesArea(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers) {
+		
+		highlightedTilesArea = new List<Tile> ();
+		
+		/*		if (currentUnit.currentAbility.areaPattern == areaPatterns.line) {
+
+						RaycastHit[] hit;
+						LayerMask mask = 1 << LayerMask.NameToLayer ("tiles");
+			hit = (Physics.RaycastAll (currentUnit.transform.position- 0.5f * Vector3.up, currentUnit.transform.forward, (float)currentUnit.currentAbility.range, mask));
+
+				for (int i=0; i<hit.Length; i++)	{
+					if (hit[i].transform.gameObject.GetComponent<Tile> () != null) {
+						highlightedTiles.Add (hit[i].transform.gameObject.GetComponent<Tile> ());
+						Tile t = hit[i].transform.gameObject.GetComponent<Tile> ();
+						t.visual.transform.renderer.materials [1].color = highlightColor;
+					}
+				}
+								
+			} else {*/
+		if (ignorePlayers)
+			highlightedTilesArea = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
+		else
+			highlightedTilesArea = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
+		/*foreach (Tile t in highlightedTiles) 
+			t.visual.transform.renderer.materials [1].color = highlightColor;
+		//}*/
+		
+	}
 	
 	public void removeTileHighlights() {
 		for (int i = 0; i < mapSize; i++) {
@@ -365,8 +395,9 @@ public class GameManager : MonoBehaviour {
 
 		if (highlightedTiles.Contains (target.currentTile) && currentUnit.currentAbility.areaDamage == true) {
 			
-			if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange + currentUnit.currentAbility.areaDamageRadius && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange + currentUnit.currentAbility.areaDamageRadius&&
-			    owner.gridPosition.y >= target.gridPosition.y - owner.attackRange + currentUnit.currentAbility.areaDamageRadius&& owner.gridPosition.y <= target.gridPosition.y + owner.attackRange+ currentUnit.currentAbility.areaDamageRadius) {
+			if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange- currentUnit.currentAbility.areaDamageRadius/2 && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange+ currentUnit.currentAbility.areaDamageRadius/2 &&
+			    owner.gridPosition.y >= target.gridPosition.y - owner.attackRange- currentUnit.currentAbility.areaDamageRadius/2 && owner.gridPosition.y <= target.gridPosition.y + owner.attackRange+ currentUnit.currentAbility.areaDamageRadius/2) 
+			{
 				return true;
 			} else
 				return false;
@@ -505,14 +536,17 @@ public class GameManager : MonoBehaviour {
 					//Debug.Log ("tiles hitted");
 								//targetsForAreaDamage = new List<Unit>();
 								removeTileHighlights ();
+				
 								Tile t = hit.transform.gameObject.GetComponent<Tile> ();
-								AttackhighlightTiles(currentUnit.gridPosition, Color.red, currentUnit.currentAbility.range, true);
-								AttackhighlightTiles(t.gridPosition, Color.green, currentUnit.currentAbility.areaDamageRadius, true);
+					AttackhighlightTilesArea(currentUnit.gridPosition, Color.red, currentUnit.currentAbility.range, true);
+					AttackhighlightTiles(currentUnit.gridPosition, Color.red, currentUnit.currentAbility.range, true);
+					AttackhighlightTiles(t.gridPosition, Color.green, currentUnit.currentAbility.areaDamageRadius, true);
+								
 								highlightedTiles.Add(t);
-
-
+								highlightedTiles.Add(hit.transform.gameObject.GetComponent<Tile>());
+							hit.transform.gameObject.GetComponent<Tile>().visual.transform.renderer.materials[1].color = Color.green;
 							highlightedTiles.Remove(t);
-							t.visual.transform.renderer.materials[1].color = Color.white;
+						//	t.visual.transform.renderer.materials[1].color = Color.white;
 
 
 					foreach (Tile tile in highlightedTiles) {
@@ -547,11 +581,12 @@ public class GameManager : MonoBehaviour {
 		{
 			BaseAbility ability = currentUnit.currentAbility;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			Tile targetTile = null;
+			Unit targetUnit = null;
 			if(ability.requireTarget == true){
 				if(Physics.Raycast(ray,out hit))
 				{
-					Tile targetTile = null;
-					Unit targetUnit = null;
+
 					if(hit.collider.GetComponent<Tile>())
 					{
 						targetTile = hit.collider.GetComponent<Tile>();
@@ -595,13 +630,17 @@ public class GameManager : MonoBehaviour {
 			} else {
 				if(currentUnit.currentAbility.areaDamage == true && currentUnit.currentAbility.areaPattern == areaPatterns.circle)
 				{
+					if(hit.collider.GetComponent<Tile>())
+					{
+						targetTile = hit.collider.GetComponent<Tile>();
+						targetUnit = targetTile.unitInTile;
+					}
+					if (highlightedTilesArea.Contains(targetTile)) {
 					foreach (Unit u in targetsForAreaDamage) {
-						//if(currentUnit == targetUnit){
+
 						GameManager.instance.useAbility(currentUnit.currentAbility,currentUnit,null ,u);
-						/*}
-						else
-							Debug.Log("Not area selected");
-						}*/
+						removeTileHighlights ();
+						}
 					}
 				}
 			}
