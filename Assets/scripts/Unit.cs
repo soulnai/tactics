@@ -37,7 +37,7 @@ public class Unit : MonoBehaviour {
 	public int maxdamageBase = 5;
 	public float damageRollSides = 6; //d6
 	public float maxHeightDiff = 0.5f;
-
+	public EnumSpace.unitClass UnitClass;
 	public EnumSpace.unitStates UnitState;
 	public EnumSpace.unitActions UnitAction;
 	public Tile currentTile;

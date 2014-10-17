@@ -11,6 +11,15 @@ namespace EnumSpace {
 		dead
 	}
 
+	public enum unitClass{
+		squire,
+		warrior,
+		palladin,
+		knigth,
+		mage,
+		archer
+	}
+
 	public enum unitActions{
 		idle,
 		readyToMove,
