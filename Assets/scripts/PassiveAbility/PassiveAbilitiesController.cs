@@ -26,12 +26,4 @@ public class PassiveAbilitiesController : MonoBehaviour {
 			pa.owner = u;
 		}
 	}
-
-	public void activatePassiveAbilities()
-	{
-		foreach(BasePassiveAbility pa in passiveAbilities)
-		{
-
-		}
-	}
 }

@@ -25,11 +25,11 @@ public class AIPlayer : Unit {
 			GameManager.instance.nextTurn();		
 		}
 
-		a = unitAbilities.abilities[Random.Range(0, unitAbilities.abilities.Count)];
+		a = unitAbilitiesController.abilities[Random.Range(0, unitAbilitiesController.abilities.Count)];
 		//onAbility (ability);
 
 		if ((AP > 0) && (MP >= a.MPCost)) {
-						if (unitAbilities.abilities.Contains (a)) {
+						if (unitAbilitiesController.abilities.Contains (a)) {
 				
 								attackRange = a.range;
 								attackDistance = a.range;
@@ -77,7 +77,7 @@ public class AIPlayer : Unit {
 
 								GameManager.instance.removeTileHighlights ();
 
-								if (unitAbilities.abilities.Contains (a)) {
+								if (unitAbilitiesController.abilities.Contains (a)) {
 				
 										//magic
 										if (a.attackType == attackTypes.magic) {

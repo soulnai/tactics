@@ -58,18 +58,6 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public Player opponentPlayer{
-		set{
-			
-		}
-		get{
-			if(players[currentPlayerIndex+1] != null)
-				return players[currentPlayerIndex+1];
-			else
-				return players[0];
-		}
-	}
-
 	public GameObject pointer;
 	public int turnsCounter = 1;
 
@@ -488,7 +476,8 @@ public class GameManager : MonoBehaviour {
 			Vector2 position = getRandoMapTileXY(true);
 			unit = ((GameObject)Instantiate(UserUnitPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<Unit>();
 			unit.placeUnit(position);
-			unit.unitName = "Alice-"+i;				
+			unit.unitName = "Alice-"+i;
+			unit.playerOwner = players[0];
 			units.Add(unit);
 			players[0].addUnit(unit);
 		}
@@ -499,6 +488,7 @@ public class GameManager : MonoBehaviour {
 			ai = ((GameObject)Instantiate(AIPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<AIPlayer>();
 			ai.placeUnit(position);
 			ai.unitName = "Bot-"+i;				
+			ai.playerOwner = players[1];
 			units.Add(ai);
 			players[1].addUnit(ai);
 		}

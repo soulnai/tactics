@@ -49,9 +49,11 @@ public class Unit : MonoBehaviour {
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
-	public AbilitiesController unitAbilities;
-	public PassiveAbilitiesController unitPassiveAbilities;
+	public AbilitiesController unitAbilitiesController;
+	public PassiveAbilitiesController unitPassiveAbilitiesController;
 	public EffectsController unitActiveEffects;
+	public Player playerOwner;
+
 
 	private Vector3 lookDirection = Vector3.zero;
 	private float delayAfterAnim = 0.5f;
@@ -82,10 +84,6 @@ public class Unit : MonoBehaviour {
 	public void initAttributes(BasePassiveAbility pa)
 	{
 		if(unitActivePassiveAbilities.Contains(pa)){
-//		if(unitActivePassiveAbilities.Count > 0)
-//		{
-//			foreach(BasePassiveAbility pa in unitActivePassiveAbilities)
-//			{
 				foreach(BaseAttributeChanger ac in pa.affectedAttributes)
 				{
 					switch (ac.attribute) {
@@ -113,11 +111,8 @@ public class Unit : MonoBehaviour {
 						break;
 					}
 				}
-//			}
-//		}
 		}
-		// If no passive abilities applied
-//		else{
+
 //			UnitManager um = UnitManager.instance;
 //			Unit u = um.getUnit(this);
 //			HPmax = u.HPmax;
@@ -131,8 +126,8 @@ public class Unit : MonoBehaviour {
 //			Magic = u.Magic;
 //			PhysicalDefense = u.PhysicalDefense;
 //			MagicDefense = u.MagicDefense;
-//		}
 	}
+
 	/// <summary>
 	/// Float param
 	/// </summary>
@@ -154,27 +149,40 @@ public class Unit : MonoBehaviour {
 		else
 			parameter = Mathf.RoundToInt(parameter + ac.value);
 	}
-
+	/// <summary>
+	/// Updates the passive abilities.
+	/// </summary>
 	public void updatePassiveAbilities()
 	{
-		foreach(BasePassiveAbility pa in unitPassiveAbilities.passiveAbilities)
+		foreach(BasePassiveAbility pa in unitPassiveAbilitiesController.passiveAbilities)
 		{
 			List<Unit> affectedUnits = new List<Unit>();
 			if(pa.selfUse)
 				affectedUnits.Add(this);
 			if(pa.allyUse){
-				foreach(Unit u in GameManager.instance.currentPlayer.units)
-					if(u != this)
-						affectedUnits.Add(u);
+				foreach(Unit u in playerOwner.units)
+			if(u != this)							
+				affectedUnits.Add(u);
 			}
 			if(pa.enemieUse){
-				foreach(Unit u in GameManager.instance.opponentPlayer.units)
-					affectedUnits.Add(u);
-			}
-			
+				foreach(Unit u in GameManager.instance.units)
+					if(!playerOwner.units.Contains(u))
+						affectedUnits.Add(u);
+			}				
 			foreach(Unit u in affectedUnits)
 			{
 				pa.AddUnit(u);
+			}
+		}
+	}
+
+	public void deleteAllPassiveAbilities()
+	{
+		foreach(BasePassiveAbility pa in unitPassiveAbilitiesController.passiveAbilities)
+		{
+			foreach(Unit u in pa.affectedUnits)
+			{
+				pa.RemoveUnit(u);
 			}
 		}
 	}
@@ -208,7 +216,7 @@ public class Unit : MonoBehaviour {
 	{
 		GameManager.instance.removeTileHighlights ();
 
-		if (unitAbilities.abilities.Contains(a)) {
+		if (unitAbilitiesController.abilities.Contains(a)) {
 			if((AP > 0)&&(MP >= a.MPCost)){
 				currentAbility = a;
 				attackDistance = a.range;
@@ -294,6 +302,7 @@ public class Unit : MonoBehaviour {
 	{
 		HP = 0;
 		UnitState = unitStates.dead;
+		deleteAllPassiveAbilities();
 		GameManager.instance.checkVictory();
 		animation.CrossFade("Death");
 		StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim,true));
