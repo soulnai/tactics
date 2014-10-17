@@ -31,10 +31,14 @@ namespace EnumSpace {
 		healAttack
 	}
 
-	public enum resistTypes{
+	public enum unitAttributes{
 		strenght,
 		dexterity,
-		magic
+		magic,
+		magicDef,
+		poisonDef,
+		fireDef,
+		iceDef
 	}
 
 	public enum damageTypes{

@@ -242,28 +242,28 @@ public class Unit : MonoBehaviour {
 	public bool ResistTo (BaseEffect ef)
 	{
 		damageTypes damageType = ef.damageType;
-		resistTypes resistType;
+		unitAttributes resistType;
 		float resist = 0;
 
 		switch (damageType) {
 		case damageTypes.blunt:
-			resistType = resistTypes.strenght;
+			resistType = unitAttributes.strenght;
 			resist = Strength;
 			break;
 		case damageTypes.poison:
-			resistType = resistTypes.dexterity;
+			resistType = unitAttributes.dexterity;
 			resist = Strength;
 			break;
 		case damageTypes.electricity:
-			resistType = resistTypes.magic;
+			resistType = unitAttributes.magic;
 			resist = MagicDefense;
 			break;
 		case damageTypes.fire:
-			resistType = resistTypes.magic;
+			resistType = unitAttributes.magic;
 			resist = MagicDefense;
 			break;
 		case damageTypes.ice:
-			resistType = resistTypes.magic;
+			resistType = unitAttributes.magic;
 			resist = MagicDefense;
 			break;
 		}
