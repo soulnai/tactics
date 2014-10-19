@@ -325,11 +325,11 @@ public class GameManager : MonoBehaviour {
 							amountOfDamage = amountOfDamage*2;
 							Debug.Log ("backstab");
 						}
-						if (angle >=30 && angle <=90){
+						else if (angle >=30 && angle <=90){
 							amountOfDamage = amountOfDamage*2;
 							Debug.Log ("flank attack");
 						}
-						if (angle >90){
+						else if (angle >90){
 							amountOfDamage = amountOfDamage;
 							Debug.Log ("front attack");
 						}
@@ -348,7 +348,7 @@ public class GameManager : MonoBehaviour {
 					}
 
 
-					applyAbilityEffectToTarget (ability, _target);
+//					applyAbilityEffectToTarget (ability, _target);
 
 
 				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
@@ -367,15 +367,15 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public void applyAbilityEffectToTarget (BaseAbility ability, Unit _target)
-	{
-		if (ability.damageType == damageTypes.blunt && currentUnit.UnitState == unitStates.normal) {
-			if (Random.Range(0.0f, 1.0f) <= ability.effectApplyChance && Random.Range(0.0f, 1.0f)> _target.Strength/100) {
-				_target.UnitState = unitStates.stunned;
-				_target.currentStatusEffectDuration = ability.duration;
-			}
-		}
-	}
+//	public void applyAbilityEffectToTarget (BaseAbility ability, Unit _target)
+//	{
+//		if (ability.damageType == damageTypes.blunt && currentUnit.UnitState == unitStates.normal) {
+//			if (Random.Range(0.0f, 1.0f) <= ability.effectApplyChance && Random.Range(0.0f, 1.0f)> _target.Strength/100) {
+//				_target.UnitState = unitStates.stunned;
+//				_target.currentStatusEffectDuration = ability.duration;
+//			}
+//		}
+//	}
 
 	public void applyAbilityToTarget (BaseAbility ability, Unit _target, int amountOfDamage)
 	{
