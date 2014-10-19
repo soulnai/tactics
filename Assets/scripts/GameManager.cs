@@ -299,7 +299,10 @@ public class GameManager : MonoBehaviour {
 				if (Random.Range(0.0f, 1.0f) <= unitOwner.avoidChance){
 					hit = false;
 					GUImanager.instance.Log.addText("<b>"+_target.unitName+":</b>" + " successfuly avoided - "+ability.abilityID + " of " + unitOwner.unitName+"!");
-				}
+				} 
+				if (unitOwner.currentAbility.attackType == attackTypes.magic) {
+					hit = true;
+				} 
 			//if hit
 			if (hit) {
 				//damage logic
