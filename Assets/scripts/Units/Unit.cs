@@ -65,6 +65,12 @@ public class Unit : MonoBehaviour {
 		AP = APmax;
 	}
 
+	public void prepareForTurn()
+	{
+		unitActiveEffects.CheckAllEffects();
+		AP = APmax;
+	}
+
 	public void checkEndTurn()
 	{
 		if(GameManager.instance.currentUnit == this)
@@ -315,6 +321,7 @@ public class Unit : MonoBehaviour {
 	}
 
 	public virtual void EndTurn () {
+		unitActiveEffects.ClearOldEffects();
 		GameManager.instance.removeTileHighlights ();
 		if(UnitState != unitStates.dead)
 			UnitAction = unitActions.idle;

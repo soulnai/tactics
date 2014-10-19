@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour {
 
 		unitSelection = (GameObject)Instantiate(selectionRing, units[0].transform.position, Quaternion.Euler(0,0,0));
 		unitSelection.transform.parent = units [0].transform;
-		Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
+		Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 		updatePassiveAbilities();
 		//reset AP
@@ -127,30 +127,31 @@ public class GameManager : MonoBehaviour {
 		else
 		{
 			updatePassiveAbilities();
-			currentUnit.unitActiveEffects.ActivateAllEffects();
+			currentUnit.prepareForTurn();
+//			currentUnit.unitActiveEffects.ActivateAllEffects();
 			GUImanager.instance.showAbilities();
 			//reset AP
-			units[currentUnitIndex].AP = units[currentUnitIndex].APmax;
-			if (units[currentUnitIndex].currentStatusEffectDuration>0 || units[currentUnitIndex].UnitState != unitStates.normal) {
-				if (units[currentUnitIndex].UnitState == unitStates.stunned) {
-					units[currentUnitIndex].AP = 0;
+//			currentUnit.AP = currentUnit.APmax;
+			if (currentUnit.currentStatusEffectDuration>0 || currentUnit.UnitState != unitStates.normal) {
+				if (currentUnit.UnitState == unitStates.stunned) {
+					currentUnit.AP = 0;
 				}
-				units[currentUnitIndex].currentStatusEffectDuration--;
-				if (units[currentUnitIndex].currentStatusEffectDuration<=0 ){
-					units[currentUnitIndex].UnitState = unitStates.normal;
+				currentUnit.currentStatusEffectDuration--;
+				if (currentUnit.currentStatusEffectDuration<=0 ){
+					currentUnit.UnitState = unitStates.normal;
 				}
 			}
 			removeTileHighlights();
 
 			//reset & focus camera
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
-			Camera.main.GetComponent<CameraOrbit>().pivot = units[currentUnitIndex].transform;
+			Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 			//set selection ring
 			unitSelection.transform.position = units [currentUnitIndex].transform.position;
 			unitSelection.transform.parent = units [currentUnitIndex].transform;
 			//set state
-			units[currentUnitIndex].UnitAction = unitActions.idle;
+			currentUnit.UnitAction = unitActions.idle;
 			currentUnit.positionQueue.Clear();
 		}
 	}
@@ -240,16 +241,16 @@ public class GameManager : MonoBehaviour {
 	}
  	
 	public void moveCurrentPlayer(Tile destTile) {
-			if ((highlightedTiles.Contains(destTile)) && !destTile.impassible && units[currentUnitIndex].positionQueue.Count == 0) {
+			if ((highlightedTiles.Contains(destTile)) && !destTile.impassible && currentUnit.positionQueue.Count == 0) {
 			removeTileHighlights();
-			units[currentUnitIndex].UnitAction = unitActions.moving;
-			units[currentUnitIndex].currentTile.unitInTile = null;
-			foreach(Tile t in TilePathFinder.FindPath(map[(int)units[currentUnitIndex].gridPosition.x][(int)units[currentUnitIndex].gridPosition.y],destTile, units.Where(x => x.gridPosition != destTile.gridPosition && x.gridPosition != units[currentUnitIndex].gridPosition).Select(x => x.gridPosition).ToArray(),currentUnit.maxHeightDiff)) {
-				units[currentUnitIndex].positionQueue.Add(map[(int)t.gridPosition.x][(int)t.gridPosition.y].transform.position + 0.5f * Vector3.up);
-				Debug.Log("(" + units[currentUnitIndex].positionQueue[units[currentUnitIndex].positionQueue.Count - 1].x + "," + units[currentUnitIndex].positionQueue[units[currentUnitIndex].positionQueue.Count - 1].y + ")");
+			currentUnit.UnitAction = unitActions.moving;
+			currentUnit.currentTile.unitInTile = null;
+			foreach(Tile t in TilePathFinder.FindPath(map[(int)currentUnit.gridPosition.x][(int)currentUnit.gridPosition.y],destTile, units.Where(x => x.gridPosition != destTile.gridPosition && x.gridPosition != currentUnit.gridPosition).Select(x => x.gridPosition).ToArray(),currentUnit.maxHeightDiff)) {
+				currentUnit.positionQueue.Add(map[(int)t.gridPosition.x][(int)t.gridPosition.y].transform.position + 0.5f * Vector3.up);
+				Debug.Log("(" + currentUnit.positionQueue[currentUnit.positionQueue.Count - 1].x + "," + currentUnit.positionQueue[currentUnit.positionQueue.Count - 1].y + ")");
 			}			
-			units[currentUnitIndex].gridPosition = destTile.gridPosition;
-			destTile.unitInTile = units[currentUnitIndex];
+			currentUnit.gridPosition = destTile.gridPosition;
+			destTile.unitInTile = currentUnit;
 			currentUnit.currentTile = destTile;
 		} else {
 			Debug.Log ("destination invalid");
@@ -665,7 +666,7 @@ public class GameManager : MonoBehaviour {
 	public void ckeckLineofSign(AIPlayer ai)
 	{
 //
-//		if(Physics.Raycast(units[currentUnitIndex].transform.position+new Vector3(0,0.5f,0),units[currentUnitIndex].transform.position+new Vector3(0,0.5f,0)-ai.transform.position,out target,100f))
+//		if(Physics.Raycast(currentUnit.transform.position+new Vector3(0,0.5f,0),currentUnit.transform.position+new Vector3(0,0.5f,0)-ai.transform.position,out target,100f))
 //		{
 //			if(target.transform == ai.transform)
 //			{

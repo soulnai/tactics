@@ -35,8 +35,12 @@ public class EffectsController : MonoBehaviour {
 		tempEffect.Activate(false);
 	}
 
-	public void ActivateAllEffects()
+	public void CheckAllEffects()
 	{
+		//TODO debug clear list!
+		//delete old
+		ClearOldEffects();
+		//activate
 		foreach(BaseEffect ef in effects)
 			ef.Activate();
 	}
@@ -46,8 +50,12 @@ public class EffectsController : MonoBehaviour {
 		if((effect != null)&&(effects.Contains(effect)))
 			effectsToDelete.Add(effect);
 	}
-	
-	public void DeleteEffects()
+
+	/// <summary>
+	/// Removes all effects that neede to be removed.
+	/// Duration = 0, Owner died, etc
+	/// </summary>
+	public void ClearOldEffects()
 	{
 		foreach(BaseEffect ef in effectsToDelete)
 		{
@@ -65,7 +73,7 @@ public class EffectsController : MonoBehaviour {
 				AddToDeleteList(ef);
 			}
 		}
-		DeleteEffects();
+		ClearOldEffects();
 	}
 
 	public void DeleteAllEffects()

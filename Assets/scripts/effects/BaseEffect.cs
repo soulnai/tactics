@@ -27,7 +27,6 @@ public class BaseEffect : ICloneable {
 
 	public void Activate(bool decreaseDuration = true)
 	{
-		Debug.Log(targetUnit.unitName);
 		if((duration > 0)||(infinite)){
 			if(FXprefab != null)
 				FXmanager.instance.createEffectFX(FXprefab,targetUnit);
@@ -46,8 +45,11 @@ public class BaseEffect : ICloneable {
 				targetUnit.takeHeal(damagePerTurn);
 				Debug.Log("Effect heal");
 			}
-			if(decreaseDuration)
+			if(decreaseDuration){
 				duration--;
+				if(duration <=0)
+					controller.AddToDeleteList(this);
+			}
 		}
 		else
 		{
