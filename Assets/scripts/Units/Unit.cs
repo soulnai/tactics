@@ -251,6 +251,12 @@ public class Unit : MonoBehaviour {
 		{
 			AP -= a.APcost;
 		}
+
+		if(a.MPCost > 0)
+		{
+			MP -= a.MPCost;
+		}
+
 		animation.Play("Attack");
 		StartCoroutine(WaitAnimationEnd(animation["Attack"].length));
 
