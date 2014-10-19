@@ -67,7 +67,7 @@ public class Unit : MonoBehaviour {
 
 	public void prepareForTurn()
 	{
-		unitActiveEffects.CheckAllEffects();
+		unitActiveEffects.ActivateAllEffects();
 		AP = APmax;
 	}
 

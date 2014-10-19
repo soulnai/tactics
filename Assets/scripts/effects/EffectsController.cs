@@ -35,7 +35,7 @@ public class EffectsController : MonoBehaviour {
 		tempEffect.Activate(false);
 	}
 
-	public void CheckAllEffects()
+	public void ActivateAllEffects()
 	{
 		//TODO debug clear list!
 		//delete old
