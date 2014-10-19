@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using EnumSpace;
 
 public class EffectsController : MonoBehaviour {
 	public List<BaseEffect> effects;
@@ -59,6 +60,10 @@ public class EffectsController : MonoBehaviour {
 	{
 		foreach(BaseEffect ef in effectsToDelete)
 		{
+			if((ef.Stun)||(ef.state == unitStates.stunned)){
+				Unit u = UnitManager.instance.getUnit(unit);
+				unit.APmax = u.APmax;
+			}
 			effects.Remove(ef);
 		}
 		effectsToDelete.Clear();

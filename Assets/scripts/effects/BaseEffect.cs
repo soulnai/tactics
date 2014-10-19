@@ -33,6 +33,7 @@ public class BaseEffect : ICloneable {
 			if((Stun)||(state == unitStates.stunned))
 			{
 				targetUnit.AP = 0;
+				targetUnit.APmax = 0;
 				Debug.Log("Unit stunned");
 			}
 			if(damagePerTurn > 0)

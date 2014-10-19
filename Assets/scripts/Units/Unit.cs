@@ -87,6 +87,23 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
+	public void resetAttributes()
+	{
+		UnitManager um = UnitManager.instance;
+		Unit u = um.getUnit(this);
+		HPmax = u.HPmax;
+		HP = u.HPmax;
+		APmax = u.APmax;
+		AP = u.AP;
+		MPmax = u.MPmax;
+		MP = u.MP;
+		Strength = u.Strength;
+		Dexterity = u.Dexterity;
+		Magic = u.Magic;
+		PhysicalDefense = u.PhysicalDefense;
+		MagicDefense = u.MagicDefense;
+	}
+
 	public void initAttributes(BasePassiveAbility pa)
 	{
 		if(unitActivePassiveAbilities.Contains(pa)){
@@ -118,20 +135,6 @@ public class Unit : MonoBehaviour {
 					}
 				}
 		}
-
-//			UnitManager um = UnitManager.instance;
-//			Unit u = um.getUnit(this);
-//			HPmax = u.HPmax;
-//			HP = u.HPmax;
-//			APmax = u.APmax;
-//			AP = u.AP;
-//			MPmax = u.MPmax;
-//			MP = u.MP;
-//			Strength = u.Strength;
-//			Dexterity = u.Dexterity;
-//			Magic = u.Magic;
-//			PhysicalDefense = u.PhysicalDefense;
-//			MagicDefense = u.MagicDefense;
 	}
 
 	/// <summary>
