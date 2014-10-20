@@ -250,6 +250,9 @@ public class GameManager : MonoBehaviour {
 		int amountOfDamage = 0;
 		if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal || ability.attackType == attackTypes.ranged) {
 			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDefense);
+			if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
+				amountOfDamage+= amountOfDamage*unitOwner.criticalModifier;
+			}
 			return amountOfDamage;
 		} else {
 			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDefense);
@@ -275,6 +278,9 @@ public class GameManager : MonoBehaviour {
 			}
 			else if (angle >90){
 				amountOfDamage = amountOfDamage;
+				if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
+					amountOfDamage+= amountOfDamage*unitOwner.criticalModifier;
+				}
 				Debug.Log ("front attack");
 				return amountOfDamage;
 			}
@@ -329,7 +335,7 @@ public class GameManager : MonoBehaviour {
 			//if hit
 				if (checkIfAttackSuccesfullyHit(_target)) {
 				//damage logic
-				//int amountOfDamage = (int)Mathf.Floor(unitOwner.damageBase + Random.Range(0, unitOwner.damageRollSides));
+				
 					int amountOfDamage = 0;
 
 					amountOfDamage = calculateDamage(ability, unitOwner, _target);
@@ -346,9 +352,6 @@ public class GameManager : MonoBehaviour {
 					{
 						FXmanager.instance.createAbilityFX(ability.hitFXprefab,targetUnit.transform.position,targetUnit.transform.position,ability);
 					}
-
-
-//					applyAbilityEffectToTarget (ability, _target);
 
 
 				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
