@@ -36,13 +36,17 @@ namespace EnumSpace {
 		HP,
 		MP,
 		AP,
+		HPmax,
+		MPmax,
+		APmax,
 
 		//Attributes
 		strenght,
 		dexterity,
-
-		//Def
 		magic,
+	
+		//Def
+		PhysicalDef,
 		magicDef,
 		poisonDef,
 		fireDef,

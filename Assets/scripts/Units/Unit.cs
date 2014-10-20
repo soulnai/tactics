@@ -16,19 +16,83 @@ public class Unit : MonoBehaviour {
 	public int movementPerActionPoint = 5;
 	public int attackRange = 1;
 	public int attackDistance = 5;
-	
+
 	public string unitName = "George";
-	public int HPmax = 25;
-	public int HP = 25;
-	public int APmax = 2;
-	public int AP = 2;
-	public int MPmax = 25;
-	public int MP = 25;
-	public int Strength = 2;
-	public int Dexterity = 2;
-	public int Magic = 2;
-	public int PhysicalDefense = 2;
-	public int MagicDefense = 2;
+	public List<BaseAttribute> attributes = new List<BaseAttribute>();
+
+	//Attributes
+	public int HPmax{
+		get{
+			return getAttribute(unitAttributes.HPmax).valueMod;
+		}
+	}
+	public int HP{
+		set{
+			setAttribute(unitAttributes.HP,value);
+		}
+		get{
+			return getAttribute(unitAttributes.HP).valueMod;
+		}
+	}
+	public int APmax{
+		get{
+			return getAttribute(unitAttributes.APmax).valueMod;
+		}
+	}
+	public int AP{
+		set{
+			setAttribute(unitAttributes.AP,value);
+		}
+		get{
+			return getAttribute(unitAttributes.AP).valueMod;
+		}
+	}
+	public int MPmax{
+		get{
+			return getAttribute(unitAttributes.MPmax).valueMod;
+		}
+	}
+	public int MP{
+		set{
+			setAttribute(unitAttributes.MP,value);
+		}
+		get{
+			return getAttribute(unitAttributes.MP).valueMod;
+		}
+	}
+	public int Strength{
+		get{
+			return getAttribute(unitAttributes.strenght).valueMod;
+		}
+	}
+	public int Dexterity{
+		get{
+			return getAttribute(unitAttributes.dexterity).valueMod;
+		}
+	}
+	public int Magic{
+		get{
+			return getAttribute(unitAttributes.magic).valueMod;
+		}
+	}
+	public int PhysicalDef{
+		set{
+			setAttribute(unitAttributes.PhysicalDef,value);
+		}
+		get{
+			return getAttribute(unitAttributes.PhysicalDef).valueMod;
+		}
+	}
+	public int MagicDef{
+		set{
+			setAttribute(unitAttributes.magicDef,value);
+		}
+		get{
+			return getAttribute(unitAttributes.magicDef).valueMod;
+		}
+	}
+
+//	public List<BaseAttribute> attributes = new List<BaseAttribute>;
 	
 	public float attackChance = 0.75f;
 	public float avoidChance = 0.15f;
@@ -44,38 +108,63 @@ public class Unit : MonoBehaviour {
 	public Tile currentTile;
 	public BaseAbility currentAbility;
 	public Unit currentTarget;
-	public int currentStatusEffectDuration;
 
 	//movement animation
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
 	public AbilitiesController unitAbilitiesController;
-	public PassiveAbilitiesController unitPassiveAbilitiesController;
-	public EffectsController unitActiveEffects;
+	public BaseEffectController unitBaseEffects;
 	public Player playerOwner;
 
 
 	private Vector3 lookDirection = Vector3.zero;
 	private float delayAfterAnim = 0.5f;
 	private bool canEndTurn = false;
-	private List<BasePassiveAbility> unitActivePassiveAbilities = new List<BasePassiveAbility>();	
+
+	//Attributes modified
+//	[HideInInspector]
+//	public int HPmaxMod = 25;
+//	[HideInInspector]
+//	public int HPMod = 25;
+//	[HideInInspector]
+//	public int APmaxMod = 2;
+//	[HideInInspector]
+//	public int APMod = 2;
+//	[HideInInspector]
+//	public int MPmaxMod = 25;
+//	[HideInInspector]
+//	public int MPMod = 25;
+//	[HideInInspector]
+//	public int StrengthMod = 2;
+//	[HideInInspector]
+//	public int DexterityMod = 2;
+//	[HideInInspector]
+//	public int MagicMod = 2;
+//	[HideInInspector]
+//	public int PhysicalDefenseMod = 2;
+//	[HideInInspector]
+//	public int MagicDefenseMod = 2;
+
+	public Dictionary<unitAttributes,BaseAttribute> attributesDictionary = new Dictionary<unitAttributes, BaseAttribute>();
+	public Dictionary<unitAttributes,BaseAttribute> attributesModDictionary = new Dictionary<unitAttributes, BaseAttribute>();
 
 	void Awake () {
+//		initDictionaries();
 		moveDestination = transform.position;
-		AP = APmax;
+		getAttribute(unitAttributes.AP).value = getAttribute(unitAttributes.APmax).valueMod;
 	}
 
 	public void prepareForTurn()
 	{
-		unitActiveEffects.ActivateAllEffects();
-		AP = APmax;
+//		unitBaseEffects.activateAllEffects();
+		getAttribute(unitAttributes.AP).value = getAttribute(unitAttributes.APmax).valueMod;
 	}
 
 	public void checkEndTurn()
 	{
 		if(GameManager.instance.currentUnit == this)
 		{
-			if((AP<=0)&&(canEndTurn == true))
+			if((getAttribute(unitAttributes.AP).value<=0)&&(canEndTurn == true))
 			{
 				canEndTurn = false;
 				StartCoroutine(delayedEndTurn(delayAfterAnim));
@@ -87,115 +176,6 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	public void resetAttributes()
-	{
-		UnitManager um = UnitManager.instance;
-		Unit u = um.getUnit(this);
-		HPmax = u.HPmax;
-		HP = u.HPmax;
-		APmax = u.APmax;
-		AP = u.AP;
-		MPmax = u.MPmax;
-		MP = u.MP;
-		Strength = u.Strength;
-		Dexterity = u.Dexterity;
-		Magic = u.Magic;
-		PhysicalDefense = u.PhysicalDefense;
-		MagicDefense = u.MagicDefense;
-	}
-
-	public void initAttributes(BasePassiveAbility pa)
-	{
-		if(unitActivePassiveAbilities.Contains(pa)){
-				foreach(BaseAttributeChanger ac in pa.affectedAttributes)
-				{
-					switch (ac.attribute) {
-					case unitAttributes.AP:
-							updateParameter (ac, ref APmax);
-						break;
-					case unitAttributes.MP:
-						updateParameter (ac, ref MPmax);
-						break;
-
-					case unitAttributes.HP:
-						updateParameter (ac, ref HPmax);
-						break;
-					case unitAttributes.dexterity:
-						updateParameter (ac, ref Dexterity);
-						break;
-					case unitAttributes.strenght:
-						updateParameter (ac, ref Strength);
-						break;
-					case unitAttributes.magic:
-						updateParameter (ac, ref Magic);
-						break;
-					case unitAttributes.magicDef:
-						updateParameter (ac, ref MagicDefense);
-						break;
-					}
-				}
-		}
-	}
-
-	/// <summary>
-	/// Float param
-	/// </summary>
-	public void updateParameter (BaseAttributeChanger ac, ref float parameter)
-	{
-		if (ac.multiply)
-			parameter = parameter * ac.value;
-		else
-			parameter = parameter + ac.value;
-	}
-
-	/// <summary>
-	/// Int param
-	/// </summary>
-	public void updateParameter (BaseAttributeChanger ac, ref int parameter)
-	{
-		if (ac.multiply)
-			parameter = Mathf.RoundToInt(parameter * ac.value);
-		else
-			parameter = Mathf.RoundToInt(parameter + ac.value);
-	}
-	/// <summary>
-	/// Updates the passive abilities.
-	/// </summary>
-	public void updatePassiveAbilities()
-	{
-		foreach(BasePassiveAbility pa in unitPassiveAbilitiesController.passiveAbilities)
-		{
-			List<Unit> affectedUnits = new List<Unit>();
-			if(pa.selfUse)
-				affectedUnits.Add(this);
-			if(pa.allyUse){
-				foreach(Unit u in playerOwner.units)
-			if(u != this)							
-				affectedUnits.Add(u);
-			}
-			if(pa.enemieUse){
-				foreach(Unit u in GameManager.instance.units)
-					if(!playerOwner.units.Contains(u))
-						affectedUnits.Add(u);
-			}				
-			foreach(Unit u in affectedUnits)
-			{
-				pa.AddUnit(u);
-			}
-		}
-	}
-
-	public void deleteAllPassiveAbilities()
-	{
-		foreach(BasePassiveAbility pa in unitPassiveAbilitiesController.passiveAbilities)
-		{
-			foreach(Unit u in pa.affectedUnits)
-			{
-				pa.RemoveUnit(u);
-			}
-		}
-	}
-
 	public void ReactionsEnd (Unit unit)
 	{
 		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
@@ -203,11 +183,6 @@ public class Unit : MonoBehaviour {
 		Debug.Log("This - "+this.unitName+" // target - " +unit.unitName+"Reaction End");
 	}
 
-	// Use this for initialization
-	void Start () {
-
-	}
-	
 	// Update is called once per frame
 	public virtual void Update () {		
 		if(GameManager.instance.currentUnit == this)
@@ -317,14 +292,12 @@ public class Unit : MonoBehaviour {
 	{
 		HP = 0;
 		UnitState = unitStates.dead;
-		deleteAllPassiveAbilities();
 		GameManager.instance.checkVictory();
 		animation.CrossFade("Death");
 		StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim,true));
 	}
 
 	public virtual void EndTurn () {
-		unitActiveEffects.ClearOldEffects();
 		GameManager.instance.removeTileHighlights ();
 		if(UnitState != unitStates.dead)
 			UnitAction = unitActions.idle;
@@ -359,24 +332,6 @@ public class Unit : MonoBehaviour {
 		StartCoroutine(WaitAnimationEnd(animation["Damage"].length+delayAfterAnim,true));
 	}
 
-	public void addPassiveAbility (BasePassiveAbility pa)
-	{
-		if(!unitActivePassiveAbilities.Contains(pa)){
-			unitActivePassiveAbilities.Add(pa);
-			initAttributes(pa);
-		}
-		else
-			Debug.Log("This unit already under the same passive ability");
-	}
-
-	public void removePassiveAbility (BasePassiveAbility pa)
-	{
-		if(unitActivePassiveAbilities.Contains(pa))
-			unitActivePassiveAbilities.Remove(pa);
-		else
-			Debug.Log("This unit does not affected by this passive ability");
-	}
-
 	public void placeUnit(Vector2 position)
 	{
 		gridPosition = position;
@@ -387,7 +342,8 @@ public class Unit : MonoBehaviour {
 
 	public bool ResistTo (BaseEffect ef)
 	{
-		damageTypes damageType = ef.damageType;
+		damageTypes damageType = damageTypes.blunt;
+//		damageTypes damageType = ef.damageType;
 		unitAttributes resistType;
 		float resist = 0;
 
@@ -402,15 +358,15 @@ public class Unit : MonoBehaviour {
 			break;
 		case damageTypes.electricity:
 			resistType = unitAttributes.magic;
-			resist = MagicDefense;
+			resist = MagicDef;
 			break;
 		case damageTypes.fire:
 			resistType = unitAttributes.magic;
-			resist = MagicDefense;
+			resist = MagicDef;
 			break;
 		case damageTypes.ice:
 			resistType = unitAttributes.magic;
-			resist = MagicDefense;
+			resist = MagicDef;
 			break;
 		}
 
@@ -435,4 +391,57 @@ public class Unit : MonoBehaviour {
 		yield return new WaitForSeconds(t);
 		EndTurn();
 	}
+
+//	public int getAttributeValue (unitAttributes at,bool mod = false)
+//	{
+//		int tempVal = 0;
+//		if(mod)
+//			attributesModDictionary.TryGetValue(at,out tempVal);
+//		else
+//			attributesDictionary.TryGetValue(at,out tempVal);
+//		return tempVal;
+//	}
+
+//	public void setAttributeValue (int value,unitAttributes at,bool mod = false)
+//	{
+//		if(mod)
+//			attributesModDictionary[at] = value;
+//		else
+//			attributesDictionary[at] = value;
+//	}
+
+	public BaseAttribute getAttribute(unitAttributes a)
+	{
+		return attributes.Find(BaseAttribute => BaseAttribute.attribute == a);
+	}
+
+	public void setAttribute(unitAttributes a,int val)
+	{
+		attributes.Find(BaseAttribute => BaseAttribute.attribute == a).value = val;
+	}
+
+//	public void initDictionaries()
+//	{
+//		attributesDictionary.Add(unitAttributes.AP,attributes.Contains());
+//		attributesDictionary.Add(unitAttributes.APmax,APmax);
+//		attributesDictionary.Add(unitAttributes.HP,HP);
+//		attributesDictionary.Add(unitAttributes.HPmax,HPmax);
+//		attributesDictionary.Add(unitAttributes.MP,MP);
+//		attributesDictionary.Add(unitAttributes.MPmax,MPmax);
+//		attributesDictionary.Add(unitAttributes.strenght,Strength);
+//		attributesDictionary.Add(unitAttributes.dexterity,Dexterity);
+//		attributesDictionary.Add(unitAttributes.magic,Magic);
+//		attributesDictionary.Add(unitAttributes.magicDef,MagicDefense);
+//
+//		attributesModDictionary.Add(unitAttributes.AP,APMod);
+//		attributesModDictionary.Add(unitAttributes.APmax,APmaxMod);
+//		attributesModDictionary.Add(unitAttributes.HP,HPMod);
+//		attributesModDictionary.Add(unitAttributes.HPmax,HPmaxMod);
+//		attributesModDictionary.Add(unitAttributes.MP,MPMod);
+//		attributesModDictionary.Add(unitAttributes.MPmax,MPmaxMod);
+//		attributesModDictionary.Add(unitAttributes.strenght,StrengthMod);
+//		attributesModDictionary.Add(unitAttributes.dexterity,DexterityMod);
+//		attributesModDictionary.Add(unitAttributes.magic,MagicMod);
+//		attributesModDictionary.Add(unitAttributes.magicDef,MagicDefenseMod);
+//	}
 }

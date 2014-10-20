@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using EnumSpace;
 
 [System.Serializable]
@@ -30,7 +31,8 @@ public class BaseAbility : ICloneable{
 
 	public int baseDamage;
 	public damageTypes damageType;
-
+	
+	public List<BaseEffect> effects;
 	public string effectToApply;
 
 	[HideInInspector]
@@ -39,7 +41,9 @@ public class BaseAbility : ICloneable{
 			effectApplyChance = value;
 		}
 		get{
-			return EffectsManager.instance.getEffect(effectToApply).effectApplyChance;
+			//TODO
+//			return BaseEffectsManager.instance.getEffect(effectToApply).effectApplyChance;
+			return 0;
 		}
 	}
 

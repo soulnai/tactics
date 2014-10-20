@@ -7,30 +7,29 @@ using System.Xml.Serialization;
 using System.IO;
 
 
-public class EffectsManager : MonoBehaviour {
-	public static EffectsManager instance;
-
+public class BaseEffectsManager : MonoBehaviour {
+	public static BaseEffectsManager instance;
+	
 	public List<BaseEffect> effectsList;
-
+	
 	void Awake()
 	{
 		instance = this;
-
+		
 	}
-
+	
 	// Use this for initialization
 	void Start () {
-		EffectsContainer ec = new EffectsContainer();
-//		ec.Save("effects.xml",effectsList);
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
-
+	
 	public BaseEffect getEffect(string ID)
 	{
-		return effectsList.Find(BaseEffect => BaseEffect.effectID == ID);
+		return effectsList.Find(BaseEffect => BaseEffect.ID == ID);
 	}
 }

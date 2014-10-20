@@ -7,9 +7,11 @@ using EnumSpace;
 
 //Events
 public delegate void VictoryState(GameManager gm,Player p);
+public delegate void TurnStart(Unit currentUnit);
 
 public class GameManager : MonoBehaviour {
 	public event VictoryState OnVictoryState;
+	public event TurnStart OnTurnStart;
 	public static GameManager instance;
 	//units count
 	public int unitsCountPlayer;
@@ -86,9 +88,8 @@ public class GameManager : MonoBehaviour {
 		unitSelection.transform.parent = units [0].transform;
 		Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
-		updatePassiveAbilities();
 		//reset AP
-		units[0].AP = units[0].APmax;
+		units[0].getAttribute(unitAttributes.AP).value = units[0].getAttribute(unitAttributes.APmax).valueMod;
 	}
 	
 	// Update is called once per frame
@@ -97,16 +98,7 @@ public class GameManager : MonoBehaviour {
 		if((currentUnit.UnitAction != unitActions.idle)&&(currentUnit.UnitAction != unitActions.moving)&&(currentUnit.UnitAction != unitActions.readyToMove))
 			AttackOnMouseClick ();
 	}
-
-	public void updatePassiveAbilities(){
-		foreach(Unit u in units)
-		{
-			u.updatePassiveAbilities();
-		}
-	}
-
-
-
+	
 	public void nextTurn() {
 		if (currentUnitIndex + 1 < units.Count) {
 			currentUnitIndex++;
@@ -120,27 +112,20 @@ public class GameManager : MonoBehaviour {
 			currentUnitIndex = 0;
 			currentPlayerIndex = 0;
 		}
+		if(OnTurnStart != null)
+			OnTurnStart(currentUnit);
 		if(currentUnit.UnitState == unitStates.dead)
 		{
 			nextTurn();
 		}
 		else
 		{
-			updatePassiveAbilities();
 			currentUnit.prepareForTurn();
 //			currentUnit.unitActiveEffects.ActivateAllEffects();
 			GUImanager.instance.showAbilities();
 			//reset AP
 //			currentUnit.AP = currentUnit.APmax;
-			if (currentUnit.currentStatusEffectDuration>0 || currentUnit.UnitState != unitStates.normal) {
-				if (currentUnit.UnitState == unitStates.stunned) {
-					currentUnit.AP = 0;
-				}
-				currentUnit.currentStatusEffectDuration--;
-				if (currentUnit.currentStatusEffectDuration<=0 ){
-					currentUnit.UnitState = unitStates.normal;
-				}
-			}
+
 			removeTileHighlights();
 
 			//reset & focus camera
@@ -310,9 +295,9 @@ public class GameManager : MonoBehaviour {
 				//int amountOfDamage = (int)Mathf.Floor(unitOwner.damageBase + Random.Range(0, unitOwner.damageRollSides));
 					int amountOfDamage = 0;
 					if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal || ability.attackType == attackTypes.ranged) {
-						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDefense);
+						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.getAttribute(unitAttributes.magic).valueMod/2) - _target.getAttribute(unitAttributes.magicDef).valueMod);
 					} else {
-						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDefense);
+						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.getAttribute(unitAttributes.strenght).valueMod/2) - _target.getAttribute(unitAttributes.PhysicalDef).valueMod);
 						float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
 						Debug.Log (angle);
 						if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab && Random.Range(0.0f, 1.0f) <= ability.effectApplyChance){
@@ -389,13 +374,14 @@ public class GameManager : MonoBehaviour {
 		//Apply Effect
 		if(ability.effectToApply != null)
 		{
-			BaseEffect ef = EffectsManager.instance.getEffect(ability.effectToApply);
-			if(ef != null){
-				//check - can be applied?
-				if (Random.Range(0.0f, 1.0f) <= ef.effectApplyChance && _target.ResistTo(ef)) {
-					_target.unitActiveEffects.AddEffect(ef);
-				}
-			}
+			BaseEffect ef = BaseEffectsManager.instance.getEffect(ability.effectToApply);
+			//TODO
+//			if(ef != null){
+//				//check - can be applied?
+//				if (Random.Range(0.0f, 1.0f) <= ef.effectApplyChance && _target.ResistTo(ef)) {
+//					_target.unitBaseEffects.AddEffect(ef);
+//				}
+//			}
 		}
 	}
 
@@ -697,5 +683,24 @@ public class GameManager : MonoBehaviour {
 				deadCount = 0;
 			}
 		}
+	}
+
+	public List<Unit> findTargets (Unit owner, int radius, bool enemieUse, bool allyUse, bool selfUse)
+	{
+		List<Tile> tempTiles = TileHighlightAtack.FindHighlight (map [(int)owner.gridPosition.x] [(int)owner.gridPosition.y], radius);
+		List<Unit> tempUnits = new List<Unit>();
+		foreach(Tile t in tempTiles)
+		{
+			if(t.unitInTile!=null){
+				Unit tempUnit = t.unitInTile;
+				if((enemieUse)&&(tempUnit.playerOwner != currentPlayer))
+					tempUnits.Add(tempUnit);
+				if((allyUse)&&(tempUnit.playerOwner == currentPlayer))
+					tempUnits.Add(tempUnit);
+				if((selfUse)&&(tempUnit == currentUnit))
+					tempUnits.Add(tempUnit);
+			}
+		}
+		return tempUnits;
 	}
 }
