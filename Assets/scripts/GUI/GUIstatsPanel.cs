@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using EnumSpace;
+
 
 public enum track{
 	currentUnit,
@@ -33,9 +35,9 @@ public class GUIstatsPanel : MonoBehaviour {
 		}
 		if(currentUnit != null){
 			Name.text ="Name - " + currentUnit.unitName;
-			AP.text = "AP - " + currentUnit.AP;
-			MP.text = "MP - " + currentUnit.MP;
-			HP.text = "HP - " + currentUnit.HP;
+			AP.text = "AP - " + currentUnit.getAttribute(unitAttributes.AP).valueMod;
+			MP.text = "MP - " + currentUnit.getAttribute(unitAttributes.HP).valueMod;
+			HP.text = "HP - " + currentUnit.getAttribute(unitAttributes.MP).valueMod;
 		}
 	}
 }
