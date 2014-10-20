@@ -251,9 +251,9 @@ public class GameManager : MonoBehaviour {
 		if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal || ability.attackType == attackTypes.ranged) {
 			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDefense);
 			if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
-				amountOfDamage+= amountOfDamage*unitOwner.criticalModifier;
+				amountOfDamage+= (int)amountOfDamage*(int)unitOwner.criticalModifier;
 			}
-			return amountOfDamage;
+			//return amountOfDamage;
 		} else {
 			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDefense);
 			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
@@ -279,7 +279,7 @@ public class GameManager : MonoBehaviour {
 			else if (angle >90){
 				amountOfDamage = amountOfDamage;
 				if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
-					amountOfDamage+= amountOfDamage*unitOwner.criticalModifier;
+					amountOfDamage+= amountOfDamage*(int)unitOwner.criticalModifier;
 				}
 				Debug.Log ("front attack");
 				return amountOfDamage;
