@@ -31,6 +31,8 @@ public class Unit : MonoBehaviour {
 	public int MagicDefense = 2;
 	
 	public float attackChance = 0.75f;
+	public float magicAttackChance = 0.75f;
+	public float rangedAttackChance = 0.75f;
 	public float avoidChance = 0.15f;
 	public float criticalChance = 0.1f;
 	public float criticalModifier = 1.5f;
