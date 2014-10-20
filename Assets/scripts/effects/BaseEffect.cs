@@ -56,6 +56,10 @@ public class BaseEffect : ICloneable {
 		{
 			controller.AddToDeleteList(this);
 		}
+
+		if (targetUnit.HP <=0){
+			targetUnit.makeDead();
+		}
 	}
 
 	public void Init(EffectsController c,Unit unit)

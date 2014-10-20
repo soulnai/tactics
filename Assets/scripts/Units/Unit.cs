@@ -214,9 +214,13 @@ public class Unit : MonoBehaviour {
 		{
 			checkEndTurn();
 		
-			if(UnitAction == unitActions.moving)
+			if(UnitAction == unitActions.moving && GameManager.instance.currentUnit.UnitState != unitStates.dead)
 			{
 				MoveUnit();
+			}
+
+			if (HP <=0){
+				makeDead();
 			}
 		}
 	}
