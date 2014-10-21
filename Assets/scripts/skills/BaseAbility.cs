@@ -32,7 +32,7 @@ public class BaseAbility : ICloneable{
 	public int baseDamage;
 	public damageTypes damageType;
 	
-	public List<BaseEffect> effects;
+	public List<string> effects;
 	public string effectToApply;
 
 	[HideInInspector]

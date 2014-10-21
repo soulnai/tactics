@@ -32,16 +32,27 @@ public class BaseEffect : ICloneable {
 
 	public GameObject FX;
 
+	private bool useUpdateTargets = true;
+	private int mod;
+
 	private GameManager gm{
 		get{
 			return GameManager.instance;
 		}
 	}
 
-	public void Init()
+	public void Init(Unit _owner = null,Unit _target = null)
 	{
 		gm.OnTurnStart += OnTurnStart;
 		gm.OnRoundStart += OnRoundStart;
+		if(_owner != null)
+			owner = _owner;
+		if(_target!=null){
+			useUpdateTargets = false;
+			targets.Clear();
+			targets.Add(_target);
+			addToAppliedEffects ();
+		}
 	}
 
 	void OnRoundStart ()
@@ -65,24 +76,26 @@ public class BaseEffect : ICloneable {
 	}
 
 	public void updateTargets(Unit u = null){
-		removeFromAppliedEffects();
-		targets.Clear();
-		if(useRadius)
-		{
-			targets = gm.findTargets(owner,radius,enemieUse,allyUse,selfUse);
+		if(useUpdateTargets){
+			removeFromAppliedEffects();
+			targets.Clear();
+			if(useRadius)
+			{
+				targets = gm.findTargets(owner,radius,enemieUse,allyUse,selfUse);
+			}
+			else
+			{
+				if(selfUse)
+					targets.Add(owner);
+				if(allyUse)
+					if(u.playerOwner == owner.playerOwner)
+						targets.Add(u);
+				if(enemieUse)
+					if(u.playerOwner != owner.playerOwner)
+						targets.Add(u);
+			}
+			addToAppliedEffects ();
 		}
-		else
-		{
-			if(selfUse)
-				targets.Add(owner);
-			if(allyUse)
-				if(u.playerOwner == owner.playerOwner)
-					targets.Add(u);
-			if(enemieUse)
-				if(u.playerOwner != owner.playerOwner)
-					targets.Add(u);
-		}
-		addToAppliedEffects ();
 	}
 
 	public void applyToAllTargets()
@@ -100,12 +113,7 @@ public class BaseEffect : ICloneable {
 			foreach(BaseAttributeChanger ac in affectedAttributes)
 			{
 				int valueTemp;
-				int valueMod = u.getAttribute(ac.attribute).valueMod;
-				int value = u.getAttribute(ac.attribute).value;
-				if(ac.multiply)
-					valueTemp = UnityEngine.Mathf.RoundToInt((ac.value * valueMod)-value);
-				else
-					valueTemp = UnityEngine.Mathf.RoundToInt((ac.value + valueMod)-value);
+				valueTemp = calculateValue(u,ac);
 
 				if(ac.applyEachTurn){
 					u.getAttribute(ac.attribute).value += valueTemp;
@@ -116,6 +124,18 @@ public class BaseEffect : ICloneable {
 				}
 			}
 		}
+	}
+
+	public int calculateValue (Unit u,BaseAttributeChanger ac)
+	{
+		int valueTemp = 0;
+		int valueMod = u.getAttribute (ac.attribute).valueMod;
+		int value = u.getAttribute (ac.attribute).value;
+		if (ac.multiply)
+			valueTemp = UnityEngine.Mathf.RoundToInt ((ac.value * valueMod) - value);
+		else
+			valueTemp = UnityEngine.Mathf.RoundToInt ((ac.value + valueMod) - value);
+		return valueTemp;
 	}
 
 	void addToAppliedEffects ()

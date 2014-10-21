@@ -30,6 +30,6 @@ public class BaseEffectsManager : MonoBehaviour {
 	
 	public BaseEffect getEffect(string ID)
 	{
-		return effectsList.Find(BaseEffect => BaseEffect.ID == ID);
+		return effectsList.Find(BaseEffect => BaseEffect.ID == ID).Clone() as BaseEffect;
 	}
 }

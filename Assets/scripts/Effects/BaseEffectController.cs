@@ -60,4 +60,16 @@ public class BaseEffectController : MonoBehaviour {
 		if(effectsAppliedToUnit.Contains(ef))
 			effectsAppliedToUnit.Remove(ef);
 	}
+
+	public void updateModsFromAppliedEffects()
+	{
+		Unit u = GetComponent<Unit>();
+		foreach(BaseEffect ef in effectsAppliedToUnit)
+		{
+			foreach(BaseAttributeChanger ac in ef.affectedAttributes)
+			{
+				u.getAttribute(ac.attribute).addMod(ef.calculateValue(u,ac));
+			}
+		}
+	}
 }
