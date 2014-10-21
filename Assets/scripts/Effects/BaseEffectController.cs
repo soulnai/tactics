@@ -9,26 +9,52 @@ public class BaseEffectController : MonoBehaviour {
 
 	public List<BaseEffect> effectsAppliedToUnit = new List<BaseEffect>();
 
+	private GameManager gm = GameManager.instance;
+	private Unit owner;
 	void Start () {
+		gm.OnRoundStart += OnRoundStart;
+		gm.OnTurnStart += OnTurnStart;
+		gm.OnUnitPosChange += OnUnitPosChange;
+		owner = GetComponent<Unit>();
 		initEffects();
+	}
+
+	void OnUnitPosChange (Unit u)
+	{
+		updateEffectsTargets();
+		updateModsFromAppliedEffects();
+	}
+
+	void updateEffectsTargets ()
+	{
+		foreach (BaseEffect ef in effects) {
+			ef.updateTargets();
+		}
+	}
+
+	void OnTurnStart (Unit u)
+	{
+		updateEffectsTargets();
+		foreach(BaseEffect ef in effectsAppliedToUnit)
+		{
+			ef.applyTo(owner);
+		}
+	}
+
+	void OnRoundStart ()
+	{
+
 	}
 	
 	public void initEffects (){
 		for(int i=0;i<effectsID.Count;i++)
 		{
-			BaseEffect tempEffect = BaseEffectsManager.instance.getEffect(effectsID[i]).Clone() as BaseEffect;
-			tempEffect.owner = this.GetComponent<Unit>();
-			tempEffect.Init();
-			effects.Add(tempEffect);
-		}
-	}
-
-	public void activateAllEffects()
-	{
-		foreach(BaseEffect ef in effects)
-		{
-			ef.updateTargets();
-			ef.applyToAllTargets();
+			if(BaseEffectsManager.instance.getEffect(effectsID[i]) != null){
+				BaseEffect tempEffect = BaseEffectsManager.instance.getEffect(effectsID[i]).Clone() as BaseEffect;
+				tempEffect.owner = this.GetComponent<Unit>();
+				tempEffect.Init();
+				effects.Add(tempEffect);
+			}
 		}
 	}
 
@@ -40,7 +66,6 @@ public class BaseEffectController : MonoBehaviour {
 	public void delete(BaseEffect ef)
 	{
 		if(effects.Contains(ef)){
-//			ef.Delete();
 			effects.Remove(ef);
 		}
 		else
@@ -63,12 +88,16 @@ public class BaseEffectController : MonoBehaviour {
 
 	public void updateModsFromAppliedEffects()
 	{
-		Unit u = GetComponent<Unit>();
+		foreach(BaseAttribute at in owner.attributes){
+			at.clearMods();
+		}
+
 		foreach(BaseEffect ef in effectsAppliedToUnit)
 		{
 			foreach(BaseAttributeChanger ac in ef.affectedAttributes)
 			{
-				u.getAttribute(ac.attribute).addMod(ef.calculateValue(u,ac));
+				if(ac.mod)
+					owner.getAttribute(ac.attribute).addMod(ef.getValue(owner,ac));
 			}
 		}
 	}

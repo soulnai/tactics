@@ -168,17 +168,26 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Activates the "a" ability.
+	/// </summary>
 	public void onAbility(BaseAbility a)
 	{
 		GameManager.instance.removeTileHighlights ();
 
 		if (unitAbilitiesController.abilities.Contains(a)) {
 			if((AP > 0)&&(MP >= a.MPCost)){
-				currentAbility = a;
-				attackDistance = a.range;
-				damageBase = a.baseDamage;
-				UnitAction = a.unitAction;
-				GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+				if((a.selfUse)&&(!a.allyUse)&&(!a.enemieUse)){
+					GameManager.instance.useAbility(a,this,currentTile,this);
+				}
+				else
+				{
+					currentAbility = a;
+					attackDistance = a.range;
+					damageBase = a.baseDamage;
+					UnitAction = a.unitAction;
+					GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+				}
 			}
 			else
 			{	if(AP <= 0){

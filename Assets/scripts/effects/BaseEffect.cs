@@ -107,34 +107,39 @@ public class BaseEffect : ICloneable {
 		}
 	}
 
-	public void applyTo(Unit u)
+	public void applyTo(Unit u,bool mod = false)
 	{
-		if((duration>0)||(infinite)){
-			foreach(BaseAttributeChanger ac in affectedAttributes)
-			{
-				int valueTemp;
-				valueTemp = calculateValue(u,ac);
-
-				if(ac.applyEachTurn){
-					u.getAttribute(ac.attribute).value += valueTemp;
-				}
-				else
+		if(targets.Contains(u)){
+			if((duration>0)||(infinite)){
+				foreach(BaseAttributeChanger ac in affectedAttributes)
 				{
-					u.getAttribute(ac.attribute).addMod(valueTemp);
+					int valueTemp = getValue(u,ac);
+
+					if((ac.applyEachTurn)&&(!mod)){
+						u.getAttribute(ac.attribute).value += valueTemp;
+						Debug.Log("Attribute Value changed");
+					}
+					else if(mod)
+					{
+						if(u == gm.currentUnit){
+							u.getAttribute(ac.attribute).addMod(valueTemp);
+							Debug.Log("Mods list updated");
+						}
+					}
 				}
 			}
 		}
 	}
 
-	public int calculateValue (Unit u,BaseAttributeChanger ac)
+	public int getValue (Unit u,BaseAttributeChanger ac)
 	{
 		int valueTemp = 0;
 		int valueMod = u.getAttribute (ac.attribute).valueMod;
 		int value = u.getAttribute (ac.attribute).value;
 		if (ac.multiply)
-			valueTemp = UnityEngine.Mathf.RoundToInt ((ac.value * valueMod) - value);
+			valueTemp = UnityEngine.Mathf.RoundToInt ((ac.value * value) - value);
 		else
-			valueTemp = UnityEngine.Mathf.RoundToInt ((ac.value + valueMod) - value);
+			valueTemp = UnityEngine.Mathf.RoundToInt ((ac.value + value) - value);
 		return valueTemp;
 	}
 

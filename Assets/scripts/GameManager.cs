@@ -7,12 +7,13 @@ using EnumSpace;
 
 //Events
 public delegate void VictoryState(GameManager gm,Player p);
-public delegate void TurnStart(Unit currentUnit);
+public delegate void UnitEvent(Unit currentUnit);
 public delegate void RoundStart();
 
 public class GameManager : MonoBehaviour {
 	public event VictoryState OnVictoryState;
-	public event TurnStart OnTurnStart;
+	public event UnitEvent OnUnitPosChange;
+	public event UnitEvent OnTurnStart;
 	public event RoundStart OnRoundStart;
 	public static GameManager instance;
 	//units count
@@ -236,11 +237,13 @@ public class GameManager : MonoBehaviour {
 			currentUnit.currentTile.unitInTile = null;
 			foreach(Tile t in TilePathFinder.FindPath(map[(int)currentUnit.gridPosition.x][(int)currentUnit.gridPosition.y],destTile, units.Where(x => x.gridPosition != destTile.gridPosition && x.gridPosition != currentUnit.gridPosition).Select(x => x.gridPosition).ToArray(),currentUnit.maxHeightDiff)) {
 				currentUnit.positionQueue.Add(map[(int)t.gridPosition.x][(int)t.gridPosition.y].transform.position + 0.5f * Vector3.up);
-				Debug.Log("(" + currentUnit.positionQueue[currentUnit.positionQueue.Count - 1].x + "," + currentUnit.positionQueue[currentUnit.positionQueue.Count - 1].y + ")");
+//				Debug.Log("(" + currentUnit.positionQueue[currentUnit.positionQueue.Count - 1].x + "," + currentUnit.positionQueue[currentUnit.positionQueue.Count - 1].y + ")");
 			}			
 			currentUnit.gridPosition = destTile.gridPosition;
 			destTile.unitInTile = currentUnit;
 			currentUnit.currentTile = destTile;
+			if(OnUnitPosChange != null)
+				OnUnitPosChange(currentUnit);
 		} else {
 			Debug.Log ("destination invalid");
 		}
@@ -263,7 +266,6 @@ public class GameManager : MonoBehaviour {
 		}
 		if(_target==null)
 		{
-//			_target = unitOwner;
 			Debug.Log("No target selected");
 		}
 		targetPub = _target;
@@ -295,8 +297,6 @@ public class GameManager : MonoBehaviour {
 				} 
 			//if hit
 			if (hit) {
-				//damage logic
-				//int amountOfDamage = (int)Mathf.Floor(unitOwner.damageBase + Random.Range(0, unitOwner.damageRollSides));
 					int amountOfDamage = 0;
 					if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal || ability.attackType == attackTypes.ranged) {
 						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.getAttribute(unitAttributes.magic).valueMod/2) - _target.getAttribute(unitAttributes.magicDef).valueMod);
@@ -321,7 +321,6 @@ public class GameManager : MonoBehaviour {
 						else if (angle >90){
 							Debug.Log ("front attack");
 						}
-
 					}
 				
 					applyAbilityToTarget (ability, _target, amountOfDamage);
@@ -334,10 +333,6 @@ public class GameManager : MonoBehaviour {
 					{
 						FXmanager.instance.createAbilityFX(ability.hitFXprefab,targetUnit.transform.position,targetUnit.transform.position,ability);
 					}
-
-
-//					applyAbilityEffectToTarget (ability, _target);
-
 
 				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 				unitOwner.playAbility(ability);
@@ -354,16 +349,6 @@ public class GameManager : MonoBehaviour {
 		}
 		}
 	}
-
-//	public void applyAbilityEffectToTarget (BaseAbility ability, Unit _target)
-//	{
-//		if (ability.damageType == damageTypes.blunt && currentUnit.UnitState == unitStates.normal) {
-//			if (Random.Range(0.0f, 1.0f) <= ability.effectApplyChance && Random.Range(0.0f, 1.0f)> _target.Strength/100) {
-//				_target.UnitState = unitStates.stunned;
-//				_target.currentStatusEffectDuration = ability.duration;
-//			}
-//		}
-//	}
 
 	public void applyAbilityToTarget (BaseAbility ability, Unit _target, int amountOfDamage)
 	{

@@ -30,6 +30,13 @@ public class BaseEffectsManager : MonoBehaviour {
 	
 	public BaseEffect getEffect(string ID)
 	{
-		return effectsList.Find(BaseEffect => BaseEffect.ID == ID).Clone() as BaseEffect;
+		BaseEffect tempEf = null;
+		if(ID != "")
+			tempEf = effectsList.Find(BaseEffect => BaseEffect.ID == ID).Clone() as BaseEffect;
+		else
+			Debug.Log("empty effect slot");
+		if (tempEf == null)
+			Debug.Log("No such effect in Effect Manager - " + ID);
+		return tempEf;
 	}
 }

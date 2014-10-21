@@ -43,7 +43,7 @@ public class BaseAbility : ICloneable{
 		get{
 			//TODO
 //			return BaseEffectsManager.instance.getEffect(effectToApply).effectApplyChance;
-			return 0;
+			return effectApplyChance;
 		}
 	}
 
