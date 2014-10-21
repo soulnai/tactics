@@ -70,6 +70,7 @@ public class Unit : MonoBehaviour {
 	public void prepareForTurn()
 	{
 		unitActiveEffects.ActivateAllEffects();
+		positionQueue.Clear();
 		AP = APmax;
 	}
 
@@ -80,10 +81,12 @@ public class Unit : MonoBehaviour {
 			if((AP<=0)&&(canEndTurn == true))
 			{
 				canEndTurn = false;
+				positionQueue.Clear();
 				StartCoroutine(delayedEndTurn(delayAfterAnim));
 			}
 			else if(UnitState == unitStates.dead)
 			{
+				positionQueue.Clear();
 				EndTurn();
 			}
 		}
