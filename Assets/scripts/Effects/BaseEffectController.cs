@@ -11,12 +11,11 @@ public class BaseEffectController : MonoBehaviour {
 
 	private GameManager gm = GameManager.instance;
 	private Unit owner;
-	void Start () {
+	void Awake () {
 		gm.OnRoundStart += OnRoundStart;
 		gm.OnTurnStart += OnTurnStart;
 		gm.OnUnitPosChange += OnUnitPosChange;
 		owner = GetComponent<Unit>();
-		initEffects();
 	}
 
 	void OnUnitPosChange (Unit u)
@@ -51,11 +50,11 @@ public class BaseEffectController : MonoBehaviour {
 		{
 			if(BaseEffectsManager.instance.getEffect(effectsID[i]) != null){
 				BaseEffect tempEffect = BaseEffectsManager.instance.getEffect(effectsID[i]).Clone() as BaseEffect;
-				tempEffect.owner = this.GetComponent<Unit>();
-				tempEffect.Init();
+				tempEffect.Init(owner);
 				effects.Add(tempEffect);
 			}
 		}
+		updateEffectsTargets();
 	}
 
 	public void deleteAllEffects()
@@ -88,6 +87,7 @@ public class BaseEffectController : MonoBehaviour {
 
 	public void updateModsFromAppliedEffects()
 	{
+		updateEffectsTargets();
 		foreach(BaseAttribute at in owner.attributes){
 			at.clearMods();
 		}

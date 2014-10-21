@@ -80,19 +80,27 @@ public class GameManager : MonoBehaviour {
 			UserUnitPrefab [3] = StartScreenPersistentObj.instance.UserUnitPrefab [3];
 		}
 		mapTransform = transform.FindChild("Map");
+
 		generateMap();
 		generateUnits();
 	}
 
 	// Use this for initialization
 	void Start () {		
-
 		unitSelection = (GameObject)Instantiate(selectionRing, units[0].transform.position, Quaternion.Euler(0,0,0));
 		unitSelection.transform.parent = units [0].transform;
+
 		Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
-		//reset AP
-		units[0].getAttribute(unitAttributes.AP).value = units[0].getAttribute(unitAttributes.APmax).valueMod;
+
+		StartCoroutine(DelayedFirstTurnLogic(0.1f));
+	}
+
+	IEnumerator DelayedFirstTurnLogic (float time)
+	{
+		yield return new WaitForSeconds(time);
+		firstTurnInit();
+		TurnLogic();
 	}
 	
 	// Update is called once per frame
@@ -100,6 +108,16 @@ public class GameManager : MonoBehaviour {
 		drawPointer();
 		if((currentUnit.UnitAction != unitActions.idle)&&(currentUnit.UnitAction != unitActions.moving)&&(currentUnit.UnitAction != unitActions.readyToMove))
 			AttackOnMouseClick ();
+	}
+
+	void firstTurnInit ()
+	{
+		currentUnitIndex = 0;
+		currentPlayerIndex = 0;
+		foreach(Unit u in units)
+		{
+			u.initStartAttributes();
+		}
 	}
 	
 	public void nextTurn() {
@@ -125,25 +143,28 @@ public class GameManager : MonoBehaviour {
 		}
 		else
 		{
-			currentUnit.prepareForTurn();
-//			currentUnit.unitActiveEffects.ActivateAllEffects();
-			GUImanager.instance.showAbilities();
-			//reset AP
-//			currentUnit.AP = currentUnit.APmax;
-
-			removeTileHighlights();
-
-			//reset & focus camera
-			Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
-			Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
-			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
-			//set selection ring
-			unitSelection.transform.position = units [currentUnitIndex].transform.position;
-			unitSelection.transform.parent = units [currentUnitIndex].transform;
-			//set state
-			currentUnit.UnitAction = unitActions.idle;
-			currentUnit.positionQueue.Clear();
+			TurnLogic ();
 		}
+	}
+
+	void TurnLogic ()
+	{
+		currentUnit.prepareForTurn ();
+		//			currentUnit.unitActiveEffects.ActivateAllEffects();
+		GUImanager.instance.showAbilities ();
+		//reset AP
+		//			currentUnit.AP = currentUnit.APmax;
+		removeTileHighlights ();
+		//reset & focus camera
+		Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
+		Camera.main.GetComponent<CameraOrbit> ().pivot = currentUnit.transform;
+		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+		//set selection ring
+		unitSelection.transform.position = units [currentUnitIndex].transform.position;
+		unitSelection.transform.parent = units [currentUnitIndex].transform;
+		//set state
+		currentUnit.UnitAction = unitActions.idle;
+		currentUnit.positionQueue.Clear ();
 	}
 
 	public void highlightTilesAt(Vector2 originLocation, Color highlightColor, int distance) {
@@ -438,7 +459,6 @@ public class GameManager : MonoBehaviour {
 				row.Add (tile);
 			}
 			map.Add(row);
-
 		}
 	}
 
@@ -452,7 +472,6 @@ public class GameManager : MonoBehaviour {
 			unit.placeUnit(position);
 			unit.unitName = "Alice-"+i;
 			unit.playerOwner = players[0];
-			unit.initStartAttributes();
 			units.Add(unit);
 			players[0].addUnit(unit);
 		}
@@ -464,7 +483,6 @@ public class GameManager : MonoBehaviour {
 			ai.placeUnit(position);
 			ai.unitName = "Bot-"+i;				
 			ai.playerOwner = players[1];
-			ai.initStartAttributes();
 			units.Add(ai);
 			players[1].addUnit(ai);
 		}
@@ -640,6 +658,7 @@ public class GameManager : MonoBehaviour {
 	{
 		List<Tile> tempTiles = TileHighlightAtack.FindHighlight (map [(int)owner.gridPosition.x] [(int)owner.gridPosition.y], radius);
 		List<Unit> tempUnits = new List<Unit>();
+		Debug.Log(tempTiles.Count);
 		foreach(Tile t in tempTiles)
 		{
 			if(t.unitInTile!=null){

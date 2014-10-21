@@ -385,6 +385,9 @@ public class Unit : MonoBehaviour {
 
 	public void initStartAttributes()
 	{
+		unitBaseEffects.initEffects();
+		unitBaseEffects.updateModsFromAppliedEffects();
+		
 		HP = HPmax;
 		MP = MPmax;
 		AP = APmax;

@@ -98,14 +98,14 @@ public class BaseEffect : ICloneable {
 		}
 	}
 
-	public void applyToAllTargets()
-	{
-		updateTargets();
-		foreach(Unit u in targets)
-		{
-			applyTo(u);
-		}
-	}
+//	public void applyToAllTargets()
+//	{
+//		updateTargets();
+//		foreach(Unit u in targets)
+//		{
+//			applyTo(u);
+//		}
+//	}
 
 	public void applyTo(Unit u,bool mod = false)
 	{
