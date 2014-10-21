@@ -18,6 +18,7 @@ public class BaseEffectController : MonoBehaviour {
 		{
 			BaseEffect tempEffect = BaseEffectsManager.instance.getEffect(effectsID[i]).Clone() as BaseEffect;
 			tempEffect.owner = this.GetComponent<Unit>();
+			tempEffect.Init();
 			effects.Add(tempEffect);
 		}
 	}
@@ -27,7 +28,7 @@ public class BaseEffectController : MonoBehaviour {
 		foreach(BaseEffect ef in effects)
 		{
 			ef.updateTargets();
-			ef.activate();
+			ef.applyToAllTargets();
 		}
 	}
 
@@ -38,8 +39,10 @@ public class BaseEffectController : MonoBehaviour {
 
 	public void delete(BaseEffect ef)
 	{
-		if(effects.Contains(ef))
+		if(effects.Contains(ef)){
+//			ef.Delete();
 			effects.Remove(ef);
+		}
 		else
 			Debug.Log("No such effect");
 	}

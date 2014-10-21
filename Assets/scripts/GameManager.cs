@@ -8,10 +8,12 @@ using EnumSpace;
 //Events
 public delegate void VictoryState(GameManager gm,Player p);
 public delegate void TurnStart(Unit currentUnit);
+public delegate void RoundStart();
 
 public class GameManager : MonoBehaviour {
 	public event VictoryState OnVictoryState;
 	public event TurnStart OnTurnStart;
+	public event RoundStart OnRoundStart;
 	public static GameManager instance;
 	//units count
 	public int unitsCountPlayer;
@@ -109,6 +111,8 @@ public class GameManager : MonoBehaviour {
 		} 
 		else {
 			turnsCounter++;
+			if(OnRoundStart != null)
+				OnRoundStart();
 			currentUnitIndex = 0;
 			currentPlayerIndex = 0;
 		}
@@ -315,7 +319,6 @@ public class GameManager : MonoBehaviour {
 							Debug.Log ("flank attack");
 						}
 						else if (angle >90){
-							amountOfDamage = amountOfDamage;
 							Debug.Log ("front attack");
 						}
 
@@ -468,6 +471,7 @@ public class GameManager : MonoBehaviour {
 			unit.placeUnit(position);
 			unit.unitName = "Alice-"+i;
 			unit.playerOwner = players[0];
+			unit.initStartAttributes();
 			units.Add(unit);
 			players[0].addUnit(unit);
 		}
@@ -479,6 +483,7 @@ public class GameManager : MonoBehaviour {
 			ai.placeUnit(position);
 			ai.unitName = "Bot-"+i;				
 			ai.playerOwner = players[1];
+			ai.initStartAttributes();
 			units.Add(ai);
 			players[1].addUnit(ai);
 		}
@@ -532,21 +537,17 @@ public class GameManager : MonoBehaviour {
 			if ((Physics.Raycast (ray, out hit, 1000f, mask)) && (!GUImanager.instance.mouseOverGUI)) {
 				if(hit.transform.gameObject.GetComponent<Tile>() != null && hit.transform.gameObject.GetComponent<Tile>().gridPosition != previousTile.gridPosition )
 				{
-					//Debug.Log ("tiles hitted");
-								//targetsForAreaDamage = new List<Unit>();
-								removeTileHighlights ();
+					removeTileHighlights ();
 				
-								Tile t = hit.transform.gameObject.GetComponent<Tile> ();
+					Tile t = hit.transform.gameObject.GetComponent<Tile> ();
 					AttackhighlightTilesArea(currentUnit.gridPosition, Color.red, currentUnit.currentAbility.range, true);
 					AttackhighlightTiles(currentUnit.gridPosition, Color.red, currentUnit.currentAbility.range, true);
 					AttackhighlightTiles(t.gridPosition, Color.green, currentUnit.currentAbility.areaDamageRadius, true);
 								
-								highlightedTiles.Add(t);
-								highlightedTiles.Add(hit.transform.gameObject.GetComponent<Tile>());
-							hit.transform.gameObject.GetComponent<Tile>().visual.transform.renderer.materials[1].color = Color.green;
-							highlightedTiles.Remove(t);
-						//	t.visual.transform.renderer.materials[1].color = Color.white;
-
+					highlightedTiles.Add(t);
+					highlightedTiles.Add(hit.transform.gameObject.GetComponent<Tile>());
+					hit.transform.gameObject.GetComponent<Tile>().visual.transform.renderer.materials[1].color = Color.green;
+					highlightedTiles.Remove(t);
 
 					foreach (Tile tile in highlightedTiles) {
 						if (tile.unitInTile != null && tile.unitInTile != currentUnit) {
@@ -554,28 +555,12 @@ public class GameManager : MonoBehaviour {
 						}
 						previousTile = hit.transform.gameObject.GetComponent<Tile>();
 					}
-					/*			highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)t.gridPosition.x] [(int)t.gridPosition.y], currentUnit.currentAbility.range);
-					foreach (Tile tile in highlightedTiles) 
-						t.visual.transform.renderer.materials [1].color = Color.red;*/
 				}		
-				}
-				}
+			}
+		}
 	}
 	
 	public void AttackOnMouseClick () {
-
-	/*	if ((Input.GetMouseButtonDown (2)) && (!GUImanager.instance.mouseOverGUI)) {
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if(Physics.Raycast(ray,out hit))
-			{
-				Quaternion newRotation = Quaternion.LookRotation(hit.transform.position - currentUnit.transform.position);
-				currentUnit.transform.rotation = Quaternion.Slerp(currentUnit.transform.rotation, newRotation, 1f);
-				//currentUnit.transform.rotation = newRotation;
-				Debug.Log("click");
-			}
-		}*/
-
-				
 		if ((Input.GetMouseButtonDown(0))&&(!GUImanager.instance.mouseOverGUI))
 		{
 			BaseAbility ability = currentUnit.currentAbility;
@@ -649,21 +634,6 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-	public void ckeckLineofSign(AIPlayer ai)
-	{
-//
-//		if(Physics.Raycast(currentUnit.transform.position+new Vector3(0,0.5f,0),currentUnit.transform.position+new Vector3(0,0.5f,0)-ai.transform.position,out target,100f))
-//		{
-//			if(target.transform == ai.transform)
-//			{
-//				Debug.Log("Line of sign-"+target.transform.name);
-//				Debug.Break();
-//			}
-//			else
-//				Debug.Log(target.transform.name);
-//		}
-	}
-
 	public void checkVictory()
 	{
 		int deadCount = 0;
@@ -693,9 +663,9 @@ public class GameManager : MonoBehaviour {
 		{
 			if(t.unitInTile!=null){
 				Unit tempUnit = t.unitInTile;
-				if((enemieUse)&&(tempUnit.playerOwner != currentPlayer))
+				if((enemieUse)&&(tempUnit.playerOwner != owner.playerOwner))
 					tempUnits.Add(tempUnit);
-				if((allyUse)&&(tempUnit.playerOwner == currentPlayer))
+				if((allyUse)&&(tempUnit.playerOwner == owner.playerOwner))
 					tempUnits.Add(tempUnit);
 				if((selfUse)&&(tempUnit == currentUnit))
 					tempUnits.Add(tempUnit);

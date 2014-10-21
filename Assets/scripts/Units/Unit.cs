@@ -92,8 +92,6 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-//	public List<BaseAttribute> attributes = new List<BaseAttribute>;
-	
 	public float attackChance = 0.75f;
 	public float avoidChance = 0.15f;
 	public float criticalChance = 0.1f;
@@ -121,42 +119,16 @@ public class Unit : MonoBehaviour {
 	private float delayAfterAnim = 0.5f;
 	private bool canEndTurn = false;
 
-	//Attributes modified
-//	[HideInInspector]
-//	public int HPmaxMod = 25;
-//	[HideInInspector]
-//	public int HPMod = 25;
-//	[HideInInspector]
-//	public int APmaxMod = 2;
-//	[HideInInspector]
-//	public int APMod = 2;
-//	[HideInInspector]
-//	public int MPmaxMod = 25;
-//	[HideInInspector]
-//	public int MPMod = 25;
-//	[HideInInspector]
-//	public int StrengthMod = 2;
-//	[HideInInspector]
-//	public int DexterityMod = 2;
-//	[HideInInspector]
-//	public int MagicMod = 2;
-//	[HideInInspector]
-//	public int PhysicalDefenseMod = 2;
-//	[HideInInspector]
-//	public int MagicDefenseMod = 2;
-
 	public Dictionary<unitAttributes,BaseAttribute> attributesDictionary = new Dictionary<unitAttributes, BaseAttribute>();
 	public Dictionary<unitAttributes,BaseAttribute> attributesModDictionary = new Dictionary<unitAttributes, BaseAttribute>();
 
 	void Awake () {
-//		initDictionaries();
 		moveDestination = transform.position;
 		getAttribute(unitAttributes.AP).value = getAttribute(unitAttributes.APmax).valueMod;
 	}
 
 	public void prepareForTurn()
 	{
-//		unitBaseEffects.activateAllEffects();
 		getAttribute(unitAttributes.AP).value = getAttribute(unitAttributes.APmax).valueMod;
 	}
 
@@ -392,24 +364,6 @@ public class Unit : MonoBehaviour {
 		EndTurn();
 	}
 
-//	public int getAttributeValue (unitAttributes at,bool mod = false)
-//	{
-//		int tempVal = 0;
-//		if(mod)
-//			attributesModDictionary.TryGetValue(at,out tempVal);
-//		else
-//			attributesDictionary.TryGetValue(at,out tempVal);
-//		return tempVal;
-//	}
-
-//	public void setAttributeValue (int value,unitAttributes at,bool mod = false)
-//	{
-//		if(mod)
-//			attributesModDictionary[at] = value;
-//		else
-//			attributesDictionary[at] = value;
-//	}
-
 	public BaseAttribute getAttribute(unitAttributes a)
 	{
 		return attributes.Find(BaseAttribute => BaseAttribute.attribute == a);
@@ -420,28 +374,10 @@ public class Unit : MonoBehaviour {
 		attributes.Find(BaseAttribute => BaseAttribute.attribute == a).value = val;
 	}
 
-//	public void initDictionaries()
-//	{
-//		attributesDictionary.Add(unitAttributes.AP,attributes.Contains());
-//		attributesDictionary.Add(unitAttributes.APmax,APmax);
-//		attributesDictionary.Add(unitAttributes.HP,HP);
-//		attributesDictionary.Add(unitAttributes.HPmax,HPmax);
-//		attributesDictionary.Add(unitAttributes.MP,MP);
-//		attributesDictionary.Add(unitAttributes.MPmax,MPmax);
-//		attributesDictionary.Add(unitAttributes.strenght,Strength);
-//		attributesDictionary.Add(unitAttributes.dexterity,Dexterity);
-//		attributesDictionary.Add(unitAttributes.magic,Magic);
-//		attributesDictionary.Add(unitAttributes.magicDef,MagicDefense);
-//
-//		attributesModDictionary.Add(unitAttributes.AP,APMod);
-//		attributesModDictionary.Add(unitAttributes.APmax,APmaxMod);
-//		attributesModDictionary.Add(unitAttributes.HP,HPMod);
-//		attributesModDictionary.Add(unitAttributes.HPmax,HPmaxMod);
-//		attributesModDictionary.Add(unitAttributes.MP,MPMod);
-//		attributesModDictionary.Add(unitAttributes.MPmax,MPmaxMod);
-//		attributesModDictionary.Add(unitAttributes.strenght,StrengthMod);
-//		attributesModDictionary.Add(unitAttributes.dexterity,DexterityMod);
-//		attributesModDictionary.Add(unitAttributes.magic,MagicMod);
-//		attributesModDictionary.Add(unitAttributes.magicDef,MagicDefenseMod);
-//	}
+	public void initStartAttributes()
+	{
+		HP = HPmax;
+		MP = MPmax;
+		AP = APmax;
+	}
 }

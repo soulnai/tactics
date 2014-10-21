@@ -27,7 +27,7 @@ public class BaseEffect : ICloneable {
 	public int duration = 1;
 
 	public Unit owner;
-	[HideInInspector]
+//	[HideInInspector]
 	public List<Unit> targets;
 
 	public GameObject FX;
@@ -41,15 +41,31 @@ public class BaseEffect : ICloneable {
 	public void Init()
 	{
 		gm.OnTurnStart += OnTurnStart;
+		gm.OnRoundStart += OnRoundStart;
+	}
+
+	void OnRoundStart ()
+	{
+		//Duration check
+		if(!infinite){
+			duration--;
+			if(duration<=0)
+				Delete();
+		}
 	}
 
 	void OnTurnStart (Unit currentUnit)
 	{
-		Debug.Log("on turn start effect");
-		activate();
+		if((infinite)||(duration>0)){
+			updateTargets();
+			if(targets.Contains(gm.currentUnit)){
+				applyTo(gm.currentUnit);
+			}
+		}
 	}
 
 	public void updateTargets(Unit u = null){
+		removeFromAppliedEffects();
 		targets.Clear();
 		if(useRadius)
 		{
@@ -66,10 +82,12 @@ public class BaseEffect : ICloneable {
 				if(u.playerOwner != owner.playerOwner)
 					targets.Add(u);
 		}
+		addToAppliedEffects ();
 	}
 
-	public void activate()
+	public void applyToAllTargets()
 	{
+		updateTargets();
 		foreach(Unit u in targets)
 		{
 			applyTo(u);
@@ -84,39 +102,43 @@ public class BaseEffect : ICloneable {
 				int valueTemp;
 				int valueMod = u.getAttribute(ac.attribute).valueMod;
 				int value = u.getAttribute(ac.attribute).value;
+				if(ac.multiply)
+					valueTemp = UnityEngine.Mathf.RoundToInt((ac.value * valueMod)-value);
+				else
+					valueTemp = UnityEngine.Mathf.RoundToInt((ac.value + valueMod)-value);
 
 				if(ac.applyEachTurn){
-					if(ac.multiply)
-						valueTemp = UnityEngine.Mathf.RoundToInt(ac.value * valueMod);
-					else
-						valueTemp = UnityEngine.Mathf.RoundToInt(ac.value + valueMod);
+					u.getAttribute(ac.attribute).value += valueTemp;
 				}
 				else
 				{
-					if(ac.multiply)
-						valueTemp = UnityEngine.Mathf.RoundToInt(ac.value * value);
-					else
-						valueTemp = UnityEngine.Mathf.RoundToInt(ac.value + value);
-				}
-				valueMod = valueTemp;
-				//apply result value to unit
-				u.getAttribute(ac.attribute).addMod(valueMod);
-
-				//Duration check
-				if(!infinite){
-					duration--;
-					if(duration<=0)
-						Delete();
+					u.getAttribute(ac.attribute).addMod(valueTemp);
 				}
 			}
 		}
 	}
 
-	public void Delete()
+	void addToAppliedEffects ()
 	{
-		affectedAttributes.Clear();
+		foreach (Unit t in targets) {
+			if (!t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
+				t.unitBaseEffects.addAppliedEffect (this);
+		}
 	}
 
+	void removeFromAppliedEffects ()
+	{
+		foreach (Unit t in targets) {
+			if (t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
+				t.unitBaseEffects.removeAppliedEffect (this);
+		}
+	}
+
+	public void Delete()
+	{
+		removeFromAppliedEffects ();
+		owner.unitBaseEffects.delete(this);
+	}
 	public object Clone()
 	{
 		return this.MemberwiseClone();

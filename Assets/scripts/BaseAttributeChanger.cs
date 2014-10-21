@@ -12,6 +12,7 @@ public class BaseAttributeChanger : ICloneable{
 	/// <summary>
 	/// if true attribute*value , false +value to base attribute
 	/// </summary>
+	public bool mod = false;
 	public bool multiply = false;
 	public float value;
 
