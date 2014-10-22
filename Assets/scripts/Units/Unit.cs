@@ -29,6 +29,7 @@ public class Unit : MonoBehaviour {
 	public int HP{
 		set{
 			setAttribute(unitAttributes.HP,value);
+			checkHP();
 		}
 		get{
 			return getAttribute(unitAttributes.HP).valueMod;
@@ -126,12 +127,12 @@ public class Unit : MonoBehaviour {
 
 	void Awake () {
 		moveDestination = transform.position;
-		getAttribute(unitAttributes.AP).value = getAttribute(unitAttributes.APmax).valueMod;
+		getAttribute(unitAttributes.AP).value = APmax;
 	}
 
 	public void prepareForTurn()
 	{
-		getAttribute(unitAttributes.AP).value = getAttribute(unitAttributes.APmax).valueMod;
+		getAttribute(unitAttributes.AP).value = APmax;
 	}
 
 	public void checkEndTurn()
@@ -279,9 +280,7 @@ public class Unit : MonoBehaviour {
 
 	public void makeDead()
 	{
-		HP = 0;
 		UnitState = unitStates.dead;
-		GameManager.instance.checkVictory();
 		animation.CrossFade("Death");
 		StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim,true));
 	}
@@ -373,6 +372,10 @@ public class Unit : MonoBehaviour {
 		}
 		if(UnitState != unitStates.dead)
 			animation.CrossFade("Idle",0.2f);
+		else
+		{
+			StartCoroutine(delayedEndTurn(delayAfterAnim));
+		}
 	}
 
 	IEnumerator delayedEndTurn (float t)
@@ -389,6 +392,8 @@ public class Unit : MonoBehaviour {
 	public void setAttribute(unitAttributes a,int val)
 	{
 		attributes.Find(BaseAttribute => BaseAttribute.attribute == a).value = val;
+		if(a == unitAttributes.HP)
+			checkHP();
 	}
 
 	public void initStartAttributes()
@@ -399,5 +404,13 @@ public class Unit : MonoBehaviour {
 		HP = HPmax;
 		MP = MPmax;
 		AP = APmax;
+	}
+
+	public void checkHP ()
+	{
+		if(HP<=0)
+		{
+			makeDead();
+		}
 	}
 }

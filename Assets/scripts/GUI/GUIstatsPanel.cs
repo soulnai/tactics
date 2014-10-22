@@ -35,9 +35,9 @@ public class GUIstatsPanel : MonoBehaviour {
 		}
 		if(currentUnit != null){
 			Name.text ="Name - " + currentUnit.unitName;
-			AP.text = "AP - " + currentUnit.getAttribute(unitAttributes.AP).valueMod + " / "+ currentUnit.getAttribute(unitAttributes.APmax).valueMod;
-			MP.text = "HP - " + currentUnit.getAttribute(unitAttributes.HP).valueMod + " / "+ currentUnit.getAttribute(unitAttributes.HPmax).valueMod;
-			HP.text = "MP - " + currentUnit.getAttribute(unitAttributes.MP).valueMod + " / "+ currentUnit.getAttribute(unitAttributes.MPmax).valueMod;
+			AP.text = "AP - " + currentUnit.AP + " / "+ currentUnit.APmax;
+			MP.text = "HP - " + currentUnit.HP + " / "+ currentUnit.HPmax;
+			HP.text = "MP - " + currentUnit.MP + " / "+ currentUnit.MPmax;
 		}
 	}
 }

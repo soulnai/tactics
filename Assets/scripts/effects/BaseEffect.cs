@@ -108,6 +108,8 @@ public class BaseEffect : ICloneable {
 
 					if((ac.applyEachTurn)&&(!mod)){
 						u.getAttribute(ac.attribute).value += valueTemp;
+						if(ac.attribute == unitAttributes.HP)
+							u.checkHP();
 						Debug.Log("Attribute Value changed");
 					}
 					else if(mod)

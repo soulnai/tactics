@@ -674,13 +674,16 @@ public class GameManager : MonoBehaviour {
 		{
 			if(t.unitInTile!=null){
 				Unit tempUnit = t.unitInTile;
-				if((enemieUse)&&(tempUnit.playerOwner != owner.playerOwner))
-					tempUnits.Add(tempUnit);
-				if((allyUse)&&(tempUnit.playerOwner == owner.playerOwner))
-					tempUnits.Add(tempUnit);
-				if((selfUse)&&(tempUnit == currentUnit))
-					tempUnits.Add(tempUnit);
+				if(tempUnit.UnitState != unitStates.dead){
+					if((enemieUse)&&(tempUnit.playerOwner != owner.playerOwner))
+						tempUnits.Add(tempUnit);
+					if((allyUse)&&(tempUnit.playerOwner == owner.playerOwner))
+						tempUnits.Add(tempUnit);
+					if((selfUse)&&(tempUnit == currentUnit))
+						tempUnits.Add(tempUnit);
+				}
 			}
+
 		}
 		return tempUnits;
 	}
