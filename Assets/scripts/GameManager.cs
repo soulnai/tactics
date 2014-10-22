@@ -188,58 +188,24 @@ public class GameManager : MonoBehaviour {
 	public void AttackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers) {
 
 				highlightedTiles = new List<Tile> ();
-
-		/*		if (currentUnit.currentAbility.areaPattern == areaPatterns.line) {
-
-						RaycastHit[] hit;
-						LayerMask mask = 1 << LayerMask.NameToLayer ("tiles");
-			hit = (Physics.RaycastAll (currentUnit.transform.position- 0.5f * Vector3.up, currentUnit.transform.forward, (float)currentUnit.currentAbility.range, mask));
-
-				for (int i=0; i<hit.Length; i++)	{
-					if (hit[i].transform.gameObject.GetComponent<Tile> () != null) {
-						highlightedTiles.Add (hit[i].transform.gameObject.GetComponent<Tile> ());
-						Tile t = hit[i].transform.gameObject.GetComponent<Tile> ();
-						t.visual.transform.renderer.materials [1].color = highlightColor;
-					}
-				}
-								
-			} else {*/
+		
 				if (ignorePlayers)
 					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
 				else
 					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
 				foreach (Tile t in highlightedTiles) 
 					t.visual.transform.renderer.materials [1].color = highlightColor;
-			//}
 				
 		}
 
 	public void AttackhighlightTilesArea(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers) {
 		
 		highlightedTilesArea = new List<Tile> ();
-		
-		/*		if (currentUnit.currentAbility.areaPattern == areaPatterns.line) {
 
-						RaycastHit[] hit;
-						LayerMask mask = 1 << LayerMask.NameToLayer ("tiles");
-			hit = (Physics.RaycastAll (currentUnit.transform.position- 0.5f * Vector3.up, currentUnit.transform.forward, (float)currentUnit.currentAbility.range, mask));
-
-				for (int i=0; i<hit.Length; i++)	{
-					if (hit[i].transform.gameObject.GetComponent<Tile> () != null) {
-						highlightedTiles.Add (hit[i].transform.gameObject.GetComponent<Tile> ());
-						Tile t = hit[i].transform.gameObject.GetComponent<Tile> ();
-						t.visual.transform.renderer.materials [1].color = highlightColor;
-					}
-				}
-								
-			} else {*/
 		if (ignorePlayers)
 			highlightedTilesArea = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
 		else
 			highlightedTilesArea = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
-		/*foreach (Tile t in highlightedTiles) 
-			t.visual.transform.renderer.materials [1].color = highlightColor;
-		//}*/
 		
 	}
 	
@@ -269,6 +235,78 @@ public class GameManager : MonoBehaviour {
 			Debug.Log ("destination invalid");
 		}
 	}
+
+	public bool checkIfAttackSuccesfullyHit(Unit target){
+		bool hit = false;
+		if (currentUnit.currentAbility.attackType == attackTypes.melee) {
+			hit = Random.Range(0.0f, 1.0f) <= currentUnit.attackChance;
+			return hit;
+		} 
+		if (currentUnit.currentAbility.attackType == attackTypes.magic) {
+			hit = Random.Range(0.0f, 1.0f) <= currentUnit.magicAttackChance;
+			return hit;
+		} 
+		if (currentUnit.currentAbility.attackType == attackTypes.ranged) {
+			hit = Random.Range(0.0f, 1.0f) <= currentUnit.rangedAttackChance;
+			return hit;
+		} 
+		if (Random.Range(0.0f, 1.0f) <= currentUnit.avoidChance){
+			hit = false;
+			GUImanager.instance.Log.addText("<b>"+target.unitName+":</b>" + " successfuly avoided - "+currentUnit.currentAbility.abilityID + " of " + currentUnit.unitName+"!");
+			return hit;
+		} 
+
+		return hit;
+	}
+
+	public int calculateDamage (BaseAbility ability, Unit unitOwner, Unit _target ) {
+		int amountOfDamage = 0;
+		if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal) {
+			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDefense);
+			if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
+				amountOfDamage+= (int)amountOfDamage*(int)unitOwner.criticalModifier;
+			}
+			//return amountOfDamage;
+		} else {
+			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDefense);
+			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
+			Debug.Log (angle);
+			if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab && Random.Range(0.0f, 1.0f) <= ability.effectApplyChance){
+				amountOfDamage = amountOfDamage*10;
+				Debug.Log ("backstab");
+				return amountOfDamage;
+			} else if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab){
+				amountOfDamage = amountOfDamage*5;
+				Debug.Log ("backstab");
+				return amountOfDamage;
+			} else if (angle <=30){
+				amountOfDamage = amountOfDamage*2;
+				Debug.Log ("backstab");
+				return amountOfDamage;
+			}
+			else if (angle >=30 && angle <=90){
+				amountOfDamage = amountOfDamage*2;
+				Debug.Log ("flank attack");
+				return amountOfDamage;
+			}
+			else if (angle >90){
+				amountOfDamage = amountOfDamage;
+				if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
+					amountOfDamage+= amountOfDamage*(int)unitOwner.criticalModifier;
+				}
+				Debug.Log ("front attack");
+				return amountOfDamage;
+			}
+			
+		}
+
+		if (amountOfDamage <= 0) {
+			amountOfDamage = 0;	
+			return amountOfDamage;
+		}
+		return amountOfDamage;
+	}
+
 	public void useAbility(BaseAbility ability,Unit unitOwner,Tile targetTile = null,Unit targetUnit = null){
 		unitOwner.attackRange = ability.range;
 		Unit _target = null;
@@ -306,17 +344,8 @@ public class GameManager : MonoBehaviour {
 		{
 			removeTileHighlights();
 
-
-			//ckeck if hit
-			bool hit = Random.Range(0.0f, 1.0f) <= unitOwner.attackChance;//replace with Ability chance
-				if (Random.Range(0.0f, 1.0f) <= unitOwner.avoidChance){
-					hit = false;
-					GUImanager.instance.Log.addText("<b>"+_target.unitName+":</b>" + " successfuly avoided - "+ability.abilityID + " of " + unitOwner.unitName+"!");
-				} 
-				if (unitOwner.currentAbility.attackType == attackTypes.magic) {
-					hit = true;
-				} 
 			//if hit
+<<<<<<< HEAD
 			if (hit) {
 					int amountOfDamage = 0;
 					if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal || ability.attackType == attackTypes.ranged) {
@@ -343,6 +372,16 @@ public class GameManager : MonoBehaviour {
 							Debug.Log ("front attack");
 						}
 					}
+=======
+				if (checkIfAttackSuccesfullyHit(_target)) {
+				//damage logic
+				
+					int amountOfDamage = 0;
+
+					amountOfDamage = calculateDamage(ability, unitOwner, _target);
+
+
+>>>>>>> origin/master
 				
 					applyAbilityToTarget (ability, _target, amountOfDamage);
 
@@ -355,6 +394,10 @@ public class GameManager : MonoBehaviour {
 						FXmanager.instance.createAbilityFX(ability.hitFXprefab,targetUnit.transform.position,targetUnit.transform.position,ability);
 					}
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 				unitOwner.playAbility(ability);
 			//if missed
@@ -622,8 +665,8 @@ public class GameManager : MonoBehaviour {
 						currentUnit.UnitAction = unitActions.idle;
 						removeTileHighlights ();
 					foreach (Unit u in targetsForAreaDamage) {
-
-						GameManager.instance.useAbility(currentUnit.currentAbility,currentUnit,null ,u);
+							if (u.UnitState!=unitStates.dead){
+								GameManager.instance.useAbility(currentUnit.currentAbility,currentUnit,null ,u);}
 						
 						}
 					}

@@ -149,6 +149,10 @@ public class BaseEffect : ICloneable {
 			if (!t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
 				t.unitBaseEffects.addAppliedEffect (this);
 		}
+
+		if (targetUnit.HP <=0){
+			targetUnit.makeDead();
+		}
 	}
 
 	void removeFromAppliedEffects ()

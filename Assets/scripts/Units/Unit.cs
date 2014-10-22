@@ -93,6 +93,8 @@ public class Unit : MonoBehaviour {
 	}
 
 	public float attackChance = 0.75f;
+	public float magicAttackChance = 0.75f;
+	public float rangedAttackChance = 0.75f;
 	public float avoidChance = 0.15f;
 	public float criticalChance = 0.1f;
 	public float criticalModifier = 1.5f;
@@ -129,7 +131,13 @@ public class Unit : MonoBehaviour {
 
 	public void prepareForTurn()
 	{
+<<<<<<< HEAD
 		getAttribute(unitAttributes.AP).value = getAttribute(unitAttributes.APmax).valueMod;
+=======
+		unitActiveEffects.ActivateAllEffects();
+		positionQueue.Clear();
+		AP = APmax;
+>>>>>>> origin/master
 	}
 
 	public void checkEndTurn()
@@ -139,10 +147,12 @@ public class Unit : MonoBehaviour {
 			if((getAttribute(unitAttributes.AP).value<=0)&&(canEndTurn == true))
 			{
 				canEndTurn = false;
+				positionQueue.Clear();
 				StartCoroutine(delayedEndTurn(delayAfterAnim));
 			}
 			else if(UnitState == unitStates.dead)
 			{
+				positionQueue.Clear();
 				EndTurn();
 			}
 		}
@@ -161,9 +171,13 @@ public class Unit : MonoBehaviour {
 		{
 			checkEndTurn();
 		
-			if(UnitAction == unitActions.moving)
+			if(UnitAction == unitActions.moving && GameManager.instance.currentUnit.UnitState != unitStates.dead)
 			{
 				MoveUnit();
+			}
+
+			if (HP <=0){
+				makeDead();
 			}
 		}
 	}
