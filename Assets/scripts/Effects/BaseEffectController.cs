@@ -34,10 +34,11 @@ public class BaseEffectController : MonoBehaviour {
 	void OnTurnStart (Unit u)
 	{
 		updateEffectsTargets();
-		foreach(BaseEffect ef in effectsAppliedToUnit)
-		{
-			ef.applyTo(owner);
-		}
+		if(u == owner)
+			foreach(BaseEffect ef in effectsAppliedToUnit)
+			{
+				ef.applyTo(owner);
+			}
 	}
 
 	void OnRoundStart ()

@@ -67,12 +67,12 @@ public class BaseEffect : ICloneable {
 
 	void OnTurnStart (Unit currentUnit)
 	{
-		if((infinite)||(duration>0)){
-			updateTargets();
-			if(targets.Contains(gm.currentUnit)){
-				applyTo(gm.currentUnit);
-			}
-		}
+//		if((infinite)||(duration>0)){
+//			updateTargets();
+//			if(targets.Contains(gm.currentUnit)){
+//				applyTo(gm.currentUnit);
+//			}
+//		}
 	}
 
 	public void updateTargets(Unit u = null){
@@ -97,15 +97,6 @@ public class BaseEffect : ICloneable {
 			addToAppliedEffects ();
 		}
 	}
-
-//	public void applyToAllTargets()
-//	{
-//		updateTargets();
-//		foreach(Unit u in targets)
-//		{
-//			applyTo(u);
-//		}
-//	}
 
 	public void applyTo(Unit u,bool mod = false)
 	{
