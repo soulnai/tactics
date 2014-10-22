@@ -33,19 +33,6 @@ public class BaseAbility : ICloneable{
 	public damageTypes damageType;
 	
 	public List<string> effects;
-	public string effectToApply;
-
-	[HideInInspector]
-	public float effectApplyChance{
-		set{
-			effectApplyChance = value;
-		}
-		get{
-			//TODO
-//			return BaseEffectsManager.instance.getEffect(effectToApply).effectApplyChance;
-			return effectApplyChance;
-		}
-	}
 
 	//FX
 	public GameObject hitFXprefab;

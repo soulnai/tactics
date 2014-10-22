@@ -62,6 +62,16 @@ public class BaseEffectController : MonoBehaviour {
 		effects.Clear();
 	}
 
+	public void addEffect(BaseEffect ef)
+	{
+		ef.Init(owner);
+		if(!effects.Contains(ef)){
+			effects.Add(ef);
+		}
+		else
+			Debug.Log("effect already applied");
+	}
+
 	public void delete(BaseEffect ef)
 	{
 		if(effects.Contains(ef)){

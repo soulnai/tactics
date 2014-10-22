@@ -238,6 +238,7 @@ public class GameManager : MonoBehaviour {
 
 	public bool checkIfAttackSuccesfullyHit(Unit target){
 		bool hit = false;
+
 		if (currentUnit.currentAbility.attackType == attackTypes.melee) {
 			hit = Random.Range(0.0f, 1.0f) <= currentUnit.attackChance;
 			return hit;
@@ -271,7 +272,8 @@ public class GameManager : MonoBehaviour {
 			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDef);
 			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
 			Debug.Log (angle);
-			if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab && Random.Range(0.0f, 1.0f) <= ability.effectApplyChance){
+			//TODO backstab apply chance
+			if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab && Random.Range(0.0f, 1.0f) <= 1f){
 				amountOfDamage = amountOfDamage*10;
 				Debug.Log ("backstab");
 				return amountOfDamage;
@@ -290,7 +292,6 @@ public class GameManager : MonoBehaviour {
 				return amountOfDamage;
 			}
 			else if (angle >90){
-				amountOfDamage = amountOfDamage;
 				if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
 					amountOfDamage+= amountOfDamage*(int)unitOwner.criticalModifier;
 				}
@@ -395,7 +396,7 @@ public class GameManager : MonoBehaviour {
 		{
 			foreach(string s in ability.effects){
 				BaseEffect ef = BaseEffectsManager.instance.getEffect(s);
-				ef.Init(currentUnit,_target);
+				currentUnit.unitBaseEffects.addEffect(ef);
 			}
 		}
 	}
