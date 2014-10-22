@@ -50,8 +50,7 @@ public class BaseEffectController : MonoBehaviour {
 		{
 			if(BaseEffectsManager.instance.getEffect(effectsID[i]) != null){
 				BaseEffect tempEffect = BaseEffectsManager.instance.getEffect(effectsID[i]).Clone() as BaseEffect;
-				tempEffect.Init(owner);
-				effects.Add(tempEffect);
+				addEffect(tempEffect);
 			}
 		}
 		updateEffectsTargets();
@@ -67,6 +66,7 @@ public class BaseEffectController : MonoBehaviour {
 		ef.Init(owner);
 		if(!effects.Contains(ef)){
 			effects.Add(ef);
+			updateModsFromAppliedEffects();
 		}
 		else
 			Debug.Log("effect already applied");
@@ -83,16 +83,20 @@ public class BaseEffectController : MonoBehaviour {
 
 	public void addAppliedEffect(BaseEffect ef)
 	{
-		if(!effectsAppliedToUnit.Contains(ef))
+		if(!effectsAppliedToUnit.Contains(ef)){
 			effectsAppliedToUnit.Add(ef);
+			updateModsFromAppliedEffects();
+		}
 		else
 			Debug.Log("This effects already applied");
 	}
 
 	public void removeAppliedEffect(BaseEffect ef)
 	{
-		if(effectsAppliedToUnit.Contains(ef))
+		if(effectsAppliedToUnit.Contains(ef)){
 			effectsAppliedToUnit.Remove(ef);
+			updateModsFromAppliedEffects();
+		}
 	}
 
 	public void updateModsFromAppliedEffects()
