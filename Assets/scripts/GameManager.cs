@@ -345,34 +345,7 @@ public class GameManager : MonoBehaviour {
 			removeTileHighlights();
 
 			//if hit
-<<<<<<< HEAD
-			if (hit) {
-					int amountOfDamage = 0;
-					if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal || ability.attackType == attackTypes.ranged) {
-						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.getAttribute(unitAttributes.magic).valueMod/2) - _target.getAttribute(unitAttributes.magicDef).valueMod);
-					} else {
-						amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.getAttribute(unitAttributes.strenght).valueMod/2) - _target.getAttribute(unitAttributes.PhysicalDef).valueMod);
-						float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
-						Debug.Log (angle);
-						if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab && Random.Range(0.0f, 1.0f) <= ability.effectApplyChance){
-							amountOfDamage = amountOfDamage*10;
-							Debug.Log ("backstab");
-						} else if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab){
-							amountOfDamage = amountOfDamage*5;
-							Debug.Log ("backstab");
-						} else if (angle <=30){
-							amountOfDamage = amountOfDamage*2;
-							Debug.Log ("backstab");
-						}
-						else if (angle >=30 && angle <=90){
-							amountOfDamage = amountOfDamage*2;
-							Debug.Log ("flank attack");
-						}
-						else if (angle >90){
-							Debug.Log ("front attack");
-						}
-					}
-=======
+
 				if (checkIfAttackSuccesfullyHit(_target)) {
 				//damage logic
 				
@@ -380,9 +353,6 @@ public class GameManager : MonoBehaviour {
 
 					amountOfDamage = calculateDamage(ability, unitOwner, _target);
 
-
->>>>>>> origin/master
-				
 					applyAbilityToTarget (ability, _target, amountOfDamage);
 
 					if((ability.attackType != attackTypes.melee)&&(ability.rangedFXprefab != null))
@@ -394,10 +364,7 @@ public class GameManager : MonoBehaviour {
 						FXmanager.instance.createAbilityFX(ability.hitFXprefab,targetUnit.transform.position,targetUnit.transform.position,ability);
 					}
 
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/master
 				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 				unitOwner.playAbility(ability);
 			//if missed

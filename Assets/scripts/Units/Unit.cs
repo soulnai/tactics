@@ -131,13 +131,7 @@ public class Unit : MonoBehaviour {
 
 	public void prepareForTurn()
 	{
-<<<<<<< HEAD
 		getAttribute(unitAttributes.AP).value = getAttribute(unitAttributes.APmax).valueMod;
-=======
-		unitActiveEffects.ActivateAllEffects();
-		positionQueue.Clear();
-		AP = APmax;
->>>>>>> origin/master
 	}
 
 	public void checkEndTurn()
@@ -176,9 +170,9 @@ public class Unit : MonoBehaviour {
 				MoveUnit();
 			}
 
-			if (HP <=0){
-				makeDead();
-			}
+			//if (HP <=0){
+				//makeDead();
+			//}
 		}
 	}
 
