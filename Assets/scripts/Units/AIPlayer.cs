@@ -22,7 +22,7 @@ public class AIPlayer : Unit {
 	public void AIturn ()
 	{
 		if (AP <= 0) {
-			GameManager.instance.nextTurn();		
+//			GameManager.instance.nextTurn();		
 		}
 
 		a = unitAbilitiesController.abilities[Random.Range(0, unitAbilitiesController.abilities.Count)];

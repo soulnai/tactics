@@ -137,6 +137,7 @@ public class GameManager : MonoBehaviour {
 		}
 		if(OnTurnStart != null)
 			OnTurnStart(currentUnit);
+
 		if(currentUnit.UnitState == unitStates.dead)
 		{
 			nextTurn();

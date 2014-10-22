@@ -148,7 +148,7 @@ public class Unit : MonoBehaviour {
 			else if(UnitState == unitStates.dead)
 			{
 				positionQueue.Clear();
-				EndTurn();
+//				EndTurn();
 			}
 		}
 	}
@@ -282,7 +282,7 @@ public class Unit : MonoBehaviour {
 	{
 		UnitState = unitStates.dead;
 		animation.CrossFade("Death");
-		StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim,true));
+		StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim));
 	}
 
 	public virtual void EndTurn () {
