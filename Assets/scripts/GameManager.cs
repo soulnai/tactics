@@ -262,13 +262,13 @@ public class GameManager : MonoBehaviour {
 	public int calculateDamage (BaseAbility ability, Unit unitOwner, Unit _target ) {
 		int amountOfDamage = 0;
 		if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal) {
-			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDefense);
+			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDef);
 			if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
 				amountOfDamage+= (int)amountOfDamage*(int)unitOwner.criticalModifier;
 			}
 			//return amountOfDamage;
 		} else {
-			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDefense);
+			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDef);
 			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
 			Debug.Log (angle);
 			if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab && Random.Range(0.0f, 1.0f) <= ability.effectApplyChance){
