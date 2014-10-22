@@ -281,6 +281,7 @@ public class Unit : MonoBehaviour {
 	public void makeDead()
 	{
 		UnitState = unitStates.dead;
+		unitBaseEffects.deleteAllEffects(true);
 		animation.CrossFade("Death");
 		StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim));
 	}

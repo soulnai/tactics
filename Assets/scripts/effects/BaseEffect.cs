@@ -23,6 +23,7 @@ public class BaseEffect : ICloneable {
 	public bool allyUse = false;
 	public bool selfUse = false;
 
+	public bool deleteAfterOwnerDeath = true;
 	public bool infinite = false;
 	public int duration = 1;
 
@@ -87,12 +88,14 @@ public class BaseEffect : ICloneable {
 			{
 				if(selfUse)
 					targets.Add(owner);
-				if(allyUse)
-					if(u.playerOwner == owner.playerOwner)
-						targets.Add(u);
-				if(enemieUse)
-					if(u.playerOwner != owner.playerOwner)
-						targets.Add(u);
+				if(u != null){
+					if(allyUse)
+						if(u.playerOwner == owner.playerOwner)
+							targets.Add(u);
+					if(enemieUse)
+						if(u.playerOwner != owner.playerOwner)
+							targets.Add(u);
+				}
 			}
 			addToAppliedEffects ();
 		}

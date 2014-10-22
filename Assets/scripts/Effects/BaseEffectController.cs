@@ -57,9 +57,23 @@ public class BaseEffectController : MonoBehaviour {
 		updateEffectsTargets();
 	}
 
-	public void deleteAllEffects()
+	public void deleteAllEffects(bool useDeathState = false)
 	{
-		effects.Clear();
+		if(useDeathState){
+			List<BaseEffect> tempList = new List<BaseEffect>();
+			foreach(BaseEffect ef in effects)
+			{
+				if (ef.deleteAfterOwnerDeath)
+					tempList.Add(ef);
+			}
+			foreach(BaseEffect ef in tempList)
+			{
+				ef.Delete();
+			}
+
+		}
+		else
+			effects.Clear();
 	}
 
 	public void addEffect(BaseEffect ef)
@@ -67,7 +81,6 @@ public class BaseEffectController : MonoBehaviour {
 		ef.Init(owner);
 		if(!effects.Contains(ef)){
 			effects.Add(ef);
-			updateModsFromAppliedEffects();
 		}
 		else
 			Debug.Log("effect already applied");
@@ -102,7 +115,7 @@ public class BaseEffectController : MonoBehaviour {
 
 	public void updateModsFromAppliedEffects()
 	{
-		updateEffectsTargets();
+//		updateEffectsTargets();
 		foreach(BaseAttribute at in owner.attributes){
 			at.clearMods();
 		}
