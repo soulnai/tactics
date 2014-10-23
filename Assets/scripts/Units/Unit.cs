@@ -414,4 +414,13 @@ public class Unit : MonoBehaviour {
 			makeDead();
 		}
 	}
+
+	void OnMouseEnter(){
+		GameManager.instance.ShowMovementDistance(this);
+	}
+
+	void OnMouseExit(){
+//		GameManager.instance.ShowMovementDistance(this);
+		GameManager.instance.removeTileHighlights();
+	}
 }
