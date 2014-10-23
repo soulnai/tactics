@@ -76,9 +76,13 @@ public class BaseEffectController : MonoBehaviour {
 			effects.Clear();
 	}
 
-	public void addEffect(BaseEffect ef)
+	public void addEffect(BaseEffect ef,Unit target = null)
 	{
-		ef.Init(owner);
+		if((ef.requireTarget) && (target != null))
+			ef.Init(owner,target);
+		else
+			ef.Init(owner);
+
 		if(!effects.Contains(ef)){
 			effects.Add(ef);
 		}

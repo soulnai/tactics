@@ -13,7 +13,7 @@ public class AIPlayer : Unit {
 	
 	// Update is called once per frame
 	public override void Update () {
-		if (GameManager.instance.currentUnit == this && UnitAction != unitActions.moving && UnitAction != unitActions.rangedAttack && UnitAction != unitActions.magicAttack) {
+		if (GameManager.instance.currentUnit == this && UnitAction != unitActions.moving && UnitAction != unitActions.rangedAttack && UnitAction != unitActions.magicAttack && UnitState != unitStates.dead) {
 						AIturn ();
 				}
 		base.Update();

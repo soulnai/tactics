@@ -135,8 +135,6 @@ public class GameManager : MonoBehaviour {
 			currentUnitIndex = 0;
 			currentPlayerIndex = 0;
 		}
-		if(OnTurnStart != null)
-			OnTurnStart(currentUnit);
 
 		if(currentUnit.UnitState == unitStates.dead)
 		{
@@ -144,8 +142,12 @@ public class GameManager : MonoBehaviour {
 		}
 		else
 		{
+			if(OnTurnStart != null)
+				OnTurnStart(currentUnit);
 			TurnLogic ();
 		}
+
+
 	}
 
 	void TurnLogic ()
@@ -397,7 +399,10 @@ public class GameManager : MonoBehaviour {
 		{
 			foreach(string s in ability.effects){
 				BaseEffect ef = BaseEffectsManager.instance.getEffect(s);
-				currentUnit.unitBaseEffects.addEffect(ef);
+				if(ef.requireTarget)
+					currentUnit.unitBaseEffects.addEffect(ef,_target);
+				else
+					currentUnit.unitBaseEffects.addEffect(ef);
 			}
 		}
 	}

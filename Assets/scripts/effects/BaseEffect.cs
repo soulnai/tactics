@@ -77,8 +77,8 @@ public class BaseEffect : ICloneable {
 	}
 
 	public void updateTargets(Unit u = null){
+		removeFromAppliedEffects();
 		if(useUpdateTargets){
-			removeFromAppliedEffects();
 			targets.Clear();
 			if(useRadius)
 			{
@@ -97,8 +97,8 @@ public class BaseEffect : ICloneable {
 							targets.Add(u);
 				}
 			}
-			addToAppliedEffects ();
 		}
+		addToAppliedEffects ();
 	}
 
 	public void applyTo(Unit u,bool mod = false)
@@ -153,6 +153,13 @@ public class BaseEffect : ICloneable {
 			if (t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
 				t.unitBaseEffects.removeAppliedEffect (this);
 		}
+	}
+
+	public void setTarget (Unit target)
+	{
+		targets.Clear();
+		targets.Add(target);
+		useUpdateTargets = false;
 	}
 
 	public void Delete()

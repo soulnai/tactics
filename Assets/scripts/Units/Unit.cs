@@ -139,17 +139,17 @@ public class Unit : MonoBehaviour {
 	{
 		if(GameManager.instance.currentUnit == this)
 		{
-			if((getAttribute(unitAttributes.AP).value<=0)&&(canEndTurn == true))
+			if((getAttribute(unitAttributes.AP).value<=0)&&(canEndTurn == true)&&(UnitState != unitStates.dead))
 			{
 				canEndTurn = false;
 				positionQueue.Clear();
 				StartCoroutine(delayedEndTurn(delayAfterAnim));
 			}
-			else if(UnitState == unitStates.dead)
-			{
-				positionQueue.Clear();
-//				EndTurn();
-			}
+//			else if(UnitState == unitStates.dead)
+//			{
+//				positionQueue.Clear();
+////				EndTurn();
+//			}
 		}
 	}
 
