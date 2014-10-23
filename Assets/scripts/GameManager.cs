@@ -108,7 +108,9 @@ public class GameManager : MonoBehaviour {
 		drawPointer();
 		if((currentUnit.UnitAction != unitActions.idle)&&(currentUnit.UnitAction != unitActions.moving)&&(currentUnit.UnitAction != unitActions.readyToMove))
 			AttackOnMouseClick ();
+		ShowMovementDistance();
 	}
+
 
 	void firstTurnInit ()
 	{
@@ -687,5 +689,33 @@ public class GameManager : MonoBehaviour {
 
 		}
 		return tempUnits;
+	}
+
+	public void ShowMovementDistance(){
+		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
+		if (!GUImanager.instance.mouseOverGUI) {
+			bool isAnyMoving = false;
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			foreach (Unit u in units){
+				if (u.UnitAction != unitActions.idle){
+					isAnyMoving = true;
+				}
+			}
+
+			if(Physics.Raycast(ray,out hit, 100, mask))
+			{
+					if(hit.collider.GetComponent<Tile>())
+						{
+							if (hit.collider.GetComponent<Tile>().unitInTile!=null && isAnyMoving == false)
+							{
+							highlightTilesAt(hit.collider.GetComponent<Tile>().gridPosition, Color.magenta, hit.collider.GetComponent<Tile>().unitInTile.movementPerActionPoint*2);
+							highlightTilesAt(hit.collider.GetComponent<Tile>().gridPosition, Color.cyan, hit.collider.GetComponent<Tile>().unitInTile.movementPerActionPoint);
+
+					} else if (isAnyMoving == false) {
+						removeTileHighlights();
+					}
+						}
+			}
+		}
 	}
 }
