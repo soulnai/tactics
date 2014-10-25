@@ -17,12 +17,14 @@ public class GUImanager : MonoBehaviour {
 	public Text playerIndicator;
 	public Button abilityTest;
 	public LogController Log;
+	public List<UnitPanelGUI> unitPanels;
 
 	// Use this for initialization
 	void Awake()
 	{
 		instance = this;
 	}
+
 	void Start () {
 		gm = GameManager.instance;
 		foreach(Button b in abilitiesButtonsList)

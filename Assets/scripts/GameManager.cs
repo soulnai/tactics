@@ -93,13 +93,12 @@ public class GameManager : MonoBehaviour {
 			UserUnitPrefab [3] = StartScreenPersistentObj.instance.UserUnitPrefab [3];
 		}
 		mapTransform = transform.FindChild("Map");
-
-		generateMap();
-		generateUnits();
 	}
 
 	// Use this for initialization
-	void Start () {		
+	void Start () {	
+		generateMap();
+		generateUnits();
 		unitSelection = (GameObject)Instantiate(selectionRing, currentUnit.transform.position, Quaternion.Euler(0,0,0));
 		unitSelection.transform.parent = currentUnit.transform;
 
@@ -526,6 +525,7 @@ public class GameManager : MonoBehaviour {
 			unit.unitName = "Alice-"+i;
 			unit.playerOwner = players[0];
 			players[0].addUnit(unit);
+			GUImanager.instance.unitPanels[i].Init(unit);
 		}
 
 		for(int i=0; i< unitsCountAI;i++)
