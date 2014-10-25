@@ -53,7 +53,6 @@ public class BaseEffect : ICloneable {
 			owner = _owner;
 		if(_target!=null){
 			useUpdateTargets = false;
-			targets.Clear();
 			targets.Add(_target);
 			addToAppliedEffects ();
 		}

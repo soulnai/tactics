@@ -159,15 +159,21 @@ public class GameManager : MonoBehaviour {
 			{
 				if(OnRoundEnd != null)
 					OnRoundEnd();
+
 				currentPlayerIndex = 0;
+
+				if(OnRoundStart != null)
+					OnRoundStart();
+
+				if(OnPlayerTurnStart != null)
+					OnPlayerTurnStart(currentPlayer);
 			}
 
 			currentUnitIndex = 0;
 
 			turnsCounter++;
 
-			if(OnRoundStart != null)
-				OnRoundStart();
+
 		}
 
 		if(currentUnit.UnitState == unitStates.dead)

@@ -13,7 +13,7 @@ public class BaseEffectController : MonoBehaviour {
 	private Unit owner;
 	void Awake () {
 		gm.OnRoundStart += OnRoundStart;
-		gm.OnUnitTurnStart += OnTurnStart;
+		gm.OnUnitTurnStart += OnUnitTurnStart;
 		gm.OnUnitPosChange += OnUnitPosChange;
 		gm.OnPlayerTurnStart += PlayerTurnStart;
 		owner = GetComponent<Unit>();
@@ -36,13 +36,13 @@ public class BaseEffectController : MonoBehaviour {
 	{
 		updateEffectsTargets();
 		if(owner.playerOwner == p)
-			foreach(BaseEffect ef in effectsAppliedToUnit)
+		foreach(BaseEffect ef in effectsAppliedToUnit)
 		{
 			ef.applyTo(owner);
 		}
 	}
 
-	void OnTurnStart (Unit u)
+	void OnUnitTurnStart (Unit u)
 	{
 //		updateEffectsTargets();
 //		if(u == owner)
