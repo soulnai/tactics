@@ -19,7 +19,7 @@ public class BaseAbility : ICloneable{
 
 	//target flags
 	public bool requireTarget = true;
-	//TODO add check in ability logic
+
 	public bool enemieUse = false;
 	public bool allyUse = false;
 	public bool selfUse = false;
