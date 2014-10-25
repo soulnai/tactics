@@ -194,10 +194,7 @@ public class GameManager : MonoBehaviour {
 	void TurnLogic ()
 	{
 		currentUnit.prepareForTurn ();
-		//			currentUnit.unitActiveEffects.ActivateAllEffects();
 		GUImanager.instance.showAbilities ();
-		//reset AP
-		//			currentUnit.AP = currentUnit.APmax;
 		removeTileHighlights ();
 		//reset & focus camera
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
@@ -440,10 +437,12 @@ public class GameManager : MonoBehaviour {
 		{
 			foreach(string s in ability.effects){
 				BaseEffect ef = BaseEffectsManager.instance.getEffect(s);
-				if(ef.requireTarget)
-					currentUnit.unitBaseEffects.addEffect(ef,_target);
-				else
-					currentUnit.unitBaseEffects.addEffect(ef);
+				if(ef != null){
+					if(ef.requireTarget)
+						currentUnit.unitBaseEffects.addEffect(ef,_target);
+					else
+						currentUnit.unitBaseEffects.addEffect(ef);
+				}
 			}
 		}
 	}

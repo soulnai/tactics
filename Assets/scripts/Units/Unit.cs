@@ -122,6 +122,12 @@ public class Unit : MonoBehaviour {
 	private float delayAfterAnim = 0.5f;
 	private bool canEndTurn = false;
 
+	private static GameManager gm{
+		get{
+			return GameManager.instance;
+		}
+	}
+
 	public Dictionary<unitAttributes,BaseAttribute> attributesDictionary = new Dictionary<unitAttributes, BaseAttribute>();
 	public Dictionary<unitAttributes,BaseAttribute> attributesModDictionary = new Dictionary<unitAttributes, BaseAttribute>();
 
@@ -137,7 +143,7 @@ public class Unit : MonoBehaviour {
 
 	public void checkEndTurn()
 	{
-		if(GameManager.instance.currentUnit == this)
+		if(gm.currentUnit == this)
 		{
 			if((getAttribute(unitAttributes.AP).value<=0)&&(canEndTurn == true)&&(UnitState != unitStates.dead))
 			{
@@ -145,11 +151,6 @@ public class Unit : MonoBehaviour {
 				positionQueue.Clear();
 				StartCoroutine(delayedEndTurn(delayAfterAnim));
 			}
-//			else if(UnitState == unitStates.dead)
-//			{
-//				positionQueue.Clear();
-////				EndTurn();
-//			}
 		}
 	}
 
@@ -162,19 +163,15 @@ public class Unit : MonoBehaviour {
 
 	// Update is called once per frame
 	public virtual void Update () {		
-		if(GameManager.instance.currentUnit == this)
+		if(gm.currentUnit == this)
 		{
 			checkEndTurn();
-		
 			if(UnitAction == unitActions.moving && GameManager.instance.currentUnit.UnitState != unitStates.dead)
 			{
 				MoveUnit();
 			}
-
-			//if (HP <=0){
-				//makeDead();
-			//}
 		}
+
 	}
 
 	/// <summary>
@@ -182,12 +179,12 @@ public class Unit : MonoBehaviour {
 	/// </summary>
 	public void onAbility(BaseAbility a)
 	{
-		GameManager.instance.removeTileHighlights ();
+		gm.removeTileHighlights ();
 
 		if (unitAbilitiesController.abilities.Contains(a)) {
 			if((AP > 0)&&(MP >= a.MPCost)){
 				if((a.selfUse)&&(!a.allyUse)&&(!a.enemieUse)){
-					GameManager.instance.useAbility(a,this,currentTile,this);
+					gm.useAbility(a,this,currentTile,this);
 				}
 				else
 				{
@@ -195,7 +192,7 @@ public class Unit : MonoBehaviour {
 					attackDistance = a.range;
 					damageBase = a.baseDamage;
 					UnitAction = a.unitAction;
-					GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+					gm.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 				}
 			}
 			else
@@ -248,10 +245,10 @@ public class Unit : MonoBehaviour {
 
 	public void tryMove ()
 	{
-		GameManager.instance.removeTileHighlights ();
+		gm.removeTileHighlights ();
 		if(AP > 0){
 			UnitAction = unitActions.readyToMove;
-			GameManager.instance.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false, maxHeightDiff);
+			gm.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false, maxHeightDiff);
 		}
 	}
 
@@ -287,11 +284,11 @@ public class Unit : MonoBehaviour {
 	}
 
 	public virtual void EndTurn () {
-		GameManager.instance.removeTileHighlights ();
+		gm.removeTileHighlights ();
 		if(UnitState != unitStates.dead)
 			UnitAction = unitActions.idle;
 		canEndTurn = false;
-		GameManager.instance.nextTurn ();
+		gm.nextTurn ();
 	}
 
 	public void OnGUI() {
@@ -324,7 +321,7 @@ public class Unit : MonoBehaviour {
 	public void placeUnit(Vector2 position)
 	{
 		gridPosition = position;
-		currentTile = GameManager.instance.map[(int)position.x][(int)position.y];
+		currentTile = gm.map[(int)position.x][(int)position.y];
 		currentTile.unitInTile = this;
 		transform.position = currentTile.transform.position + new Vector3(0,0.5f,0);
 	}
@@ -416,10 +413,10 @@ public class Unit : MonoBehaviour {
 	}
 
 	void OnMouseEnter(){
-//		GameManager.instance.ShowMovementDistance(this);
+//		gm.ShowMovementDistance(this);
 	}
 
 	void OnMouseExit(){
-//		GameManager.instance.removeTileHighlights();
+//		gm.removeTileHighlights();
 	}
 }

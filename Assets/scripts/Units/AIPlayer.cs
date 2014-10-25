@@ -4,19 +4,28 @@ using System.Collections.Generic;
 using System.Linq;
 using EnumSpace;
 
+
+
 public class AIPlayer : Unit {
 	public BaseAbility a;
+
+	private static GameManager gm{
+		get{
+			return GameManager.instance;
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
-	
+		gm.OnUnitTurnStart += CheckAITurn;		
 	}
-	
-	// Update is called once per frame
-	public override void Update () {
-		if (GameManager.instance.currentUnit == this && UnitAction != unitActions.moving && UnitAction != unitActions.rangedAttack && UnitAction != unitActions.magicAttack && UnitState != unitStates.dead) {
-						AIturn ();
-				}
-		base.Update();
+
+	void CheckAITurn (Unit currentUnit)
+	{
+		if(currentUnit == this)
+		{
+			AIturn();
+		}
 	}
 	
 	public void AIturn ()
@@ -24,119 +33,97 @@ public class AIPlayer : Unit {
 		if (AP <= 0) {
 			EndTurn();
 		}
+		else{
+		a = unitAbilitiesController.abilities[Random.Range(0, unitAbilitiesController.abilities.Count-1)];
 
-		a = unitAbilitiesController.abilities[Random.Range(0, unitAbilitiesController.abilities.Count)];
-		//onAbility (ability);
-
-		if ((AP > 0) && (MP >= a.MPCost)) {
-						if (unitAbilitiesController.abilities.Contains (a)) {
-				
+			if ((AP > 0) && (MP >= a.MPCost)) {
 								attackRange = a.range;
 								attackDistance = a.range;
 								damageBase = a.baseDamage;
 								//magic
-								if (a.attackType == attackTypes.magic) {
-										//UnitAction = unitActions.magicAttack;
-										GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Freeze;
-										GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.FreezeExplode;
-								}
+				if (a.attackType == attackTypes.magic) {
+						gm.MagicPrefab = MagicPrefabHolder.instance.Freeze;
+						gm.MagicExplosionPrefab = MagicPrefabHolder.instance.FreezeExplode;
+				}
 				//ranged
 				else if (a.attackType == attackTypes.ranged) {
-										//UnitAction = unitActions.rangedAttack;
-										GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Lightning;
-										GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
+										gm.MagicPrefab = MagicPrefabHolder.instance.Lightning;
+										gm.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
 								}
 				//melee
 				else if (a.attackType == attackTypes.melee) {
-										//UnitAction = unitActions.meleeAttack;
+
 								}
 				//stun
 				else if (a.attackType == attackTypes.ranged) {
 										//UnitAction = unitActions.rangedAttack;
-										GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Poison;
-										GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.PoisonExplode;
+										gm.MagicPrefab = MagicPrefabHolder.instance.Poison;
+										gm.MagicExplosionPrefab = MagicPrefabHolder.instance.PoisonExplode;
 								} else if (a.attackType == attackTypes.heal) {
 										//UnitAction = unitActions.healAttack;
-										GameManager.instance.MagicPrefab = MagicPrefabHolder.instance.Heal;
-										GameManager.instance.MagicExplosionPrefab = MagicPrefabHolder.instance.HealExplode;
+										gm.MagicPrefab = MagicPrefabHolder.instance.Heal;
+										gm.MagicExplosionPrefab = MagicPrefabHolder.instance.HealExplode;
 								}
-						}
-				}
+			}
+					//priority queue
+					List<Tile> attacktilesInRange = TileHighlightAtack.FindHighlight (gm.map [(int)gridPosition.x] [(int)gridPosition.y], attackRange);
+					List<Tile> movementToAttackTilesInRange = TileHighlight.FindHighlight (gm.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + attackRange);
+					List<Tile> movementTilesInRange = TileHighlight.FindHighlight (gm.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + 1000);
+					//attack if in range and with lowest HP
+					if (attacktilesInRange.Where (x => gm.unitsAll.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0).Count () > 0) {
+					var opponentsInRange = attacktilesInRange.Select (x => gm.unitsAll.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? gm.unitsAll.Where (y => y.gridPosition == x.gridPosition).First () : null).ToList ();
+					Unit opponent = opponentsInRange.OrderBy (x => x != null ? -x.HP : 1000).First ();
 
+					gm.removeTileHighlights ();
 
-
-		if (UnitAction != unitActions.moving) {
-						//priority queue
-						List<Tile> attacktilesInRange = TileHighlightAtack.FindHighlight (GameManager.instance.map [(int)gridPosition.x] [(int)gridPosition.y], attackRange);
-						List<Tile> movementToAttackTilesInRange = TileHighlight.FindHighlight (GameManager.instance.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + attackRange);
-						List<Tile> movementTilesInRange = TileHighlight.FindHighlight (GameManager.instance.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + 1000);
-						//attack if in range and with lowest HP
-						if (attacktilesInRange.Where (x => GameManager.instance.unitsAll.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0).Count () > 0) {
-								var opponentsInRange = attacktilesInRange.Select (x => GameManager.instance.unitsAll.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? GameManager.instance.unitsAll.Where (y => y.gridPosition == x.gridPosition).First () : null).ToList ();
-								Unit opponent = opponentsInRange.OrderBy (x => x != null ? -x.HP : 1000).First ();
-
-								GameManager.instance.removeTileHighlights ();
-
-								if (unitAbilitiesController.abilities.Contains (a)) {
+					if (unitAbilitiesController.abilities.Contains (a)) {
 				
-										//magic
-										if (a.attackType == attackTypes.magic) {
-												UnitAction = unitActions.magicAttack;
-
-										}
-					//ranged
-					else if (a.attackType == attackTypes.ranged) {
-												UnitAction = unitActions.rangedAttack;
-
-										}
-					//melee
-					else if (a.attackType == attackTypes.melee) {
-												UnitAction = unitActions.meleeAttack;
-										}
-					//stun
-					else if (a.attackType == attackTypes.ranged) {
-												UnitAction = unitActions.rangedAttack;
-
-										}/* else if (a.attackType == attackTypes.heal) {
-						UnitAction = unitActions.healAttack;
-
-					}*/
-								}
-
-								GameManager.instance.AttackhighlightTiles (gridPosition, Color.red, attackRange, true);
-
-								if (UnitAction == unitActions.rangedAttack || UnitAction == unitActions.magicAttack) {
-										//GameManager.instance.distanceAttackWithCurrentPlayer (GameManager.instance.map [(int)opponent.gridPosition.x] [(int)opponent.gridPosition.y],a); 
-					GameManager.instance.useAbility(a,this,null,opponent);
-								} else {
-										//GameManager.instance.attackWithCurrentPlayer (GameManager.instance.map [(int)opponent.gridPosition.x] [(int)opponent.gridPosition.y],a); 
-					GameManager.instance.useAbility(a,this,null,opponent);
-								}
+						//magic
+						if (a.attackType == attackTypes.magic) {
+							UnitAction = unitActions.magicAttack;
 						}
+						//ranged
+						else if (a.attackType == attackTypes.ranged) {
+							UnitAction = unitActions.rangedAttack;
+						}
+						//melee
+						else if (a.attackType == attackTypes.melee) {
+							UnitAction = unitActions.meleeAttack;
+						}
+						//stun
+						else if (a.attackType == attackTypes.ranged) {
+							UnitAction = unitActions.rangedAttack;
+						}
+
+								gm.AttackhighlightTiles (gridPosition, Color.red, attackRange, true);
+								gm.useAbility(a,this,null,opponent);	
+								AP = 0;
+					}
+			}
 				//move toward nearest attack range of opponent
-			else if (UnitAction != unitActions.moving && movementToAttackTilesInRange.Where(x => GameManager.instance.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {
-				var opponentsInRange = movementToAttackTilesInRange.Select(x => GameManager.instance.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? GameManager.instance.unitsAll.Where(y => y.gridPosition == x.gridPosition).First() : null).ToList();
-				Unit opponent = opponentsInRange.OrderBy (x => x != null ? -x.HP : 1000).ThenBy (x => x != null ? TilePathFinder.FindPath(GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)x.gridPosition.x][(int)x.gridPosition.y]).Count() : 1000).First ();
+			else if (UnitAction != unitActions.moving && movementToAttackTilesInRange.Where(x => gm.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {
+				var opponentsInRange = movementToAttackTilesInRange.Select(x => gm.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? gm.unitsAll.Where(y => y.gridPosition == x.gridPosition).First() : null).ToList();
+				Unit opponent = opponentsInRange.OrderBy (x => x != null ? -x.HP : 1000).ThenBy (x => x != null ? TilePathFinder.FindPath(gm.map[(int)gridPosition.x][(int)gridPosition.y],gm.map[(int)x.gridPosition.x][(int)x.gridPosition.y]).Count() : 1000).First ();
 
-				GameManager.instance.removeTileHighlights();
+				gm.removeTileHighlights();
 
-				GameManager.instance.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
+				gm.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
 				UnitAction = unitActions.moving;
-				List<Tile> path = TilePathFinder.FindPath (GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], GameManager.instance.unitsAll.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
-				GameManager.instance.moveUnitTo(path[(int)Mathf.Max(0, path.Count - 1 - attackRange)]);
+				List<Tile> path = TilePathFinder.FindPath (gm.map[(int)gridPosition.x][(int)gridPosition.y],gm.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], gm.unitsAll.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
+				gm.moveUnitTo(path[(int)Mathf.Max(0, path.Count - 1 - attackRange)]);
 			}
 			//move toward nearest opponent
-			else if (UnitAction != unitActions.moving && movementTilesInRange.Where(x => GameManager.instance.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {
-				var opponentsInRange = movementTilesInRange.Select(x => GameManager.instance.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? GameManager.instance.unitsAll.Where(y => y.gridPosition == x.gridPosition).First() : null).ToList();
-				Unit opponent = opponentsInRange.OrderBy (x => x != null ? -x.HP : 1000).ThenBy (x => x != null ? TilePathFinder.FindPath(GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)x.gridPosition.x][(int)x.gridPosition.y]).Count() : 1000).First ();
+			else if (UnitAction != unitActions.moving && movementTilesInRange.Where(x => gm.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {
+				var opponentsInRange = movementTilesInRange.Select(x => gm.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? gm.unitsAll.Where(y => y.gridPosition == x.gridPosition).First() : null).ToList();
+				Unit opponent = opponentsInRange.OrderBy (x => x != null ? -x.HP : 1000).ThenBy (x => x != null ? TilePathFinder.FindPath(gm.map[(int)gridPosition.x][(int)gridPosition.y],gm.map[(int)x.gridPosition.x][(int)x.gridPosition.y]).Count() : 1000).First ();
 
-				GameManager.instance.removeTileHighlights();
+				gm.removeTileHighlights();
 
 				UnitAction = unitActions.moving;
 
-				GameManager.instance.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
+				gm.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
 				UnitAction = unitActions.moving;
-				List<Tile> path = TilePathFinder.FindPath (GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], GameManager.instance.unitsAll.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
+				List<Tile> path = TilePathFinder.FindPath (gm.map[(int)gridPosition.x][(int)gridPosition.y],gm.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], gm.unitsAll.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
 				int movementCost = 0;
 				int pathPoint = 0;
 				for(int i=0;i<path.Count-1;i++)
@@ -149,7 +136,7 @@ public class AIPlayer : Unit {
 				}
 				Debug.Log(movementCost);
 				Debug.Log(pathPoint);
-				GameManager.instance.moveUnitTo(path[(int)Mathf.Min(Mathf.Max (path.Count - 1 - attackRange, 0), pathPoint)]);
+				gm.moveUnitTo(path[pathPoint]);
 			}
 		}
 	}

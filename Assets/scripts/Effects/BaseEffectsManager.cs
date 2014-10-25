@@ -31,16 +31,15 @@ public class BaseEffectsManager : MonoBehaviour {
 	{
 		BaseEffect tempEf = null;
 		if(ID != ""){
-			return effectsList.Find(BaseEffect => BaseEffect.ID == ID).Clone() as BaseEffect;
+			if(effectsList.Find(BaseEffect => BaseEffect.ID == ID) != null)
+				tempEf = effectsList.Find(BaseEffect => BaseEffect.ID == ID).Clone() as BaseEffect;
 		}
 		else{
 			Debug.Log("empty effect slot");
-			return null;
 		}
 		if (tempEf == null){
 			Debug.Log("No such effect in Effect Manager - " + ID);
-			return null;
 		}
-		return null;
+		return tempEf;
 	}
 }
