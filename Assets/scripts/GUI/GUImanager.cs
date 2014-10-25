@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class GUImanager : MonoBehaviour {
 
 	public static GUImanager instance;
-	public GameManager gameManager;
+	public GameManager gm;
 	public GameObject controlsPanel;
 	public GameObject abilitiesPanel;
 	public GameObject statsPanel;
@@ -24,7 +24,7 @@ public class GUImanager : MonoBehaviour {
 		instance = this;
 	}
 	void Start () {
-		gameManager = GameManager.instance;
+		gm = GameManager.instance;
 		foreach(Button b in abilitiesButtonsList)
 		{
 			b.gameObject.SetActive(false);
@@ -35,8 +35,8 @@ public class GUImanager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		turnsIndicator.text = "Turn - "+gameManager.turnsCounter;
-		playerIndicator.text = gameManager.currentPlayer.playerName;
+		turnsIndicator.text = "Turn - "+gm.turnsCounter;
+		playerIndicator.text = gm.currentPlayer.playerName;
 	}
 
 	public void onAbilityClick(BaseAbility a) {
@@ -58,14 +58,14 @@ public class GUImanager : MonoBehaviour {
 	public void OnMoveClick()
 	{
 		abilitiesPanel.SetActive (false);
-		Unit u = gameManager.units[gameManager.currentUnitIndex] as Unit;
+		Unit u = gm.currentUnit;
 		u.tryMove();
 	}
 
 	public void OnEndTurnClick()
 	{
 		abilitiesPanel.SetActive (false);
-		Unit u = gameManager.units[gameManager.currentUnitIndex] as Unit;
+		Unit u = gm.currentUnit;
 		u.EndTurn();
 	}
 
@@ -87,8 +87,8 @@ public class GUImanager : MonoBehaviour {
 	public void showAbilities()
 	{
 		GameManager gm = GameManager.instance;
-		if(gm.units[gm.currentUnitIndex].GetComponent<AbilitiesController>() != null){
-		List<BaseAbility> abilitiesList = gm.units[gm.currentUnitIndex].GetComponent<AbilitiesController>().abilities;
+		if(gm.currentUnit.GetComponent<AbilitiesController>() != null){
+		List<BaseAbility> abilitiesList = gm.currentUnit.GetComponent<AbilitiesController>().abilities;
 
 		foreach(Button b in abilitiesButtonsList)
 		{

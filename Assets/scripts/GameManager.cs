@@ -8,41 +8,54 @@ using EnumSpace;
 //Events
 public delegate void VictoryState(GameManager gm,Player p);
 public delegate void UnitEvent(Unit currentUnit);
-public delegate void RoundStart();
+public delegate void PlayerEvent(Player currentPlayer);
+public delegate void RoundEvent();
 
 public class GameManager : MonoBehaviour {
 	public event VictoryState OnVictoryState;
 	public event UnitEvent OnUnitPosChange;
-	public event UnitEvent OnTurnStart;
-	public event RoundStart OnRoundStart;
+	public event UnitEvent OnUnitTurnStart;
+	public event UnitEvent OnUnitTurnEnd;
+	public event PlayerEvent OnPlayerTurnStart;
+	public event PlayerEvent OnPlayerTurnEnd;
+	public event RoundEvent OnRoundStart;
+	public event RoundEvent OnRoundEnd;
 	public static GameManager instance;
 	//units count
 	public int unitsCountPlayer;
 	public int unitsCountAI;
 	//prefabs
-	public GameObject TilePrefab;
 	public GameObject[] UserUnitPrefab;
 	public GameObject AIPlayerPrefab;
 
 	public GameObject MagicPrefab;
 	public GameObject MagicExplosionPrefab;
-	public GameObject magic;
 	public GameObject selectionRing;
 	public Unit targetPub;
-	public List <Unit> targetsForAreaDamage;
-	public bool Loose = false;
+	private List <Unit> targetsForAreaDamage;
 	public Texture ImpasTex;
 
 	public List<Tile> highlightedTiles;
 	public List<Tile> highlightedTilesArea;
-	public bool magiceffect = false;
 	
 	public int mapSize = 22;
 	public Transform mapTransform;
 	Transform tileTransform;
 	
 	public List <List<Tile>> map = new List<List<Tile>>();
-	public List <Unit> units = new List<Unit>();
+	public List <Unit> unitsAll{
+		get{
+			List<Unit> tempList = new List<Unit>();
+			foreach(Player p in players)
+			{
+				foreach(Unit u in p.units)
+				{
+					tempList.Add(u);
+				}
+			}
+			return tempList;
+		}
+	}
 	public List <Player> players = new List<Player>();
 	public int currentUnitIndex = 0;
 	public int currentPlayerIndex = 0;
@@ -51,7 +64,7 @@ public class GameManager : MonoBehaviour {
 
 		}
 		get{
-			return units[currentUnitIndex];
+			return currentPlayer.units[currentUnitIndex];
 		}
 	}
 	public Player currentPlayer{
@@ -87,8 +100,8 @@ public class GameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {		
-		unitSelection = (GameObject)Instantiate(selectionRing, units[0].transform.position, Quaternion.Euler(0,0,0));
-		unitSelection.transform.parent = units [0].transform;
+		unitSelection = (GameObject)Instantiate(selectionRing, currentUnit.transform.position, Quaternion.Euler(0,0,0));
+		unitSelection.transform.parent = currentUnit.transform;
 
 		Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
@@ -116,26 +129,46 @@ public class GameManager : MonoBehaviour {
 	{
 		currentUnitIndex = 0;
 		currentPlayerIndex = 0;
-		foreach(Unit u in units)
+		foreach(Player p in players)
 		{
-			u.initStartAttributes();
+			foreach(Unit u in p.units)
+			{
+				u.initStartAttributes();
+			}
 		}
 	}
 	
 	public void nextTurn() {
-		if (currentUnitIndex + 1 < units.Count) {
+		//End turn event
+		if(OnUnitTurnEnd != null)
+			OnUnitTurnEnd(currentUnit);
+
+		if (currentUnitIndex + 1 < currentPlayer.units.Count) {
 			currentUnitIndex++;
-			if(!currentPlayer.units.Contains(currentUnit))
-				currentPlayerIndex++;
-				if(currentPlayerIndex + 1 > players.Count)
-				currentPlayerIndex = 0;
 		} 
 		else {
+			if(OnPlayerTurnEnd != null)
+				OnPlayerTurnEnd(currentPlayer);
+	
+			if(currentPlayerIndex + 1 < players.Count)
+			{
+				currentPlayerIndex++;
+				if(OnPlayerTurnStart != null)
+					OnPlayerTurnStart(currentPlayer);
+			}
+			else
+			{
+				if(OnRoundEnd != null)
+					OnRoundEnd();
+				currentPlayerIndex = 0;
+			}
+
+			currentUnitIndex = 0;
+
 			turnsCounter++;
+
 			if(OnRoundStart != null)
 				OnRoundStart();
-			currentUnitIndex = 0;
-			currentPlayerIndex = 0;
 		}
 
 		if(currentUnit.UnitState == unitStates.dead)
@@ -144,8 +177,9 @@ public class GameManager : MonoBehaviour {
 		}
 		else
 		{
-			if(OnTurnStart != null)
-				OnTurnStart(currentUnit);
+			////Start turn event
+			if(OnUnitTurnStart != null)
+				OnUnitTurnStart(currentUnit);
 			TurnLogic ();
 		}
 
@@ -165,8 +199,8 @@ public class GameManager : MonoBehaviour {
 		Camera.main.GetComponent<CameraOrbit> ().pivot = currentUnit.transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 		//set selection ring
-		unitSelection.transform.position = units [currentUnitIndex].transform.position;
-		unitSelection.transform.parent = units [currentUnitIndex].transform;
+		unitSelection.transform.position = currentUnit.transform.position;
+		unitSelection.transform.parent = currentUnit.transform;
 		//set state
 		currentUnit.UnitAction = unitActions.idle;
 		currentUnit.positionQueue.Clear ();
@@ -182,7 +216,7 @@ public class GameManager : MonoBehaviour {
 						if (ignorePlayers)
 								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, maxHeightDiff);
 						else
-								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray (), maxHeightDiff);
+								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray (), maxHeightDiff);
 		
 						foreach (Tile t in highlightedTiles) {
 								t.visual.transform.renderer.materials [1].color = highlightColor;
@@ -197,7 +231,7 @@ public class GameManager : MonoBehaviour {
 				if (ignorePlayers)
 					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
 				else
-					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
+					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
 				foreach (Tile t in highlightedTiles) 
 					t.visual.transform.renderer.materials [1].color = highlightColor;
 				
@@ -210,7 +244,7 @@ public class GameManager : MonoBehaviour {
 		if (ignorePlayers)
 			highlightedTilesArea = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
 		else
-			highlightedTilesArea = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, units.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
+			highlightedTilesArea = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
 		
 	}
 	
@@ -222,12 +256,12 @@ public class GameManager : MonoBehaviour {
 		}
 	}
  	
-	public void moveCurrentPlayer(Tile destTile) {
+	public void moveUnitTo(Tile destTile) {
 			if ((highlightedTiles.Contains(destTile)) && !destTile.impassible && currentUnit.positionQueue.Count == 0) {
 			removeTileHighlights();
 			currentUnit.UnitAction = unitActions.moving;
 			currentUnit.currentTile.unitInTile = null;
-			foreach(Tile t in TilePathFinder.FindPath(map[(int)currentUnit.gridPosition.x][(int)currentUnit.gridPosition.y],destTile, units.Where(x => x.gridPosition != destTile.gridPosition && x.gridPosition != currentUnit.gridPosition).Select(x => x.gridPosition).ToArray(),currentUnit.maxHeightDiff)) {
+			foreach(Tile t in TilePathFinder.FindPath(map[(int)currentUnit.gridPosition.x][(int)currentUnit.gridPosition.y],destTile, unitsAll.Where(x => x.gridPosition != destTile.gridPosition && x.gridPosition != currentUnit.gridPosition).Select(x => x.gridPosition).ToArray(),currentUnit.maxHeightDiff)) {
 				currentUnit.positionQueue.Add(map[(int)t.gridPosition.x][(int)t.gridPosition.y].transform.position + 0.5f * Vector3.up);
 //				Debug.Log("(" + currentUnit.positionQueue[currentUnit.positionQueue.Count - 1].x + "," + currentUnit.positionQueue[currentUnit.positionQueue.Count - 1].y + ")");
 			}			
@@ -491,7 +525,6 @@ public class GameManager : MonoBehaviour {
 			unit.placeUnit(position);
 			unit.unitName = "Alice-"+i;
 			unit.playerOwner = players[0];
-			units.Add(unit);
 			players[0].addUnit(unit);
 		}
 
@@ -502,7 +535,6 @@ public class GameManager : MonoBehaviour {
 			ai.placeUnit(position);
 			ai.unitName = "Bot-"+i;				
 			ai.playerOwner = players[1];
-			units.Add(ai);
 			players[1].addUnit(ai);
 		}
 
@@ -517,8 +549,8 @@ public class GameManager : MonoBehaviour {
 			tileXY = getRandoMapTileXY(passible);
 		}
 
-		for (int i =0; i<units.Count; i++) {
-			if (map[(int)tileXY.x][(int)tileXY.y].gridPosition == units[i].gridPosition){
+		for (int i =0; i<unitsAll.Count; i++) {
+			if (map[(int)tileXY.x][(int)tileXY.y].gridPosition == unitsAll[i].gridPosition){
 				tileXY = getRandoMapTileXY();
 			}		
 		}

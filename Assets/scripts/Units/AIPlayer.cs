@@ -71,8 +71,8 @@ public class AIPlayer : Unit {
 						List<Tile> movementToAttackTilesInRange = TileHighlight.FindHighlight (GameManager.instance.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + attackRange);
 						List<Tile> movementTilesInRange = TileHighlight.FindHighlight (GameManager.instance.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + 1000);
 						//attack if in range and with lowest HP
-						if (attacktilesInRange.Where (x => GameManager.instance.units.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0).Count () > 0) {
-								var opponentsInRange = attacktilesInRange.Select (x => GameManager.instance.units.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? GameManager.instance.units.Where (y => y.gridPosition == x.gridPosition).First () : null).ToList ();
+						if (attacktilesInRange.Where (x => GameManager.instance.unitsAll.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0).Count () > 0) {
+								var opponentsInRange = attacktilesInRange.Select (x => GameManager.instance.unitsAll.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? GameManager.instance.unitsAll.Where (y => y.gridPosition == x.gridPosition).First () : null).ToList ();
 								Unit opponent = opponentsInRange.OrderBy (x => x != null ? -x.HP : 1000).First ();
 
 								GameManager.instance.removeTileHighlights ();
@@ -114,20 +114,20 @@ public class AIPlayer : Unit {
 								}
 						}
 				//move toward nearest attack range of opponent
-			else if (UnitAction != unitActions.moving && movementToAttackTilesInRange.Where(x => GameManager.instance.units.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {
-				var opponentsInRange = movementToAttackTilesInRange.Select(x => GameManager.instance.units.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? GameManager.instance.units.Where(y => y.gridPosition == x.gridPosition).First() : null).ToList();
+			else if (UnitAction != unitActions.moving && movementToAttackTilesInRange.Where(x => GameManager.instance.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {
+				var opponentsInRange = movementToAttackTilesInRange.Select(x => GameManager.instance.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? GameManager.instance.unitsAll.Where(y => y.gridPosition == x.gridPosition).First() : null).ToList();
 				Unit opponent = opponentsInRange.OrderBy (x => x != null ? -x.HP : 1000).ThenBy (x => x != null ? TilePathFinder.FindPath(GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)x.gridPosition.x][(int)x.gridPosition.y]).Count() : 1000).First ();
 
 				GameManager.instance.removeTileHighlights();
 
 				GameManager.instance.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
 				UnitAction = unitActions.moving;
-				List<Tile> path = TilePathFinder.FindPath (GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], GameManager.instance.units.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
-				GameManager.instance.moveCurrentPlayer(path[(int)Mathf.Max(0, path.Count - 1 - attackRange)]);
+				List<Tile> path = TilePathFinder.FindPath (GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], GameManager.instance.unitsAll.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
+				GameManager.instance.moveUnitTo(path[(int)Mathf.Max(0, path.Count - 1 - attackRange)]);
 			}
 			//move toward nearest opponent
-			else if (UnitAction != unitActions.moving && movementTilesInRange.Where(x => GameManager.instance.units.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {
-				var opponentsInRange = movementTilesInRange.Select(x => GameManager.instance.units.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? GameManager.instance.units.Where(y => y.gridPosition == x.gridPosition).First() : null).ToList();
+			else if (UnitAction != unitActions.moving && movementTilesInRange.Where(x => GameManager.instance.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {
+				var opponentsInRange = movementTilesInRange.Select(x => GameManager.instance.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? GameManager.instance.unitsAll.Where(y => y.gridPosition == x.gridPosition).First() : null).ToList();
 				Unit opponent = opponentsInRange.OrderBy (x => x != null ? -x.HP : 1000).ThenBy (x => x != null ? TilePathFinder.FindPath(GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)x.gridPosition.x][(int)x.gridPosition.y]).Count() : 1000).First ();
 
 				GameManager.instance.removeTileHighlights();
@@ -136,7 +136,7 @@ public class AIPlayer : Unit {
 
 				GameManager.instance.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
 				UnitAction = unitActions.moving;
-				List<Tile> path = TilePathFinder.FindPath (GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], GameManager.instance.units.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
+				List<Tile> path = TilePathFinder.FindPath (GameManager.instance.map[(int)gridPosition.x][(int)gridPosition.y],GameManager.instance.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], GameManager.instance.unitsAll.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
 				int movementCost = 0;
 				int pathPoint = 0;
 				for(int i=0;i<path.Count-1;i++)
@@ -149,7 +149,7 @@ public class AIPlayer : Unit {
 				}
 				Debug.Log(movementCost);
 				Debug.Log(pathPoint);
-				GameManager.instance.moveCurrentPlayer(path[(int)Mathf.Min(Mathf.Max (path.Count - 1 - attackRange, 0), pathPoint)]);
+				GameManager.instance.moveUnitTo(path[(int)Mathf.Min(Mathf.Max (path.Count - 1 - attackRange, 0), pathPoint)]);
 			}
 		}
 	}

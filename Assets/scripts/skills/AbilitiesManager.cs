@@ -15,6 +15,6 @@ public class AbilitiesManager : MonoBehaviour {
 
 	public BaseAbility getAbility(string ID)
 	{
-		return abilities.Find(BaseAttack => BaseAttack.abilityID == ID); 
+		return abilities.Find(BaseAttack => BaseAttack.abilityID == ID).Clone() as BaseAbility; 
 	}
 }

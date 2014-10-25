@@ -77,16 +77,16 @@ public class Tile : MonoBehaviour {
 	
 	void OnMouseDown() {
 		if ((Application.loadedLevelName == "gameScene")&&(!GUImanager.instance.mouseOverGUI)) {
-			if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.readyToMove) {
-				gm.moveCurrentPlayer(this);
+			if (gm.currentUnit.UnitAction == unitActions.readyToMove) {
+				gm.moveUnitTo(this);
 			}
-//			else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.meleeAttack) {
+//			else if (gm.currentUnit.UnitAction == unitActions.meleeAttack) {
 //				gm.attackWithCurrentPlayer(this);
-//			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.rangedAttack) {
+//			} else if (gm.currentUnit.UnitAction == unitActions.rangedAttack) {
 //				gm.distanceAttackWithCurrentPlayer(this);
-//			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.magicAttack) {
+//			} else if (gm.currentUnit.UnitAction == unitActions.magicAttack) {
 //				gm.distanceAttackWithCurrentPlayer(this);
-//			} else if (gm.units[gm.currentUnitIndex].UnitAction == unitActions.healAttack) {
+//			} else if (gm.currentUnit.UnitAction == unitActions.healAttack) {
 //				gm.distanceAttackWithCurrentPlayer(this);
 //			}
 		} else if (Application.loadedLevelName == "MapCreatorScene") {

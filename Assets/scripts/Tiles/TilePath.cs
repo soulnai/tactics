@@ -19,9 +19,9 @@ public class TilePath {
 	}
 	
 	public void addTile(Tile t) {
-		if (GameManager.instance.units [GameManager.instance.currentUnitIndex].currentTile == t) {
+		if (GameManager.instance.currentUnit.currentTile == t) {
 						costOfPath += 0;
-				} else if (GameManager.instance.units [GameManager.instance.currentUnitIndex].isFlying == true) {
+				} else if (GameManager.instance.currentUnit.isFlying == true) {
 						costOfPath += 1;
 				} else {
 			costOfPath += t.movementCost;

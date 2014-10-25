@@ -416,11 +416,10 @@ public class Unit : MonoBehaviour {
 	}
 
 	void OnMouseEnter(){
-		GameManager.instance.ShowMovementDistance(this);
+//		GameManager.instance.ShowMovementDistance(this);
 	}
 
 	void OnMouseExit(){
-//		GameManager.instance.ShowMovementDistance(this);
-		GameManager.instance.removeTileHighlights();
+//		GameManager.instance.removeTileHighlights();
 	}
 }
