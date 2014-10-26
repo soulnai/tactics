@@ -70,8 +70,8 @@ public class AIPlayer : Unit {
 			}
 					//priority queue
 					List<Tile> attacktilesInRange = TileHighlightAtack.FindHighlight (gm.map [(int)gridPosition.x] [(int)gridPosition.y], attackRange);
-					List<Tile> movementToAttackTilesInRange = TileHighlight.FindHighlight (gm.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + attackRange);
-					List<Tile> movementTilesInRange = TileHighlight.FindHighlight (gm.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + 1000);
+					List<Tile> movementToAttackTilesInRange = TileHighlight.FindHighlight (gm.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + attackRange,maxHeightDiff);
+					List<Tile> movementTilesInRange = TileHighlight.FindHighlight (gm.map [(int)gridPosition.x] [(int)gridPosition.y], movementPerActionPoint + 100,maxHeightDiff);
 					//attack if in range and with lowest HP
 					if (attacktilesInRange.Where (x => gm.unitsAll.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0).Count () > 0) {
 					var opponentsInRange = attacktilesInRange.Select (x => gm.unitsAll.Where (y => y.GetType () != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count () > 0 ? gm.unitsAll.Where (y => y.gridPosition == x.gridPosition).First () : null).ToList ();

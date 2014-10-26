@@ -181,6 +181,7 @@ public class Unit : MonoBehaviour {
 	/// </summary>
 	public void onAbility(BaseAbility a)
 	{
+		UnitAction = unitActions.readyToAttack;
 		gm.removeTileHighlights ();
 
 		if (unitAbilitiesController.abilities.Contains(a)) {
@@ -193,7 +194,7 @@ public class Unit : MonoBehaviour {
 					currentAbility = a;
 					attackDistance = a.range;
 					damageBase = a.baseDamage;
-					UnitAction = a.unitAction;
+//					UnitAction = a.unitAction;
 					gm.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
 				}
 			}

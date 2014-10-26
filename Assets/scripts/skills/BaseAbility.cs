@@ -15,7 +15,6 @@ public class BaseAbility : ICloneable{
 
 	public bool endsUnitTurn = true;
 	public attackTypes attackType;
-	public unitActions unitAction;
 
 	//target flags
 	public bool requireTarget = true;
