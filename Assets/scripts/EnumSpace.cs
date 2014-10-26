@@ -24,11 +24,8 @@ namespace EnumSpace {
 		idle,
 		readyToMove,
 		moving,
-		meleeAttack,
-		rangedAttack,
-		magicAttack,
-		skillAttack,
-		healAttack
+		readyToAttack,
+		attacking
 	}
 
 	public enum unitAttributes{

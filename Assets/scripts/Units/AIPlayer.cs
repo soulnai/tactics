@@ -22,7 +22,10 @@ public class AIPlayer : Unit {
 		
 	// Update is called once per frame
 	public override void Update () {
-		if (GameManager.instance.currentUnit == this && UnitAction != unitActions.moving && UnitAction != unitActions.rangedAttack && UnitAction != unitActions.magicAttack && UnitState != unitStates.dead) {
+		if (GameManager.instance.currentUnit == this &&
+		    UnitAction != unitActions.moving &&
+		    UnitAction != unitActions.attacking &&
+		    UnitState != unitStates.dead) {
 						AIturn ();
 				}
 		base.Update();
@@ -76,29 +79,11 @@ public class AIPlayer : Unit {
 
 					gm.removeTileHighlights ();
 
-					if (unitAbilitiesController.abilities.Contains (a)) {
-				
-						//magic
-						if (a.attackType == attackTypes.magic) {
-							UnitAction = unitActions.magicAttack;
-						}
-						//ranged
-						else if (a.attackType == attackTypes.ranged) {
-							UnitAction = unitActions.rangedAttack;
-						}
-						//melee
-						else if (a.attackType == attackTypes.melee) {
-							UnitAction = unitActions.meleeAttack;
-						}
-						//stun
-						else if (a.attackType == attackTypes.ranged) {
-							UnitAction = unitActions.rangedAttack;
-						}
-
-								gm.AttackhighlightTiles (gridPosition, Color.red, attackRange, true);
-								gm.useAbility(a,this,null,opponent);	
-								AP = 0;
-					}
+					UnitAction = unitActions.attacking;
+					gm.AttackhighlightTiles (gridPosition, Color.red, attackRange, true);
+					gm.useAbility(a,this,null,opponent);	
+					AP = 0;
+					
 			}
 				//move toward nearest attack range of opponent
 			else if (UnitAction != unitActions.moving && movementToAttackTilesInRange.Where(x => gm.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {
