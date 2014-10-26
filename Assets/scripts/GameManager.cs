@@ -587,7 +587,6 @@ public class GameManager : MonoBehaviour {
 
 	void drawArea ()
 	{
-		BaseAbility a = currentUnit.currentAbility;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
 		if (currentUnit.currentAbility.areaDamage == true && currentUnit.UnitAction == unitActions.readyToAttack) {
@@ -724,7 +723,6 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void ShowMovementDistance(Unit u){
-		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
 		if (!GUImanager.instance.mouseOverGUI) {
 			if(currentUnit.UnitAction == unitActions.idle){
 				highlightTilesAt(u.gridPosition, Color.magenta, u.movementPerActionPoint*2,false,u.maxHeightDiff);

@@ -50,4 +50,35 @@ public static class GameMath {
 		}
 		return amountOfDamage;
 	}
+
+	//If use DamageType then use ResistTo
+	public static bool ResistTo (Unit u,BaseAttributeChanger ac)
+	{
+		damageTypes damageType = ac.damageType;
+		unitAttributes resistType = unitAttributes.strenght;
+		
+		switch (damageType) {
+		case damageTypes.blunt:
+			resistType = unitAttributes.strenght;
+			break;
+		case damageTypes.poison:
+			resistType = unitAttributes.dexterity;
+			break;
+		case damageTypes.electricity:
+			resistType = unitAttributes.magic;
+			break;
+		case damageTypes.fire:
+			resistType = unitAttributes.magic;
+			break;
+		case damageTypes.ice:
+			resistType = unitAttributes.magic;
+			break;
+		}
+		
+		//compare
+		if (Random.Range(0.0f, 1.0f)> u.getAttribute(resistType).valueMod/100f)
+			return true;
+		else
+			return false;
+	}
 }

@@ -328,44 +328,7 @@ public class Unit : MonoBehaviour {
 		currentTile.unitInTile = this;
 		transform.position = currentTile.transform.position + new Vector3(0,0.5f,0);
 	}
-
-	//If use DamageType then use ResistTo
-	public bool ResistTo (BaseAttributeChanger ac)
-	{
-		damageTypes damageType = ac.damageType;
-		unitAttributes resistType;
-		float resist = 0;
-
-		switch (damageType) {
-		case damageTypes.blunt:
-			resistType = unitAttributes.strenght;
-			resist = Strength;
-			break;
-		case damageTypes.poison:
-			resistType = unitAttributes.dexterity;
-			resist = Strength;
-			break;
-		case damageTypes.electricity:
-			resistType = unitAttributes.magic;
-			resist = MagicDef;
-			break;
-		case damageTypes.fire:
-			resistType = unitAttributes.magic;
-			resist = MagicDef;
-			break;
-		case damageTypes.ice:
-			resistType = unitAttributes.magic;
-			resist = MagicDef;
-			break;
-		}
-
-		//compare
-		if (Random.Range(0.0f, 1.0f)> resist/100)
-			return true;
-		else
-			return false;
-	}
-
+	
 	IEnumerator WaitAnimationEnd(float waitTime,bool triggerReactionEnd = false){
 		yield return new WaitForSeconds(waitTime);
 		if(triggerReactionEnd){
