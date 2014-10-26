@@ -314,11 +314,11 @@ public class GameManager : MonoBehaviour {
 			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
 			Debug.Log (angle);
 			//TODO backstab apply chance
-			if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab && Random.Range(0.0f, 1.0f) <= 1f){
+			if (angle <=30 && currentUnit.currentAbility.canBackstan && Random.Range(0.0f, 1.0f) <= 1f){
 				amountOfDamage = amountOfDamage*10;
 				Debug.Log ("backstab");
 				return amountOfDamage;
-			} else if (angle <=30 && currentUnit.currentAbility.attackType == attackTypes.backstab){
+			} else if (angle <=30 && currentUnit.currentAbility.canBackstan){
 				amountOfDamage = amountOfDamage*5;
 				Debug.Log ("backstab");
 				return amountOfDamage;

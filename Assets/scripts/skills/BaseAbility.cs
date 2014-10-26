@@ -30,6 +30,7 @@ public class BaseAbility : ICloneable{
 	public areaPatterns areaPattern;
 
 	public int baseDamage;
+	public bool canBackstan = false;
 	public damageTypes damageType;
 	
 	public List<string> effects;
