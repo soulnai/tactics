@@ -119,7 +119,7 @@ public class BaseEffect : ICloneable {
 		addToAppliedEffects ();
 	}
 
-	public void applyTo(Unit u,bool mod = false)
+	public void applyTo(Unit u)
 	{
 		if(targets.Contains(u)){
 			if((duration>0)||(infinite)){
@@ -127,13 +127,13 @@ public class BaseEffect : ICloneable {
 				{
 					int valueTemp = getValue(u,ac);
 
-					if((ac.applyEachTurn)&&(!mod)){
+					if((ac.applyEachTurn)&&(!ac.mod)){
 						u.getAttribute(ac.attribute).value += valueTemp;
 						if(ac.attribute == unitAttributes.HP)
 							u.checkHP();
 						Debug.Log("Attribute Value changed");
 					}
-					else if(mod)
+					else if(ac.mod)
 					{
 						if(u == gm.currentUnit){
 							u.getAttribute(ac.attribute).addMod(valueTemp);

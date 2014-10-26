@@ -17,15 +17,15 @@ public class AIPlayer : Unit {
 
 	// Use this for initialization
 	void Start () {
-		gm.OnUnitTurnStart += CheckAITurn;		
+			
 	}
-
-	void CheckAITurn (Unit currentUnit)
-	{
-		if(currentUnit == this)
-		{
-			AIturn();
-		}
+		
+	// Update is called once per frame
+	public override void Update () {
+		if (GameManager.instance.currentUnit == this && UnitAction != unitActions.moving && UnitAction != unitActions.rangedAttack && UnitAction != unitActions.magicAttack && UnitState != unitStates.dead) {
+						AIturn ();
+				}
+		base.Update();
 	}
 	
 	public void AIturn ()
