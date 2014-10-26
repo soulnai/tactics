@@ -6,6 +6,8 @@ using EnumSpace;
 [System.Serializable]
 public class Unit : MonoBehaviour {
 
+	public Sprite icon;
+
 	public bool isFlying = false;
 
 	public Vector2 gridPosition = Vector2.zero;
@@ -326,10 +328,10 @@ public class Unit : MonoBehaviour {
 		transform.position = currentTile.transform.position + new Vector3(0,0.5f,0);
 	}
 
-	public bool ResistTo (BaseEffect ef)
+	//If use DamageType then use ResistTo
+	public bool ResistTo (BaseAttributeChanger ac)
 	{
-		damageTypes damageType = damageTypes.blunt;
-//		damageTypes damageType = ef.damageType;
+		damageTypes damageType = ac.damageType;
 		unitAttributes resistType;
 		float resist = 0;
 

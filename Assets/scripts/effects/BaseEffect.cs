@@ -34,7 +34,6 @@ public class BaseEffect : ICloneable {
 	public GameObject FX;
 
 	private bool useUpdateTargets = true;
-	private int mod;
 
 	private GameManager gm{
 		get{

@@ -19,6 +19,7 @@ public class UnitPanelGUI : MonoBehaviour {
 	public void Init(Unit target)
 	{
 		targetUnit = target;
+		icon.sprite = targetUnit.icon;
 		updateValue(unitAttributes.AP);
 		updateValue(unitAttributes.HP);
 		updateValue(unitAttributes.MP);
