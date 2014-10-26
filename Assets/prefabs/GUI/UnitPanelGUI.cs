@@ -12,12 +12,17 @@ public class UnitPanelGUI : MonoBehaviour {
 	public Unit targetUnit;
 	private bool canUpdate = false;
 	// Use this for initialization
+	void Awake(){
+		gameObject.SetActive(false);
+	}
+
 	void Start () {
 	
 	}
 
 	public void Init(Unit target)
 	{
+		gameObject.SetActive(true);
 		targetUnit = target;
 		icon.sprite = targetUnit.icon;
 		updateValue(unitAttributes.AP);
