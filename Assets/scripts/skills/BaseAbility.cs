@@ -12,6 +12,7 @@ public class BaseAbility : ICloneable{
 	//Cost
 	public int APcost;
 	public int MPCost;
+	public int CastTime;
 
 	public bool endsUnitTurn = true;
 	public attackTypes attackType;

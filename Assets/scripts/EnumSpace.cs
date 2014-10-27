@@ -25,7 +25,8 @@ namespace EnumSpace {
 		readyToMove,
 		moving,
 		readyToAttack,
-		attacking
+		attacking,
+		casting
 	}
 
 	public enum unitAttributes{

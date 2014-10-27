@@ -110,6 +110,8 @@ public class Unit : MonoBehaviour {
 	public EnumSpace.unitActions UnitAction;
 	public Tile currentTile;
 	public BaseAbility currentAbility;
+	public int CastingDelay;
+	public BaseAbility DelayedAbility;
 	public Unit currentTarget;
 
 	//movement animation
