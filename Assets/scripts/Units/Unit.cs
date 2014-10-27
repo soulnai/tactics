@@ -112,6 +112,7 @@ public class Unit : MonoBehaviour {
 	public BaseAbility currentAbility;
 	public int CastingDelay;
 	public BaseAbility DelayedAbility;
+	public bool DelayedAbilityReady;
 	public Unit currentTarget;
 
 	//movement animation
@@ -188,6 +189,8 @@ public class Unit : MonoBehaviour {
 
 		if (unitAbilitiesController.abilities.Contains(a)) {
 			if((AP > 0)&&(MP >= a.MPCost)){
+
+					GameManager.instance.checkDelayedAbility (a);
 				if((a.selfUse)&&(!a.allyUse)&&(!a.enemieUse)){
 					gm.useAbility(a,this,currentTile,this);
 				}

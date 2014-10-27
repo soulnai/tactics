@@ -208,7 +208,8 @@ public class GameManager : MonoBehaviour {
 				nextTurn();
 		} else if (currentUnit.UnitAction == unitActions.casting) {
 			currentUnit.currentAbility = currentUnit.DelayedAbility;
-			useAbility(currentUnit.currentAbility,currentUnit);
+			currentUnit.DelayedAbilityReady = true;
+			currentUnit.onAbility(currentUnit.currentAbility);
 		}
 		currentUnit.UnitAction = unitActions.idle;
 		currentUnit.positionQueue.Clear ();
@@ -356,7 +357,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void useAbility(BaseAbility ability,Unit unitOwner,Tile targetTile = null,Unit targetUnit = null){
-		checkDelayedAbility (ability);
+
 		unitOwner.attackRange = ability.range;
 		Unit _target = null;
 		//used on target tile or unit
@@ -685,12 +686,14 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void checkDelayedAbility(BaseAbility ability){
-		if (ability.CastTime != 0) {
-			currentUnit.DelayedAbility = ability;
-			currentUnit.CastingDelay = ability.CastTime;
-			currentUnit.UnitAction = unitActions.casting;
-			nextTurn();
-			}
+		if (ability.CastTime != 0 && currentUnit.DelayedAbilityReady == false) {
+						currentUnit.DelayedAbility = ability;
+						currentUnit.CastingDelay = ability.CastTime;
+						currentUnit.UnitAction = unitActions.casting;
+						nextTurn ();
+				} else {
+			return;
+				}
 		}
 
 	public void checkVictory()
