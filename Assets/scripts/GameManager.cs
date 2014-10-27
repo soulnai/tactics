@@ -404,6 +404,8 @@ public class GameManager : MonoBehaviour {
 					amountOfDamage = GameMath.calculateDamage(ability, unitOwner, _target);
 
 					applyAbilityToTarget (ability, _target, amountOfDamage);
+					checkIfCastInterrupted(_target);
+
 
 					if((ability.attackType != attackTypes.melee)&&(ability.rangedFXprefab != null))
 					{
@@ -430,6 +432,16 @@ public class GameManager : MonoBehaviour {
 		}
 		}
 	}
+
+	public void checkIfCastInterrupted(Unit _target){
+		if (_target.UnitAction == unitActions.casting){
+			if (Random.Range(0.0f, 1.0f) <= currentUnit.Magic/100){
+				Debug.Log ("Cast interrupted!");
+				_target.UnitAction = unitActions.idle;
+				_target.DelayedAbilityReady = false;
+			}
+		}
+		}
 
 	public void applyAbilityToTarget (BaseAbility ability, Unit _target, int amountOfDamage)
 	{
