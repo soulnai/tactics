@@ -16,7 +16,7 @@ public static class GameMath {
 			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
 			Debug.Log (angle);
 			//TODO backstab apply chance
-			if (angle <=30 && unitOwner.currentAbility.canBackstan && Random.Range(0.0f, 1.0f) <= 1f){
+			if (angle <=30 && unitOwner.currentAbility.canBackstan && Random.Range(0.0f, 1.0f) <= unitOwner.Dexterity/100){
 				amountOfDamage = amountOfDamage*10;
 				Debug.Log ("backstab");
 				return amountOfDamage;
