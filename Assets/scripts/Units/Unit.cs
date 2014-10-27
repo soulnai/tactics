@@ -191,6 +191,7 @@ public class Unit : MonoBehaviour {
 			if((AP > 0)&&(MP >= a.MPCost)){
 
 					GameManager.instance.checkDelayedAbility (a);
+				DelayedAbilityReady = false;
 				if((a.selfUse)&&(!a.allyUse)&&(!a.enemieUse)){
 					gm.useAbility(a,this,currentTile,this);
 				}

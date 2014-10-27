@@ -211,7 +211,7 @@ public class GameManager : MonoBehaviour {
 			currentUnit.DelayedAbilityReady = true;
 			currentUnit.onAbility(currentUnit.currentAbility);
 		}
-		currentUnit.UnitAction = unitActions.idle;
+		//currentUnit.UnitAction = unitActions.idle;
 		currentUnit.positionQueue.Clear ();
 	}
 
