@@ -620,8 +620,6 @@ public class GameManager : MonoBehaviour {
 					AttackhighlightTiles (t.gridPosition, Color.green, currentUnit.currentAbility.areaDamageRadius, true);
 					highlightedTiles.Add (t);
 					t.visual.transform.renderer.materials [1].color = Color.green;
-					highlightedTiles.Remove (t);
-
 					}
 				}
 			}
@@ -734,6 +732,7 @@ public class GameManager : MonoBehaviour {
 		if(centerTile == null)
 			centerTile = owner.currentTile;
 		List<Tile> tempTiles = TileHighlightAtack.FindHighlight (map [(int)centerTile.gridPosition.x] [(int)centerTile.gridPosition.y], radius);
+		tempTiles.Add(centerTile);
 		List<Unit> tempUnits = new List<Unit>();
 //		Debug.Log(tempTiles.Count);
 		foreach(Tile t in tempTiles)
