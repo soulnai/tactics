@@ -96,4 +96,10 @@ namespace EnumSpace {
 		setType,
 		setHeight
 	}
+
+	public enum tooltipTypes{
+		effect,
+		ability,
+		unit
+	}
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using EnumSpace;
 
 public class GUImanager : MonoBehaviour {
 
@@ -114,9 +115,9 @@ public class GUImanager : MonoBehaviour {
 
 	}
 
-	public void showTooltip (Vector3 pos)
+	public void showTooltip (TooltipHelperGUI t)
 	{
-		tooltip.showTooltipDelayed(pos);
+		tooltip.showTooltipDelayed(t);
 	}
 
 	public void hideTooltip ()
