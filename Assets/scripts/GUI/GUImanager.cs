@@ -18,6 +18,7 @@ public class GUImanager : MonoBehaviour {
 	public Button abilityTest;
 	public LogController Log;
 	public List<UnitPanelGUI> unitPanels;
+	public TooltipGUI tooltip;
 
 	// Use this for initialization
 	void Awake()
@@ -111,5 +112,15 @@ public class GUImanager : MonoBehaviour {
 	public void updateStatsPanel()
 	{
 
+	}
+
+	public void showTooltip (Vector3 pos)
+	{
+		tooltip.showTooltipDelayed(pos);
+	}
+
+	public void hideTooltip ()
+	{
+		tooltip.hideTooltip();
 	}
 }
