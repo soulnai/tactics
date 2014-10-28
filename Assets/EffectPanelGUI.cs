@@ -16,12 +16,15 @@ public class EffectPanelGUI : MonoBehaviour {
 	public void Init(BaseEffect ef){
 		gameObject.SetActive(true);
 		effect = ef;
-		counter.text = ef.duration.ToString();
+		updateCounter();
 	}
 
 	public void updateCounter ()
 	{
-		counter.text = effect.duration.ToString();
+		if(!effect.infinite)
+			counter.text = effect.duration.ToString();
+		else
+			counter.text = "inf";
 	}
 
 	public void Delete(){
