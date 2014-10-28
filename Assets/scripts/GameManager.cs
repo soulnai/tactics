@@ -435,7 +435,7 @@ public class GameManager : MonoBehaviour {
 
 	public void checkIfCastInterrupted(Unit _target){
 		if (_target.UnitAction == unitActions.casting){
-			if (Random.Range(0.0f, 1.0f) <= currentUnit.Magic/100){
+			if (Random.Range(0.0f, 1.0f) >= currentUnit.Magic/100){
 				Debug.Log ("Cast interrupted!");
 				_target.UnitAction = unitActions.idle;
 				_target.DelayedAbilityReady = false;
