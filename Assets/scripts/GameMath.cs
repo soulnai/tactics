@@ -81,4 +81,29 @@ public static class GameMath {
 		else
 			return false;
 	}
+
+	public static float ResistToDamage (Unit target, int damage, BaseAbility ability)
+	{
+		damageTypes damageType = ability.damageType;
+		
+		switch (damageType) {
+		case damageTypes.blunt:
+			damage = damage - damage * target.getAttribute(unitAttributes.strenght).value;
+			break;
+		case damageTypes.poison:
+			damage = damage - damage * target.getAttribute(unitAttributes.poisonDef).value;
+			break;
+		case damageTypes.fire:
+			damage = damage - damage * target.getAttribute(unitAttributes.fireDef).value;
+			break;
+		case damageTypes.ice:
+			damage = damage - damage * target.getAttribute(unitAttributes.iceDef).value;
+			break;
+		}
+
+
+		//if (target.)
+
+		return damage;
+	}
 }
