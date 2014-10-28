@@ -6,13 +6,16 @@ using EnumSpace;
 
 public class TooltipGUI : MonoBehaviour {
 
+	public EffectTooltipController effectTooltip;
+	public AbilityTooltipController abilityTooltip;
+
 	public Text title;
 	public Text descr;
 	private float delay = 1f;
 	private RectTransform rectTransform;
+	private Vector3 position;
 
 	void Awake(){
-		gameObject.SetActive(false);
 		rectTransform = this.GetComponent<RectTransform>();
 	}
 
@@ -27,7 +30,6 @@ public class TooltipGUI : MonoBehaviour {
 	}
 
 	public void showTooltipDelayed(TooltipHelperGUI t){
-		gameObject.SetActive(true);
 		this.GetComponent<CanvasGroup>().alpha = 0;
 		StartCoroutine(waitToShow(t,delay));
 	}
@@ -39,11 +41,11 @@ public class TooltipGUI : MonoBehaviour {
 	}
 
 	public void showTooltip(TooltipHelperGUI t){
-		this.GetComponent<CanvasGroup>().alpha = 1;
 		if(t.rectTrans != null)
-			rectTransform.position = t.rectTrans.position;
+			position = t.rectTrans.position;
 		else
-			rectTransform.position = t.CanvasPos();
+			position = t.CanvasPos();
+
 		switch(t.type){
 			case tooltipTypes.ability:
 				showAbilityTip(t);
@@ -60,15 +62,15 @@ public class TooltipGUI : MonoBehaviour {
 	void showAbilityTip (TooltipHelperGUI t)
 	{
 		BaseAbility a = t.GetByType() as BaseAbility;
-		title.text = a.abilityName;
-		descr.text = "";
+		abilityTooltip.Show(a);
+		abilityTooltip.GetComponent<RectTransform>().position = position;
 	}
 
 	void showEffectTip (TooltipHelperGUI t)
 	{
 		BaseEffect ef = t.GetByType() as BaseEffect;
-		title.text = ef.name;
-		descr.text = ef.duration.ToString();
+		effectTooltip.Show(ef);
+		effectTooltip.GetComponent<RectTransform>().position = position;
 	}
 
 	void showUnitTip (TooltipHelperGUI t)
@@ -80,6 +82,8 @@ public class TooltipGUI : MonoBehaviour {
 
 	public void hideTooltip ()
 	{
+		effectTooltip.Hide();
+		abilityTooltip.Hide();
 		StopAllCoroutines();
 		this.GetComponent<CanvasGroup>().alpha = 0;
 	}

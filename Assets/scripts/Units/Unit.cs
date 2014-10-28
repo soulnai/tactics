@@ -102,7 +102,7 @@ public class Unit : MonoBehaviour {
 	public float criticalChance = 0.1f;
 	public float criticalModifier = 1.5f;
 	public int damageBase = 1;
-	public int maxdamageBase = 5;
+	public int maxDamageBase = 5;
 	public float damageRollSides = 6; //d6
 	public float maxHeightDiff = 0.5f;
 	public EnumSpace.unitClass UnitClass;

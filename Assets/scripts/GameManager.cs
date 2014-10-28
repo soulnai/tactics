@@ -311,13 +311,13 @@ public class GameManager : MonoBehaviour {
 	public int calculateDamage (BaseAbility ability, Unit unitOwner, Unit _target ) {
 		int amountOfDamage = 0;
 		if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal) {
-			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDef);
+			amountOfDamage = Mathf.RoundToInt(Random.Range(unitOwner.damageBase, unitOwner.maxDamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDef);
 			if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
-				amountOfDamage+= (int)amountOfDamage*(int)unitOwner.criticalModifier;
+				amountOfDamage+= Mathf.RoundToInt(amountOfDamage*unitOwner.criticalModifier);
 			}
 			//return amountOfDamage;
 		} else {
-			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDef);
+			amountOfDamage = Mathf.RoundToInt(Random.Range(unitOwner.damageBase, unitOwner.maxDamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDef);
 			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
 			Debug.Log (angle);
 			//TODO backstab apply chance
@@ -341,7 +341,7 @@ public class GameManager : MonoBehaviour {
 			}
 			else if (angle >90){
 				if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
-					amountOfDamage+= amountOfDamage*(int)unitOwner.criticalModifier;
+					amountOfDamage+= Mathf.RoundToInt(amountOfDamage*unitOwner.criticalModifier);
 				}
 				Debug.Log ("front attack");
 				return amountOfDamage;
@@ -743,9 +743,9 @@ public class GameManager : MonoBehaviour {
 				if(tempUnit.UnitState != unitStates.dead){
 					if((enemieUse)&&(tempUnit.playerOwner != owner.playerOwner))
 						tempUnits.Add(tempUnit);
-					if((allyUse)&&(tempUnit.playerOwner == owner.playerOwner))
+					if((allyUse)&&(tempUnit.playerOwner == owner.playerOwner)&&(tempUnit != owner))
 						tempUnits.Add(tempUnit);
-					if((selfUse)&&(tempUnit == currentUnit))
+					if((selfUse)&&(tempUnit == owner))
 						tempUnits.Add(tempUnit);
 				}
 			}

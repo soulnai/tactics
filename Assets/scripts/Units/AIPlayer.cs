@@ -37,7 +37,9 @@ public class AIPlayer : Unit {
 			EndTurn();
 		}
 		else{
-		a = unitAbilitiesController.abilities[Random.Range(0, unitAbilitiesController.abilities.Count-1)];
+			a = unitAbilitiesController.abilities[Random.Range(0, unitAbilitiesController.abilities.Count-1)];
+			if(a.MPCost > MP)
+				a = unitAbilitiesController.abilities[0];
 
 			if ((AP > 0) && (MP >= a.MPCost)) {
 								attackRange = a.range;

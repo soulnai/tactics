@@ -6,13 +6,12 @@ public static class GameMath {
 	public static int calculateDamage (BaseAbility ability, Unit unitOwner, Unit _target ) {
 		int amountOfDamage = 0;
 		if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal) {
-			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDef);
+			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxDamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDef);
 			if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
 				amountOfDamage+= (int)amountOfDamage*(int)unitOwner.criticalModifier;
 			}
-			//return amountOfDamage;
 		} else {
-			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxdamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDef);
+			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxDamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDef);
 			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
 			Debug.Log (angle);
 			//TODO backstab apply chance
@@ -36,7 +35,7 @@ public static class GameMath {
 			}
 			else if (angle >90){
 				if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
-					amountOfDamage+= amountOfDamage*(int)unitOwner.criticalModifier;
+					amountOfDamage = amountOfDamage*(int)unitOwner.criticalModifier;
 				}
 				Debug.Log ("front attack");
 				return amountOfDamage;
@@ -84,26 +83,24 @@ public static class GameMath {
 
 	public static int ResistToDamage (Unit target, int damage, BaseAbility ability)
 	{
+		float defCoef = 0.1f;
 		damageTypes damageType = ability.damageType;
 		
 		switch (damageType) {
 		case damageTypes.blunt:
-			damage = damage - damage * target.getAttribute(unitAttributes.strenght).value;
+			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.strenght).value*defCoef));
 			break;
 		case damageTypes.poison:
-			damage = damage - damage * target.getAttribute(unitAttributes.poisonDef).value;
+			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.poisonDef).value*defCoef));
 			break;
 		case damageTypes.fire:
-			damage = damage - damage * target.getAttribute(unitAttributes.fireDef).value;
+			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.fireDef).value*defCoef));
 			break;
 		case damageTypes.ice:
-			damage = damage - damage * target.getAttribute(unitAttributes.iceDef).value;
+			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.iceDef).value*defCoef));
 			break;
 		}
 
-
-		//if (target.)
-
-		return (int)damage;
+		return Mathf.Clamp(damage,0,1000);
 	}
 }
