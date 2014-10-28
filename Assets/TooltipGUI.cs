@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using EnumSpace;
@@ -39,7 +40,10 @@ public class TooltipGUI : MonoBehaviour {
 
 	public void showTooltip(TooltipHelperGUI t){
 		this.GetComponent<CanvasGroup>().alpha = 1;
-		rectTransform.position = t.rectTrans.position;
+		if(t.rectTrans != null)
+			rectTransform.position = t.rectTrans.position;
+		else
+			rectTransform.position = t.CanvasPos();
 		switch(t.type){
 			case tooltipTypes.ability:
 				showAbilityTip(t);

@@ -62,4 +62,9 @@ public class TooltipHelperGUI : MonoBehaviour,IPointerEnterHandler,IPointerExitH
 		}
 		return temp;
 	}
+
+	public Vector3 CanvasPos()
+	{
+		return Camera.current.WorldToScreenPoint(transform.position);
+	}
 }

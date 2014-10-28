@@ -619,6 +619,7 @@ public class GameManager : MonoBehaviour {
 					AttackhighlightTiles (currentUnit.gridPosition, Color.red, currentUnit.currentAbility.range, true);
 					AttackhighlightTiles (t.gridPosition, Color.green, currentUnit.currentAbility.areaDamageRadius, true);
 					highlightedTiles.Add (t);
+					//TODO better solution for Highlighted tiles center tile
 					t.visual.transform.renderer.materials [1].color = Color.green;
 					}
 				}
