@@ -73,6 +73,7 @@ public class BaseEffect : ICloneable {
 		//Duration check
 		if((!infinite)&&(owner.playerOwner != p)){
 			duration--;
+			UnitEvents.UnitEffectChanged(owner,this);
 			if(duration<=0)
 				Delete();
 		}
@@ -158,6 +159,7 @@ public class BaseEffect : ICloneable {
 
 	void addToAppliedEffects ()
 	{
+
 		foreach (Unit t in targets) {
 			if (!t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
 				t.unitBaseEffects.addAppliedEffect (this);
@@ -166,6 +168,7 @@ public class BaseEffect : ICloneable {
 
 	void removeFromAppliedEffects ()
 	{
+
 		foreach (Unit t in targets) {
 			if (t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
 				t.unitBaseEffects.removeAppliedEffect (this);

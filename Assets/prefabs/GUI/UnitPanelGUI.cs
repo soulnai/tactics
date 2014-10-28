@@ -8,6 +8,7 @@ public class UnitPanelGUI : MonoBehaviour {
 	public Slider HPslider;
 	public Slider MPslider;
 	public Slider APslider;
+	public EffectsPanelControllerGUI effectsGUI;
 
 	public Unit targetUnit;
 	private bool canUpdate = false;
@@ -29,6 +30,7 @@ public class UnitPanelGUI : MonoBehaviour {
 		updateValue(unitAttributes.HP);
 		updateValue(unitAttributes.MP);
 		canUpdate = true;
+		effectsGUI.Init(targetUnit);
 	}
 
 	public void updateValue(unitAttributes at)

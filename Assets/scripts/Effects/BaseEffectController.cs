@@ -114,6 +114,7 @@ public class BaseEffectController : MonoBehaviour {
 		if(!effectsAppliedToUnit.Contains(ef)){
 			effectsAppliedToUnit.Add(ef);
 			updateModsFromAppliedEffects();
+			UnitEvents.UnitEffectAdded(owner,ef);
 		}
 		else
 			Debug.Log("This effects already applied");
@@ -124,6 +125,7 @@ public class BaseEffectController : MonoBehaviour {
 		if(effectsAppliedToUnit.Contains(ef)){
 			effectsAppliedToUnit.Remove(ef);
 			updateModsFromAppliedEffects();
+			UnitEvents.UnitEffectRemoved(owner,ef);
 		}
 	}
 
