@@ -82,7 +82,7 @@ public static class GameMath {
 			return false;
 	}
 
-	public static float ResistToDamage (Unit target, int damage, BaseAbility ability)
+	public static int ResistToDamage (Unit target, int damage, BaseAbility ability)
 	{
 		damageTypes damageType = ability.damageType;
 		
@@ -104,6 +104,6 @@ public static class GameMath {
 
 		//if (target.)
 
-		return damage;
+		return (int)damage;
 	}
 }

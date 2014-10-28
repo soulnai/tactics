@@ -402,7 +402,7 @@ public class GameManager : MonoBehaviour {
 					int amountOfDamage = 0;
 
 					amountOfDamage = GameMath.calculateDamage(ability, unitOwner, _target);
-					amountOfDamage = (int)GameMath.ResistToDamage(_target, amountOfDamage, ability);
+					amountOfDamage = GameMath.ResistToDamage(_target, amountOfDamage, ability);
 					applyAbilityToTarget (ability, _target, amountOfDamage);
 					checkIfCastInterrupted(_target);
 
