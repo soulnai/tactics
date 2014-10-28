@@ -2,8 +2,9 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class buttonTextController : MonoBehaviour {
+public class buttonController : MonoBehaviour {
 	public Text text;
+	public object assignedElement;
 	// Use this for initialization
 	void Start () {
 

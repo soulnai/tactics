@@ -6,6 +6,7 @@ using EnumSpace;
 
 public class TooltipHelperGUI : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler {
 	public tooltipTypes type;
+	[HideInInspector]
 	public RectTransform rectTrans;
 
 	private GUImanager guim;
@@ -48,8 +49,8 @@ public class TooltipHelperGUI : MonoBehaviour,IPointerEnterHandler,IPointerExitH
 		object temp = null;
 		switch(type){
 		case tooltipTypes.ability:
-//			if(GetComponent<AbilitiesController>() != null)
-//				temp = this.GetComponent<BaseAbility>();
+			if(GetComponent<buttonController>() != null)
+				temp = GetComponent<buttonController>().assignedElement;
 			break;
 		case tooltipTypes.effect:
 			if(GetComponent<EffectPanelGUI>() != null)

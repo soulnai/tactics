@@ -103,7 +103,8 @@ public class GUImanager : MonoBehaviour {
 		{
 			int j = i;
 			abilitiesButtonsList[j].gameObject.SetActive(true);
-			abilitiesButtonsList[j].GetComponent<buttonTextController>().setText(abilitiesList[j].abilityID);
+			abilitiesButtonsList[j].GetComponent<buttonController>().assignedElement = abilitiesList[j];
+			abilitiesButtonsList[j].GetComponent<buttonController>().setText(abilitiesList[j].abilityID);
 			abilitiesButtonsList[j].onClick.RemoveAllListeners();
 			abilitiesButtonsList[j].onClick.AddListener(delegate{onAbilityClick(abilitiesList[j]);});
 		}

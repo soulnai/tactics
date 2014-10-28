@@ -59,8 +59,9 @@ public class TooltipGUI : MonoBehaviour {
 
 	void showAbilityTip (TooltipHelperGUI t)
 	{
-
 		BaseAbility a = t.GetByType() as BaseAbility;
+		title.text = a.abilityName;
+		descr.text = "";
 	}
 
 	void showEffectTip (TooltipHelperGUI t)
@@ -73,6 +74,8 @@ public class TooltipGUI : MonoBehaviour {
 	void showUnitTip (TooltipHelperGUI t)
 	{
 		Unit u = t.GetByType() as Unit;
+		title.text = u.unitName;
+		descr.text = u.HP.ToString();
 	}
 
 	public void hideTooltip ()
