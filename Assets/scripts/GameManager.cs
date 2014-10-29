@@ -291,38 +291,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public bool checkIfAttackSuccesfullyHit(Unit target){
-		bool hit = false;
-		float[] chanse = {0,0,0}; 
-		if (currentUnit.currentAbility.attackType == attackTypes.melee) {
-			for (int i = 0; i<chanse.Length; i++){
-				chanse[i] = Random.Range(0.0f, 1.0f);
-			}
-			hit = chanse.Min() <= currentUnit.attackChance;
-			return hit;
-		} 
-		if (currentUnit.currentAbility.attackType == attackTypes.magic) {
-			for (int i = 0; i<chanse.Length; i++){
-				chanse[i] = Random.Range(0.0f, 1.0f);
-			}
-			hit = chanse.Min() <= currentUnit.magicAttackChance;
-			return hit;
-		} 
-		if (currentUnit.currentAbility.attackType == attackTypes.ranged) {
-			for (int i = 0; i<chanse.Length; i++){
-				chanse[i] = Random.Range(0.0f, 1.0f);
-			}
-			hit = chanse.Min() <= currentUnit.rangedAttackChance;
-			return hit;
-		} 
-		if (Random.Range(0.0f, 1.0f) <= currentUnit.avoidChance){
-			hit = false;
-			GUImanager.instance.Log.addText("<b>"+target.unitName+":</b>" + " successfuly avoided - "+currentUnit.currentAbility.abilityID + " of " + currentUnit.unitName+"!");
-			return hit;
-		} 
 
-		return hit;
-	}
 
 	public int calculateDamage (BaseAbility ability, Unit unitOwner, Unit _target ) {
 		int amountOfDamage = 0;
@@ -412,7 +381,7 @@ public class GameManager : MonoBehaviour {
 
 			//if hit
 
-				if (checkIfAttackSuccesfullyHit(_target)) {
+				if (GameMath.checkIfAttackSuccesfullyHit(unitOwner,_target)) {
 				//damage logic
 				
 					int amountOfDamage = 0;

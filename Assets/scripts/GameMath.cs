@@ -12,7 +12,7 @@ public static class GameMath {
 			}
 		} else {
 			amountOfDamage = (int)Mathf.Floor(Random.Range(unitOwner.damageBase, unitOwner.maxDamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDef);
-			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
+			float angle = Vector3.Angle(unitOwner.transform.forward, _target.transform.forward);
 			Debug.Log (angle);
 			//TODO backstab apply chance
 			if (angle <=30 && unitOwner.currentAbility.canBackstan && Random.Range(0.0f, 1.0f) <= unitOwner.Dexterity/100){
@@ -102,5 +102,31 @@ public static class GameMath {
 		}
 
 		return Mathf.Clamp(damage,0,1000);
+	}
+
+	public static bool checkIfAttackSuccesfullyHit(Unit owner,Unit target){
+		bool hit = false;
+		float missChance = 1; 
+		int rerollCount = 3;
+		for(int i=0;i<rerollCount;i++)
+		{
+			float random = Random.Range(0.0f, 1.0f);
+			if(random < missChance)
+				missChance = random;
+		}
+		if (owner.currentAbility.attackType == attackTypes.melee) {
+			hit = missChance <= owner.attackChance;
+		} 
+		if (owner.currentAbility.attackType == attackTypes.magic) {
+			hit = missChance <= owner.magicAttackChance;
+		} 
+		if (owner.currentAbility.attackType == attackTypes.ranged) {
+			hit = missChance <= owner.rangedAttackChance;
+		} 
+		if (Random.Range(0.0f, 1.0f) <= target.avoidChance){
+			hit = false;
+			GUImanager.instance.Log.addText("<b>"+target.unitName+":</b>" + " successfuly avoided - "+owner.currentAbility.abilityID + " of " + owner.unitName+"!");
+		} 
+		return hit;
 	}
 }
