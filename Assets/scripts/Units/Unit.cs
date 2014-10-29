@@ -366,9 +366,13 @@ public class Unit : MonoBehaviour {
 			checkHP();
 	}
 
-	public void initStartAttributes()
+	public void initStartEffects()
 	{
 		unitBaseEffects.initEffects();
+	}
+
+	public void initStartAttributes()
+	{
 		unitBaseEffects.updateModsFromAppliedEffects();
 		
 		HP = HPmax;

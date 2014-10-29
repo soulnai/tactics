@@ -131,6 +131,13 @@ public class GameManager : MonoBehaviour {
 		{
 			foreach(Unit u in p.units)
 			{
+				u.initStartEffects();
+			}
+		}
+		foreach(Player p in players)
+		{
+			foreach(Unit u in p.units)
+			{
 				u.initStartAttributes();
 			}
 		}
