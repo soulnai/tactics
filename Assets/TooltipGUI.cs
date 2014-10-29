@@ -8,6 +8,7 @@ public class TooltipGUI : MonoBehaviour {
 
 	public EffectTooltipController effectTooltip;
 	public AbilityTooltipController abilityTooltip;
+	public UnitTooltipController unitTooltip;
 
 	public Text title;
 	public Text descr;
@@ -76,14 +77,15 @@ public class TooltipGUI : MonoBehaviour {
 	void showUnitTip (TooltipHelperGUI t)
 	{
 		Unit u = t.GetByType() as Unit;
-		title.text = u.unitName;
-		descr.text = u.HP.ToString();
+		unitTooltip.Show(u);
+		unitTooltip.GetComponent<RectTransform>().position = position;
 	}
 
 	public void hideTooltip ()
 	{
 		effectTooltip.Hide();
 		abilityTooltip.Hide();
+		unitTooltip.Hide();
 		StopAllCoroutines();
 		this.GetComponent<CanvasGroup>().alpha = 0;
 	}

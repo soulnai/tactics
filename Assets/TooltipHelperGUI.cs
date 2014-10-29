@@ -66,6 +66,10 @@ public class TooltipHelperGUI : MonoBehaviour,IPointerEnterHandler,IPointerExitH
 
 	public Vector3 CanvasPos()
 	{
-		return Camera.current.WorldToScreenPoint(transform.position);
+		Vector3 tempPos = Camera.main.WorldToScreenPoint(transform.position);
+		Debug.Log(tempPos);
+		tempPos.z = 0;
+
+		return tempPos;
 	}
 }
