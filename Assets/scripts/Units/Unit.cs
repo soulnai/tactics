@@ -139,11 +139,13 @@ public class Unit : MonoBehaviour {
 	void Awake () {
 		moveDestination = transform.position;
 		getAttribute(unitAttributes.AP).value = APmax;
+		gm.OnPlayerTurnEnd += prepareForTurn;
 	}
-
-	public void prepareForTurn()
+	
+	public void prepareForTurn(Player p)
 	{
-		getAttribute(unitAttributes.AP).value = APmax;
+		if(p == playerOwner)
+			getAttribute(unitAttributes.AP).value = APmax;
 	}
 
 	public void checkEndTurn()

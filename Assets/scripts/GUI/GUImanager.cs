@@ -25,14 +25,14 @@ public class GUImanager : MonoBehaviour {
 	void Awake()
 	{
 		instance = this;
-	}
-
-	void Start () {
-		gm = GameManager.instance;
 		foreach(Button b in abilitiesButtonsList)
 		{
 			b.gameObject.SetActive(false);
 		}
+	}
+
+	void Start () {
+		gm = GameManager.instance;
 		showAbilities();
 		abilitiesPanel.SetActive (!abilitiesPanel.activeInHierarchy);
 	}

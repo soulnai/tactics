@@ -37,7 +37,8 @@ public class TooltipHelperGUI : MonoBehaviour,IPointerEnterHandler,IPointerExitH
 
 	public void OnMouseEnter()
 	{
-		GUImanager.instance.showTooltip(this);
+		if(!GUImanager.instance.mouseOverGUI)
+			GUImanager.instance.showTooltip(this);
 	}
 	
 	public void OnMouseExit()

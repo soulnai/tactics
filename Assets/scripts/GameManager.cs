@@ -199,7 +199,6 @@ public class GameManager : MonoBehaviour {
 
 	void TurnLogic ()
 	{
-		currentUnit.prepareForTurn ();
 		GUImanager.instance.showAbilities ();
 		removeTileHighlights ();
 		//reset & focus camera
@@ -746,5 +745,13 @@ public class GameManager : MonoBehaviour {
 				highlightTilesAt(u.gridPosition, Color.cyan, u.movementPerActionPoint,false,u.maxHeightDiff);
 			}
 		}
+	}
+
+	public void selectUnit(Unit u){
+		if(u.playerOwner == currentPlayer){
+			currentUnit = u;
+			currentUnitIndex = u.playerOwner.units.IndexOf(u);
+		}
+		TurnLogic();
 	}
 }

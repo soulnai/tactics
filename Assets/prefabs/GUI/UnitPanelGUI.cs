@@ -31,6 +31,17 @@ public class UnitPanelGUI : MonoBehaviour {
 		updateValue(unitAttributes.MP);
 		canUpdate = true;
 		effectsGUI.Init(targetUnit);
+
+		if(icon.GetComponent<Button>() != null)
+		{
+			icon.GetComponent<Button>().onClick.RemoveAllListeners();
+			icon.GetComponent<Button>().onClick.AddListener(delegate{onIconClick(target);});
+		}
+	}
+
+	void onIconClick (Unit target)
+	{
+		GameManager.instance.selectUnit(target);
 	}
 
 	public void updateValue(unitAttributes at)
