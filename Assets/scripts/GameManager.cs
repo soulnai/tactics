@@ -293,17 +293,26 @@ public class GameManager : MonoBehaviour {
 
 	public bool checkIfAttackSuccesfullyHit(Unit target){
 		bool hit = false;
-
+		float[] chanse = {0,0,0}; 
 		if (currentUnit.currentAbility.attackType == attackTypes.melee) {
-			hit = Random.Range(0.0f, 1.0f) <= currentUnit.attackChance;
+			for (int i = 0; i<chanse.Length; i++){
+				chanse[i] = Random.Range(0.0f, 1.0f);
+			}
+			hit = chanse.Min() <= currentUnit.attackChance;
 			return hit;
 		} 
 		if (currentUnit.currentAbility.attackType == attackTypes.magic) {
-			hit = Random.Range(0.0f, 1.0f) <= currentUnit.magicAttackChance;
+			for (int i = 0; i<chanse.Length; i++){
+				chanse[i] = Random.Range(0.0f, 1.0f);
+			}
+			hit = chanse.Min() <= currentUnit.magicAttackChance;
 			return hit;
 		} 
 		if (currentUnit.currentAbility.attackType == attackTypes.ranged) {
-			hit = Random.Range(0.0f, 1.0f) <= currentUnit.rangedAttackChance;
+			for (int i = 0; i<chanse.Length; i++){
+				chanse[i] = Random.Range(0.0f, 1.0f);
+			}
+			hit = chanse.Min() <= currentUnit.rangedAttackChance;
 			return hit;
 		} 
 		if (Random.Range(0.0f, 1.0f) <= currentUnit.avoidChance){
