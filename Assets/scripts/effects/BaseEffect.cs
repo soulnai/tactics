@@ -46,7 +46,6 @@ public class BaseEffect : ICloneable {
 //		gm.OnUnitTurnStart += OnTurnStart;
 //		gm.OnPlayerTurnStart += OnTurnStart;
 		gm.OnPlayerTurnEnd += PlayerTurnEnd;
-		gm.OnRoundStart += OnRoundStart;
 		gm.OnRoundEnd += OnRoundEnd;
 		if(_owner != null)
 			owner = _owner;
@@ -56,16 +55,6 @@ public class BaseEffect : ICloneable {
 			targets.Add(_target);
 			addToAppliedEffects ();
 		}
-	}
-
-	void OnRoundStart ()
-	{
-		//Duration check
-//		if(!infinite){
-//			duration--;
-//			if(duration<=0)
-//				Delete();
-//		}
 	}
 
 	void PlayerTurnEnd (Player p)

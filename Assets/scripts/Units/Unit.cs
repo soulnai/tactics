@@ -299,7 +299,7 @@ public class Unit : MonoBehaviour {
 		if(UnitState != unitStates.dead)
 			UnitAction = unitActions.idle;
 		canEndTurn = false;
-		gm.nextTurn ();
+		gm.selectNextUnit ();
 	}
 
 	public void OnGUI() {

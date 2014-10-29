@@ -70,7 +70,7 @@ public class GUImanager : MonoBehaviour {
 	{
 		abilitiesPanel.SetActive (false);
 		Unit u = gm.currentUnit;
-		u.EndTurn();
+		GameManager.instance.PlayerEndTurn();
 	}
 
 	public void ShowHideGUI()

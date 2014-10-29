@@ -92,6 +92,8 @@ public class GameManager : MonoBehaviour {
 			UserUnitPrefab [3] = StartScreenPersistentObj.instance.UserUnitPrefab [3];
 		}
 		mapTransform = transform.FindChild("Map");
+
+		OnUnitTurnStart += TurnLogic;
 	}
 
 	// Use this for initialization
@@ -111,7 +113,7 @@ public class GameManager : MonoBehaviour {
 	{
 		yield return new WaitForSeconds(time);
 		firstTurnInit();
-		TurnLogic();
+		TurnLogic(currentUnit);
 	}
 	
 	// Update is called once per frame
@@ -142,8 +144,38 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 	}
-	
-	public void nextTurn() {
+
+	public void PlayerEndTurn(){
+		if(OnPlayerTurnEnd != null)
+			OnPlayerTurnEnd(currentPlayer);
+		
+		if(currentPlayerIndex + 1 < players.Count)
+		{
+			currentPlayerIndex++;
+			if(OnPlayerTurnStart != null)
+				OnPlayerTurnStart(currentPlayer);
+		}
+		else
+		{
+			if(OnRoundEnd != null)
+				OnRoundEnd();
+			
+			currentPlayerIndex = 0;
+
+			if(OnPlayerTurnStart != null)
+				OnPlayerTurnStart(currentPlayer);
+		}
+		currentUnitIndex = 0;
+		
+		turnsCounter++;
+
+		if(OnRoundStart != null)
+			OnRoundStart();
+		if(OnUnitTurnStart != null)
+			OnUnitTurnStart(currentUnit);
+	}
+
+	public void selectNextUnit() {
 		//End turn event
 		if(OnUnitTurnEnd != null)
 			OnUnitTurnEnd(currentUnit);
@@ -152,73 +184,47 @@ public class GameManager : MonoBehaviour {
 			currentUnitIndex++;
 		} 
 		else {
-			if(OnPlayerTurnEnd != null)
-				OnPlayerTurnEnd(currentPlayer);
-	
-			if(currentPlayerIndex + 1 < players.Count)
-			{
-				currentPlayerIndex++;
-				if(OnPlayerTurnStart != null)
-					OnPlayerTurnStart(currentPlayer);
-			}
+			if(currentPlayer.playerName == "AI")
+				PlayerEndTurn();
 			else
-			{
-				if(OnRoundEnd != null)
-					OnRoundEnd();
-
-				currentPlayerIndex = 0;
-
-				if(OnRoundStart != null)
-					OnRoundStart();
-
-				if(OnPlayerTurnStart != null)
-					OnPlayerTurnStart(currentPlayer);
-			}
-
-			currentUnitIndex = 0;
-
-			turnsCounter++;
-
-
+				currentUnitIndex = 0;
 		}
 
 		if(currentUnit.UnitState == unitStates.dead)
 		{
-			nextTurn();
+			selectNextUnit();
 		}
 		else
 		{
-			////Start turn event
+			//Start turn event
 			if(OnUnitTurnStart != null)
 				OnUnitTurnStart(currentUnit);
-			TurnLogic ();
 		}
-
-
 	}
 
-	void TurnLogic ()
+	void TurnLogic (Unit u)
 	{
 		GUImanager.instance.showAbilities ();
 		removeTileHighlights ();
+
 		//reset & focus camera
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
 		Camera.main.GetComponent<CameraOrbit> ().pivot = currentUnit.transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+
 		//set selection ring
 		unitSelection.transform.position = currentUnit.transform.position;
 		unitSelection.transform.parent = currentUnit.transform;
-		//set state
+
+		//cast delay logic
 		if (currentUnit.UnitAction == unitActions.casting && currentUnit.CastingDelay > 0) {
 				currentUnit.CastingDelay--;
-				nextTurn();
+				selectNextUnit();
 		} else if (currentUnit.UnitAction == unitActions.casting) {
 			currentUnit.currentAbility = currentUnit.DelayedAbility;
 			currentUnit.DelayedAbilityReady = true;
 			currentUnit.onAbility(currentUnit.currentAbility);
 		}
-		//currentUnit.UnitAction = unitActions.idle;
-		currentUnit.positionQueue.Clear ();
 	}
 
 	public void highlightTilesAt(Vector2 originLocation, Color highlightColor, int distance) {
@@ -685,7 +691,7 @@ public class GameManager : MonoBehaviour {
 						currentUnit.DelayedAbility = ability;
 						currentUnit.CastingDelay = ability.CastTime;
 						currentUnit.UnitAction = unitActions.casting;
-						nextTurn ();
+						selectNextUnit ();
 				} else {
 			return;
 				}
@@ -752,6 +758,6 @@ public class GameManager : MonoBehaviour {
 			currentUnit = u;
 			currentUnitIndex = u.playerOwner.units.IndexOf(u);
 		}
-		TurnLogic();
+		TurnLogic(currentUnit);
 	}
 }
