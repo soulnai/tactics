@@ -12,7 +12,6 @@ public class BaseEffectController : MonoBehaviour {
 	private GameManager gm = GameManager.instance;
 	private Unit owner;
 	void Awake () {
-		gm.OnRoundStart += OnRoundStart;
 		gm.OnUnitPosChange += OnUnitPosChange;
 		gm.OnPlayerTurnStart += PlayerTurnStart;
 		owner = GetComponent<Unit>();
@@ -41,11 +40,6 @@ public class BaseEffectController : MonoBehaviour {
 		}
 	}
 
-	void OnRoundStart ()
-	{
-
-	}
-	
 	public void initEffects (){
 		for(int i=0;i<effectsID.Count;i++)
 		{

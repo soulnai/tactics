@@ -43,10 +43,9 @@ public class BaseEffect : ICloneable {
 
 	public void Init(Unit _owner = null,Unit _target = null)
 	{
-//		gm.OnUnitTurnStart += OnTurnStart;
-//		gm.OnPlayerTurnStart += OnTurnStart;
+
 		gm.OnPlayerTurnEnd += PlayerTurnEnd;
-		gm.OnRoundEnd += OnRoundEnd;
+
 		if(_owner != null)
 			owner = _owner;
 		if(_target!=null){
@@ -66,11 +65,6 @@ public class BaseEffect : ICloneable {
 			if(duration<=0)
 				Delete();
 		}
-	}
-
-	void OnRoundEnd()
-	{
-
 	}
 
 	void OnTurnStart (Unit currentUnit)
@@ -118,8 +112,6 @@ public class BaseEffect : ICloneable {
 
 					if((ac.applyEachTurn)&&(!ac.mod)){
 						u.getAttribute(ac.attribute).value += valueTemp;
-						if(ac.attribute == unitAttributes.HP)
-							u.checkHP();
 						Debug.Log("Attribute Value changed");
 					}
 					else if(ac.mod)

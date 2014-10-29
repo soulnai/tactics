@@ -25,7 +25,8 @@ public class AIPlayer : Unit {
 		if (GameManager.instance.currentUnit == this &&
 		    UnitAction != unitActions.moving &&
 		    UnitAction != unitActions.attacking &&
-		    UnitState != unitStates.dead) {
+		    UnitState != unitStates.dead &&
+		    gm.matchState == matchStates.battle) {
 						AIturn ();
 				}
 		base.Update();

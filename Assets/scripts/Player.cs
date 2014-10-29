@@ -7,6 +7,7 @@ public class Player {
 
 	public string playerName;
 	public List<Unit> units = new List<Unit>();
+	public List<Unit> unitsDead = new List<Unit>();
 	private int currentUnit;
 
 	public void addUnit(Unit u)

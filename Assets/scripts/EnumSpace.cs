@@ -102,4 +102,11 @@ namespace EnumSpace {
 		ability,
 		unit
 	}
+
+	public enum matchStates{
+		selectUnits,
+		placeUnits,
+		battle,
+		victory
+	}
 }

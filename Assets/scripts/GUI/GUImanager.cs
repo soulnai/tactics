@@ -7,7 +7,6 @@ using EnumSpace;
 public class GUImanager : MonoBehaviour {
 
 	public static GUImanager instance;
-	public GameManager gm;
 	public GameObject controlsPanel;
 	public GameObject abilitiesPanel;
 	public GameObject statsPanel;
@@ -20,7 +19,9 @@ public class GUImanager : MonoBehaviour {
 	public LogController Log;
 	public List<UnitPanelGUI> unitPanels;
 	public TooltipGUI tooltip;
+	public VictoryPanelControllerGUI victoryPanel;
 
+	private GameManager gm;
 	// Use this for initialization
 	void Awake()
 	{

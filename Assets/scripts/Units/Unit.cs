@@ -31,7 +31,6 @@ public class Unit : MonoBehaviour {
 	public int HP{
 		set{
 			setAttribute(unitAttributes.HP,value);
-			checkHP();
 		}
 		get{
 			return getAttribute(unitAttributes.HP).valueMod;
@@ -239,12 +238,15 @@ public class Unit : MonoBehaviour {
 			MP -= a.MPCost;
 		}
 
-		animation.Play("Attack");
-		StartCoroutine(WaitAnimationEnd(animation["Attack"].length));
+		animation.CrossFade("Attack",0.1f);
 
 		if(missed)
 		{
 			StartCoroutine(WaitAnimationEnd(animation["Attack"].length,true));
+		}
+		else
+		{
+			StartCoroutine(WaitAnimationEnd(animation["Attack"].length));
 		}
 	}
 
@@ -289,8 +291,11 @@ public class Unit : MonoBehaviour {
 	public void makeDead()
 	{
 		UnitState = unitStates.dead;
+		if(!playerOwner.unitsDead.Contains(this))
+			playerOwner.unitsDead.Add(this);
 		unitBaseEffects.deleteAllEffects(true);
 		animation.CrossFade("Death");
+		gm.checkVictory();
 		StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim));
 	}
 
@@ -311,9 +316,7 @@ public class Unit : MonoBehaviour {
 	public void takeDamage(int damage)
 	{
 		HP -= damage;
-		if (HP<=0)
-			makeDead();
-		else
+		if (HP>0)
 		{
 			animation.CrossFade("Damage",0.2f);
 			StartCoroutine(WaitAnimationEnd(animation["Damage"].length+delayAfterAnim,true));
@@ -348,6 +351,7 @@ public class Unit : MonoBehaviour {
 		{
 			StartCoroutine(delayedEndTurn(delayAfterAnim));
 		}
+
 	}
 
 	IEnumerator delayedEndTurn (float t)

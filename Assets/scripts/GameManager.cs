@@ -6,20 +6,19 @@ using DG.Tweening;
 using EnumSpace;
 
 //Events
-public delegate void VictoryState(GameManager gm,Player p);
+
 public delegate void UnitEvent(Unit currentUnit);
 public delegate void PlayerEvent(Player currentPlayer);
 public delegate void RoundEvent();
 
 public class GameManager : MonoBehaviour {
-	public event VictoryState OnVictoryState;
 	public event UnitEvent OnUnitPosChange;
 	public event UnitEvent OnUnitTurnStart;
 	public event UnitEvent OnUnitTurnEnd;
 	public event PlayerEvent OnPlayerTurnStart;
 	public event PlayerEvent OnPlayerTurnEnd;
-	public event RoundEvent OnRoundStart;
-	public event RoundEvent OnRoundEnd;
+	public event PlayerEvent OnVictoryState;
+
 	public static GameManager instance;
 	//units count
 	public int unitsCountPlayer;
@@ -77,13 +76,14 @@ public class GameManager : MonoBehaviour {
 
 	public GameObject pointer;
 	public int turnsCounter = 1;
-
+	public matchStates matchState;
 	private RaycastHit hit;
 	private RaycastHit target;
 	private GameObject unitSelection;
 
 
 	void Awake() {
+		matchState = matchStates.battle;
 		instance = this;
 		if(StartScreenPersistentObj.instance != null){
 			UserUnitPrefab [0] = StartScreenPersistentObj.instance.UserUnitPrefab [0];
@@ -94,6 +94,19 @@ public class GameManager : MonoBehaviour {
 		mapTransform = transform.FindChild("Map");
 
 		OnUnitTurnStart += TurnLogic;
+		OnVictoryState += endMatch;
+	}
+
+	void endMatch (Player loserPlayer)
+	{
+		matchState = matchStates.victory;
+		Player winnerPlayer;
+		if(players[players.IndexOf(loserPlayer)+1] != null)
+			winnerPlayer = players[players.IndexOf(loserPlayer)+1];
+		else
+			winnerPlayer = players[0];
+		GUImanager.instance.Log.addText("Player - "+winnerPlayer.playerName+" Wins!");
+		GUImanager.instance.victoryPanel.Init(winnerPlayer);
 	}
 
 	// Use this for initialization
@@ -156,10 +169,7 @@ public class GameManager : MonoBehaviour {
 				OnPlayerTurnStart(currentPlayer);
 		}
 		else
-		{
-			if(OnRoundEnd != null)
-				OnRoundEnd();
-			
+		{			
 			currentPlayerIndex = 0;
 
 			if(OnPlayerTurnStart != null)
@@ -169,8 +179,6 @@ public class GameManager : MonoBehaviour {
 		
 		turnsCounter++;
 
-		if(OnRoundStart != null)
-			OnRoundStart();
 		if(OnUnitTurnStart != null)
 			OnUnitTurnStart(currentUnit);
 	}
@@ -190,15 +198,17 @@ public class GameManager : MonoBehaviour {
 				currentUnitIndex = 0;
 		}
 
-		if(currentUnit.UnitState == unitStates.dead)
-		{
-			selectNextUnit();
-		}
-		else
-		{
-			//Start turn event
-			if(OnUnitTurnStart != null)
-				OnUnitTurnStart(currentUnit);
+		if(matchState == matchStates.battle){
+			if(currentUnit.UnitState == unitStates.dead)
+			{
+				selectNextUnit();
+			}
+			else
+			{
+				//Start turn event
+				if(OnUnitTurnStart != null)
+					OnUnitTurnStart(currentUnit);
+			}
 		}
 	}
 
@@ -387,12 +397,16 @@ public class GameManager : MonoBehaviour {
 			//if hit
 
 				if (GameMath.checkIfAttackSuccesfullyHit(unitOwner,_target)) {
-				//damage logic
-				
+					//damage logic
+
 					int amountOfDamage = 0;
 
 					amountOfDamage = GameMath.calculateDamage(ability, unitOwner, _target);
 					amountOfDamage = GameMath.ResistToDamage(_target, amountOfDamage, ability);
+					//log message
+					GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
+					unitOwner.playAbility(ability);
+
 					applyAbilityToTarget (ability, _target, amountOfDamage);
 					checkIfCastInterrupted(_target);
 
@@ -407,8 +421,7 @@ public class GameManager : MonoBehaviour {
 					}
 
 
-				GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
-				unitOwner.playAbility(ability);
+
 			//if missed
 			} else {
 				GUImanager.instance.Log.addText(unitOwner.unitName + " missed " + _target.unitName + "!");
@@ -701,19 +714,11 @@ public class GameManager : MonoBehaviour {
 	{
 		int deadCount = 0;
 		foreach(Player p in players){ 
-			foreach(Unit u in p.units){
-				if(u.UnitState == unitStates.dead)
-					deadCount++;
-			}
-			if(deadCount == p.units.Count){
+			if(p.unitsDead.Count >= p.units.Count){
 				if(OnVictoryState != null)
 				{
-					OnVictoryState(this,p);
+					OnVictoryState(p);
 				}
-			}
-			else
-			{
-				deadCount = 0;
 			}
 		}
 	}
