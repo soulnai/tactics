@@ -4,7 +4,7 @@ using System.Collections;
 
 
 public class EffectPanelGUI : MonoBehaviour {
-
+	public Image icon;
 	public Text counter;
 	public Image effectImage;
 	public BaseEffect effect;
@@ -15,6 +15,7 @@ public class EffectPanelGUI : MonoBehaviour {
 
 	public void Init(BaseEffect ef){
 		gameObject.SetActive(true);
+		icon.sprite = ef.icon;
 		effect = ef;
 		updateCounter();
 	}
