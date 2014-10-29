@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 public class BaseEffect : ICloneable {
 	public string ID;
 	public string name;
-	
+	public Sprite icon;
 	public List<BaseAttributeChanger> affectedAttributes;
 
 	//radius use
@@ -161,8 +161,10 @@ public class BaseEffect : ICloneable {
 	{
 
 		foreach (Unit t in targets) {
-			if (!t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
-				t.unitBaseEffects.addAppliedEffect (this);
+			if(CanBeAdded(t)){
+				if (!t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
+					t.unitBaseEffects.addAppliedEffect (this);
+			}
 		}
 	}
 
@@ -190,5 +192,36 @@ public class BaseEffect : ICloneable {
 	public object Clone()
 	{
 		return this.MemberwiseClone();
+	}
+
+	public bool CanBeAdded(Unit u){
+		List<BaseEffect> effects = u.unitBaseEffects.effectsAppliedToUnit;
+		//trying to add same copy of the effect to unit - false
+		if(effects.Contains (this))
+			return false;
+		//trying to add same effect but not same copy(another owner / etc.) - check more details
+		if(effects.Find(BaseEffect => BaseEffect.ID == ID)!= null){
+		if(effects.Find(BaseEffect => BaseEffect.ID == ID).ID == ID){
+			BaseEffect appliedEf = effects.Find(BaseEffect => BaseEffect.ID == ID) as BaseEffect;
+			if(!infinite)
+			{
+				//update duration if new duration > old
+				if((duration > appliedEf.duration)&&(!appliedEf.infinite)){
+					appliedEf.duration = duration;
+					return false;
+				}
+				//infinite - false
+				else
+					return false;
+			}
+			//if new is infinite - false
+			else{
+				//remove old apply this
+				return true;
+			}
+			return false;
+		}
+		}
+		return true;
 	}
 }
