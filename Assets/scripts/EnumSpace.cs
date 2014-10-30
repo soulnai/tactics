@@ -87,9 +87,8 @@ namespace EnumSpace {
 	}
 
 	public enum unitTurnStates{
-		start,
-		end,
-		nextUnitTurn
+		canInteract,
+		blockInteract
 	}
 
 	public enum editorStates{

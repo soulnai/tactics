@@ -176,6 +176,7 @@
       <effects>
         <string>poison</string>
       </effects>
+      <hitFXprefab>CFX3_Hit_Misc_F_Skull (Green)</hitFXprefab>
     </Ability>
   </Abilities>
 </AbilitiesList>

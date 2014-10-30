@@ -283,6 +283,7 @@ public class Unit : MonoBehaviour {
 	public void MoveUnit()
 	{
 		if (positionQueue.Count > 0) {
+			UnitEvents.LockUI();
 			canEndTurn = false;
 			lookDirection = (positionQueue[0] - transform.position).normalized;
 			lookDirection.y = 0;
@@ -297,6 +298,7 @@ public class Unit : MonoBehaviour {
 					animation.CrossFade("Idle", 0.2F);
 					AP--;
 					UnitAction = unitActions.idle;
+					UnitEvents.UnlockUI();
 					canEndTurn = true;
 				}
 			}	

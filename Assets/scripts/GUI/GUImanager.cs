@@ -15,11 +15,11 @@ public class GUImanager : MonoBehaviour {
 	public List<Button> abilitiesButtonsList;
 	public Text turnsIndicator;
 	public Text playerIndicator;
-	public Button abilityTest;
 	public LogController Log;
 	public List<UnitPanelGUI> unitPanels;
 	public TooltipGUI tooltip;
 	public VictoryPanelControllerGUI victoryPanel;
+	public Button endTurnButton;
 
 	private GameManager gm;
 	// Use this for initialization
@@ -36,8 +36,23 @@ public class GUImanager : MonoBehaviour {
 		gm = GameManager.instance;
 		showAbilities();
 		abilitiesPanel.SetActive (!abilitiesPanel.activeInHierarchy);
+
+		UnitEvents.onLockUI += LockUI;
+		UnitEvents.onUnlockUI += UnlockUI;
 	}
-	
+
+	void LockUI ()
+	{
+		controlsPanel.SetActive(false);
+		endTurnButton.gameObject.SetActive(false);
+	}
+
+	void UnlockUI ()
+	{
+		controlsPanel.SetActive(true);
+		endTurnButton.gameObject.SetActive(true);
+	}
+
 	// Update is called once per frame
 	void Update () {
 		turnsIndicator.text = "Turn - "+gm.turnsCounter;

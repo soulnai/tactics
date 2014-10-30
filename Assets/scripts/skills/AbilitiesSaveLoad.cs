@@ -109,10 +109,11 @@ public static class AbilitiesSaveLoad{
 		ab.range				=	tempAbility.range				;
 		ab.requireTarget		=	tempAbility.requireTarget 		;
 		ab.selfUse 				=	tempAbility.selfUse			;	
-		if(ab.hitFXprefab != null)
-			ab.hitFXprefab.name	=	tempAbility.hitFXprefab;
-		if(ab.rangedFXprefab != null)
-			ab.rangedFXprefab.name	=	tempAbility.rangedFXprefab;
+		//TODO effects manager for all purposes
+//		if(tempAbility.hitFXprefab != null)
+//			ab.hitFXprefab	=	Resources.Load(tempAbility.hitFXprefab) as GameObject;
+//		if(tempAbility.rangedFXprefab != null)
+//			ab.rangedFXprefab	=	Resources.Load(tempAbility.rangedFXprefab) as GameObject;
 		return ab;
 	}
 

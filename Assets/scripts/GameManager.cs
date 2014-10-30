@@ -183,6 +183,11 @@ public class GameManager : MonoBehaviour {
 
 		if(OnUnitTurnStart != null)
 			OnUnitTurnStart(currentUnit);
+
+		if(currentPlayer.playerName == "AI")
+			UnitEvents.LockUI();
+		else
+			UnitEvents.UnlockUI();
 	}
 
 	public void delayCastLogic()

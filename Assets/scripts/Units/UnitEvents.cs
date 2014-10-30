@@ -1,19 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public delegate void UnitEventHandler(Unit unit);
-public delegate void UnitAttributeHandler(Unit unit,BaseAttribute at);
-public delegate void UnitInteractionEventHandler(Unit owner,Unit target);
+public delegate void UIEvent();
+public delegate void UnitBaseEvent(Unit unit);
+public delegate void UnitAttributeEvent(Unit unit,BaseAttribute at);
+public delegate void UnitInteractionEvent(Unit owner,Unit target);
 public delegate void UnitEffectEvent(Unit u,BaseEffect ef);
 
 public static class UnitEvents {
-	public static event UnitEventHandler onUnitReactionEnd;
-	public static event UnitEventHandler onMouseOverUnit;
-	public static event UnitAttributeHandler onAttributeChanged;
-	public static event UnitInteractionEventHandler onUnitFXEnd;
+	public static event UIEvent onLockUI;
+	public static event UIEvent onUnlockUI;
+	public static event UnitBaseEvent onUnitReactionEnd;
+	public static event UnitBaseEvent onMouseOverUnit;
+	public static event UnitAttributeEvent onAttributeChanged;
+	public static event UnitInteractionEvent onUnitFXEnd;
 	public static event UnitEffectEvent OnUnitEffectChanged;
 	public static event UnitEffectEvent OnUnitEffectAdded;
 	public static event UnitEffectEvent OnUnitEffectRemoved;
+
+
+	public static void LockUI(){
+		if(onLockUI!=null)
+			onLockUI();
+	}
+
+	public static void UnlockUI(){
+		if(onUnlockUI!=null)
+			onUnlockUI();
+	}
 
 	public static void UnitAttributeChanged(Unit u,BaseAttribute at){
 		if(onAttributeChanged!=null)
