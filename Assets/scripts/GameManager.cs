@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour {
 	{
 		matchState = matchStates.victory;
 		Player winnerPlayer;
-		if(players[players.IndexOf(loserPlayer)+1] != null)
+		if(players.IndexOf(loserPlayer)+1 < players.Count)
 			winnerPlayer = players[players.IndexOf(loserPlayer)+1];
 		else
 			winnerPlayer = players[0];
