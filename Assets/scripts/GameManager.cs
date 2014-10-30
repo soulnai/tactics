@@ -214,26 +214,32 @@ public class GameManager : MonoBehaviour {
 
 	void TurnLogic (Unit u)
 	{
-		GUImanager.instance.showAbilities ();
-		removeTileHighlights ();
+		if(u.UnitState != unitStates.dead){
+			GUImanager.instance.showAbilities ();
+			removeTileHighlights ();
 
-		//reset & focus camera
-		Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
-		Camera.main.GetComponent<CameraOrbit> ().pivot = currentUnit.transform;
-		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+			//reset & focus camera
+			Camera.main.GetComponent<CameraOrbit> ().pivotOffset = Vector3.zero;
+			Camera.main.GetComponent<CameraOrbit> ().pivot = currentUnit.transform;
+			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 
-		//set selection ring
-		unitSelection.transform.position = currentUnit.transform.position;
-		unitSelection.transform.parent = currentUnit.transform;
+			//set selection ring
+			unitSelection.transform.position = currentUnit.transform.position;
+			unitSelection.transform.parent = currentUnit.transform;
 
-		//cast delay logic
-		if (currentUnit.UnitAction == unitActions.casting && currentUnit.CastingDelay > 0) {
-				currentUnit.CastingDelay--;
-				selectNextUnit();
-		} else if (currentUnit.UnitAction == unitActions.casting) {
-			currentUnit.currentAbility = currentUnit.DelayedAbility;
-			currentUnit.DelayedAbilityReady = true;
-			currentUnit.onAbility(currentUnit.currentAbility);
+			//cast delay logic
+			if (currentUnit.UnitAction == unitActions.casting && currentUnit.CastingDelay > 0) {
+					currentUnit.CastingDelay--;
+					selectNextUnit();
+			} else if (currentUnit.UnitAction == unitActions.casting) {
+				currentUnit.currentAbility = currentUnit.DelayedAbility;
+				currentUnit.DelayedAbilityReady = true;
+				currentUnit.onAbility(currentUnit.currentAbility);
+			}
+		}
+		else
+		{
+			selectNextUnit();
 		}
 	}
 

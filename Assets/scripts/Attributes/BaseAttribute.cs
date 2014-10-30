@@ -10,7 +10,15 @@ using System.Xml.Serialization;
 public class BaseAttribute : ICloneable {
 	public string name;
 	public unitAttributes attribute;
-	public int value;
+	public int _value;
+	public int Value{
+		get{return _value;}
+		set{
+			_value = value;
+			if(owner != null)
+				UnitEvents.UnitAttributeChanged(owner,this);
+		}
+	}
 
 	public int mod{
 		get{
@@ -24,11 +32,13 @@ public class BaseAttribute : ICloneable {
 	public int valueMod
 	{
 		get{
-			return (value+mod);
+			return (Value+mod);
 		}
 	}
 
 	public List<int> modList;
+
+	private Unit owner;
 
 	public void addMod(int val)
 	{
@@ -40,7 +50,13 @@ public class BaseAttribute : ICloneable {
 		modList.Clear();
 	}
 
-
+	public void setOwner(Unit u)
+	{
+		if(u != null)
+			owner = u;	
+		else
+			Debug.Log("Attribute doesnt have owner - " + this.attribute);
+	}
 
 	public object Clone()
 	{

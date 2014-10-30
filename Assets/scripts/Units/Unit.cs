@@ -137,21 +137,30 @@ public class Unit : MonoBehaviour {
 
 	void Awake () {
 		moveDestination = transform.position;
-		getAttribute(unitAttributes.AP).value = APmax;
+		getAttribute(unitAttributes.AP).Value = APmax;
 		gm.OnPlayerTurnEnd += prepareForTurn;
+		UnitEvents.onAttributeChanged += HandleonAttributeChanged;
+	}
+
+	void HandleonAttributeChanged (Unit unit, BaseAttribute at)
+	{
+		if(unit == this){
+			if(at.attribute == unitAttributes.HP)
+				checkDead();
+		}
 	}
 	
 	public void prepareForTurn(Player p)
 	{
 		if(p == playerOwner)
-			getAttribute(unitAttributes.AP).value = APmax;
+			getAttribute(unitAttributes.AP).Value = APmax;
 	}
 
 	public void checkEndTurn()
 	{
 		if(gm.currentUnit == this)
 		{
-			if((getAttribute(unitAttributes.AP).value<=0)&&(canEndTurn == true)&&(UnitState != unitStates.dead))
+			if((getAttribute(unitAttributes.AP).Value<=0)&&(canEndTurn == true)&&(UnitState != unitStates.dead))
 			{
 				canEndTurn = false;
 				positionQueue.Clear();
@@ -290,13 +299,15 @@ public class Unit : MonoBehaviour {
 
 	public void makeDead()
 	{
-		UnitState = unitStates.dead;
-		if(!playerOwner.unitsDead.Contains(this))
-			playerOwner.unitsDead.Add(this);
-		unitBaseEffects.deleteAllEffects(true);
-		animation.CrossFade("Death");
-		gm.checkVictory();
-		StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim));
+		if(UnitState != unitStates.dead){
+			UnitState = unitStates.dead;
+			if(!playerOwner.unitsDead.Contains(this))
+				playerOwner.unitsDead.Add(this);
+			unitBaseEffects.deleteAllEffects(true);
+			animation.CrossFade("Death");
+			gm.checkVictory();
+			StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim));
+		}
 	}
 
 	public virtual void EndTurn () {
@@ -367,9 +378,8 @@ public class Unit : MonoBehaviour {
 
 	public void setAttribute(unitAttributes a,int val)
 	{
-		attributes.Find(BaseAttribute => BaseAttribute.attribute == a).value = val;
-		if(a == unitAttributes.HP)
-			checkHP();
+		attributes.Find(BaseAttribute => BaseAttribute.attribute == a).setOwner(this);
+		attributes.Find(BaseAttribute => BaseAttribute.attribute == a).Value = val;
 	}
 
 	public void initStartEffects()
@@ -386,9 +396,9 @@ public class Unit : MonoBehaviour {
 		AP = APmax;
 	}
 
-	public void checkHP ()
+	public void checkDead ()
 	{
-		if(HP<=0)
+		if((HP<=0)&&(UnitState != unitStates.dead))
 		{
 			makeDead();
 		}

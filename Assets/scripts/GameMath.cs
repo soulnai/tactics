@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using EnumSpace;
 
@@ -88,16 +88,16 @@ public static class GameMath {
 		
 		switch (damageType) {
 		case damageTypes.blunt:
-			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.strenght).value*defCoef));
+			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.strenght).Value*defCoef));
 			break;
 		case damageTypes.poison:
-			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.poisonDef).value*defCoef));
+			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.poisonDef).Value*defCoef));
 			break;
 		case damageTypes.fire:
-			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.fireDef).value*defCoef));
+			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.fireDef).Value*defCoef));
 			break;
 		case damageTypes.ice:
-			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.iceDef).value*defCoef));
+			damage -= Mathf.RoundToInt(damage * (target.getAttribute(unitAttributes.iceDef).Value*defCoef));
 			break;
 		}
 

@@ -7,11 +7,11 @@ public class VictoryPanelControllerGUI : MonoBehaviour {
 	public Player winnerPlayer;
 	// Use this for initialization
 	void Awake () {
-		gameObject.SetActive(false);
+
 	}
 
 	void Start () {
-	
+		gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -23,5 +23,6 @@ public class VictoryPanelControllerGUI : MonoBehaviour {
 		winnerPlayer = p;
 		winnerText.text = "Winner - "+winnerPlayer.playerName;
 		gameObject.SetActive(true);
+
 	}
 }

@@ -111,7 +111,7 @@ public class BaseEffect : ICloneable {
 					int valueTemp = getValue(u,ac);
 
 					if((ac.applyEachTurn)&&(!ac.mod)){
-						u.getAttribute(ac.attribute).value += valueTemp;
+						u.getAttribute(ac.attribute).Value += valueTemp;
 						Debug.Log("Attribute Value changed");
 					}
 					else if(ac.mod)
@@ -130,7 +130,7 @@ public class BaseEffect : ICloneable {
 	{
 		int valueTemp = 0;
 		int valueMod = u.getAttribute (ac.attribute).valueMod;
-		int value = u.getAttribute (ac.attribute).value;
+		int value = u.getAttribute (ac.attribute).Value;
 		if (ac.multiply)
 			valueTemp = UnityEngine.Mathf.RoundToInt ((ac.value * value) - value);
 		else
