@@ -167,6 +167,7 @@ public class GameManager : MonoBehaviour {
 			currentPlayerIndex++;
 			if(OnPlayerTurnStart != null)
 				OnPlayerTurnStart(currentPlayer);
+			delayCastLogic();
 		}
 		else
 		{			
@@ -174,6 +175,7 @@ public class GameManager : MonoBehaviour {
 
 			if(OnPlayerTurnStart != null)
 				OnPlayerTurnStart(currentPlayer);
+			delayCastLogic();
 		}
 		currentUnitIndex = 0;
 		
@@ -181,6 +183,21 @@ public class GameManager : MonoBehaviour {
 
 		if(OnUnitTurnStart != null)
 			OnUnitTurnStart(currentUnit);
+	}
+
+	public void delayCastLogic()
+	{	
+		//cast delay logic
+		foreach(Unit u in currentPlayer.units){
+			if (u.UnitAction == unitActions.casting && u.CastingDelay > 0) {
+				u.CastingDelay--;
+				u.AP = 0;
+				selectNextUnit();
+			} else if (u.UnitAction == unitActions.casting) {
+				u.currentAbility = u.DelayedAbility;
+				u.DelayedAbilityReady = true;
+			}
+		}
 	}
 
 	public void selectNextUnit() {
@@ -226,16 +243,8 @@ public class GameManager : MonoBehaviour {
 			//set selection ring
 			unitSelection.transform.position = currentUnit.transform.position;
 			unitSelection.transform.parent = currentUnit.transform;
-
-			//cast delay logic
-			if (currentUnit.UnitAction == unitActions.casting && currentUnit.CastingDelay > 0) {
-					currentUnit.CastingDelay--;
-					selectNextUnit();
-			} else if (currentUnit.UnitAction == unitActions.casting) {
-				currentUnit.currentAbility = currentUnit.DelayedAbility;
-				currentUnit.DelayedAbilityReady = true;
-				currentUnit.onAbility(currentUnit.currentAbility);
-			}
+			if(u.DelayedAbilityReady)
+				u.onAbility(u.DelayedAbility);
 		}
 		else
 		{
@@ -443,13 +452,15 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void checkIfCastInterrupted(Unit _target){
-		if (_target.UnitAction == unitActions.casting){
-			if (Random.Range(0.0f, 1.0f) >= currentUnit.Magic/100){
-				Debug.Log ("Cast interrupted!");
-				_target.UnitAction = unitActions.idle;
-				_target.DelayedAbilityReady = false;
+			if (_target.UnitAction == unitActions.casting){
+				if (Random.Range(0.0f, 1.0f) >= currentUnit.Magic/100){
+					Debug.Log ("Cast interrupted!");
+					_target.CastingDelay = 0;
+					_target.UnitAction = unitActions.idle;
+					_target.DelayedAbilityReady = false;
+					_target.DelayedAbility = null;
+				}
 			}
-		}
 		}
 
 	public void applyAbilityToTarget (BaseAbility ability, Unit _target, int amountOfDamage)
@@ -705,16 +716,7 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-	public void checkDelayedAbility(BaseAbility ability){
-		if (ability.CastTime != 0 && currentUnit.DelayedAbilityReady == false) {
-						currentUnit.DelayedAbility = ability;
-						currentUnit.CastingDelay = ability.CastTime;
-						currentUnit.UnitAction = unitActions.casting;
-						selectNextUnit ();
-				} else {
-			return;
-				}
-		}
+
 
 	public void checkVictory()
 	{

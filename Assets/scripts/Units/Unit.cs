@@ -111,7 +111,7 @@ public class Unit : MonoBehaviour {
 	public BaseAbility currentAbility;
 	public int CastingDelay;
 	public BaseAbility DelayedAbility;
-	public bool DelayedAbilityReady;
+	public bool DelayedAbilityReady = false;
 	public Unit currentTarget;
 
 	//movement animation
@@ -199,19 +199,25 @@ public class Unit : MonoBehaviour {
 
 		if (unitAbilitiesController.abilities.Contains(a)) {
 			if((AP > 0)&&(MP >= a.MPCost)){
-
-					GameManager.instance.checkDelayedAbility (a);
-				DelayedAbilityReady = false;
-				if((a.selfUse)&&(!a.allyUse)&&(!a.enemieUse)){
-					gm.useAbility(a,this,currentTile,this);
+				if((a.CastTime > 0)&&(DelayedAbilityReady == false)){
+					MP -= a.MPCost;
+					UnitAction = unitActions.casting;
+					DelayedAbility = a;
+					CastingDelay = a.CastTime;
+					AP = 0;
+					GameManager.instance.selectNextUnit();
 				}
-				else
-				{
-					currentAbility = a;
-					attackDistance = a.range;
-					damageBase = a.baseDamage;
-//					UnitAction = a.unitAction;
-					gm.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+				else{
+					if((a.selfUse)&&(!a.allyUse)&&(!a.enemieUse)){
+						gm.useAbility(a,this,currentTile,this);
+					}
+					else{
+						currentAbility = a;
+						attackDistance = a.range;
+						damageBase = a.baseDamage;
+	//					UnitAction = a.unitAction;
+						gm.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+					}
 				}
 			}
 			else
@@ -242,7 +248,7 @@ public class Unit : MonoBehaviour {
 			AP -= a.APcost;
 		}
 
-		if(a.MPCost > 0)
+		if((a.MPCost > 0)&&(a.CastTime == 0))
 		{
 			MP -= a.MPCost;
 		}
