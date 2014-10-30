@@ -200,7 +200,6 @@ public class BaseEffect : ICloneable {
 				//remove old apply this
 				return true;
 			}
-			return false;
 		}
 		}
 		return true;

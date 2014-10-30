@@ -9,15 +9,11 @@ public class TooltipHelperGUI : MonoBehaviour,IPointerEnterHandler,IPointerExitH
 	[HideInInspector]
 	public RectTransform rectTrans;
 
-	private GUImanager guim;
-
 	void Awake () {
 		rectTrans = GetComponent<RectTransform>();
 	}
 	// Use this for initialization
 	void Start () {
-
-		guim = GUImanager.instance;
 	}
 	
 	// Update is called once per frame

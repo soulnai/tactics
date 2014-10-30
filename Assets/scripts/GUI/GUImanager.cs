@@ -70,7 +70,6 @@ public class GUImanager : MonoBehaviour {
 	public void OnEndTurnClick()
 	{
 		abilitiesPanel.SetActive (false);
-		Unit u = gm.currentUnit;
 		GameManager.instance.PlayerEndTurn();
 	}
 

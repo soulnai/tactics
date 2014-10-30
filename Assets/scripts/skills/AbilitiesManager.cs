@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Serialization;
+using System.IO;
 
-[System.Serializable]
 public class AbilitiesManager : MonoBehaviour {
 
 	public static AbilitiesManager instance;
+
 	public List<BaseAbility> abilities;
 
 	public void Awake()
@@ -17,4 +20,6 @@ public class AbilitiesManager : MonoBehaviour {
 	{
 		return abilities.Find(BaseAttack => BaseAttack.abilityID == ID).Clone() as BaseAbility; 
 	}
+
+
 }

@@ -720,7 +720,6 @@ public class GameManager : MonoBehaviour {
 
 	public void checkVictory()
 	{
-		int deadCount = 0;
 		foreach(Player p in players){ 
 			if(p.unitsDead.Count >= p.units.Count){
 				if(OnVictoryState != null)

@@ -7,8 +7,6 @@ public class EffectsPanelControllerGUI : MonoBehaviour {
 	private List<EffectPanelGUI> effectPanelsUsed = new List<EffectPanelGUI>();
 	private List<EffectPanelGUI> effectPanelsUnused = new List<EffectPanelGUI>();
 
-	private List<EffectPanelGUI> effectPanelsTemp = new List<EffectPanelGUI>();
-
 	private Unit owner;
 
 	public void Init(Unit u){
