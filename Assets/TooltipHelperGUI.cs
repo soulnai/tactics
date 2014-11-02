@@ -31,17 +31,6 @@ public class TooltipHelperGUI : MonoBehaviour,IPointerEnterHandler,IPointerExitH
 		GUImanager.instance.hideTooltip();
 	}
 
-	public void OnMouseEnter()
-	{
-		if(!GUImanager.instance.mouseOverGUI)
-			GUImanager.instance.showTooltip(this);
-	}
-	
-	public void OnMouseExit()
-	{
-		GUImanager.instance.hideTooltip();
-	}
-
 	public object GetByType(){
 		object temp = null;
 		switch(type){
@@ -56,6 +45,8 @@ public class TooltipHelperGUI : MonoBehaviour,IPointerEnterHandler,IPointerExitH
 		case tooltipTypes.unit:
 			if(GetComponent<Unit>() != null)
 				temp = this.GetComponent<Unit>();
+			else if(GetComponentInParent<UnitPanelGUI>() != null)
+				temp = GetComponentInParent<UnitPanelGUI>().targetUnit;
 			break;
 		}
 		return temp;
