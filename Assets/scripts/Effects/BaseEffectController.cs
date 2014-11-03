@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,7 +13,7 @@ public class BaseEffectController : MonoBehaviour {
 	private Unit owner;
 	void Awake () {
 		gm.OnUnitPosChange += OnUnitPosChange;
-		gm.OnPlayerTurnStart += PlayerTurnStart;
+//		gm.OnPlayerTurnStart += updateAllEffects;
 		owner = GetComponent<Unit>();
 	}
 
@@ -30,14 +30,14 @@ public class BaseEffectController : MonoBehaviour {
 		}
 	}
 
-	void PlayerTurnStart (Player p)
+	public void updateAllEffects (Player p)
 	{
 		updateEffectsTargets();
 		if(owner.playerOwner == p)
-		foreach(BaseEffect ef in effectsAppliedToUnit)
-		{
-			ef.applyTo(owner);
-		}
+			foreach(BaseEffect ef in effectsAppliedToUnit)
+			{
+				ef.applyTo(owner);
+			}
 	}
 
 	public void initEffects (){
