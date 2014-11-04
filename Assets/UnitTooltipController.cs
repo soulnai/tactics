@@ -3,7 +3,9 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class UnitTooltipController : MonoBehaviour {
+	public Image unitIcon;
 	public Text name;
+	public Text unitClass;
 	public Text hp;
 	public Text mp;
 	public Text ap;
@@ -19,10 +21,12 @@ public class UnitTooltipController : MonoBehaviour {
 	
 	public void Show(Unit u){
 		gameObject.SetActive(true);
+		unitIcon.sprite = u.icon;
 		name.text = u.unitName;
-		hp.text = ""+u.HP;
-		mp.text = ""+u.MP;
-		ap.text = ""+u.AP;
+		unitClass.text = u.UnitClass.ToString();
+		hp.text = ""+u.HP+" / "+u.HPmax;
+		mp.text = ""+u.MP+" / "+u.MPmax;
+		ap.text = ""+u.AP+" / "+u.APmax;
 		str.text = ""+u.Strength;
 		dex.text = ""+u.Dexterity;
 		mag.text = ""+u.Magic;

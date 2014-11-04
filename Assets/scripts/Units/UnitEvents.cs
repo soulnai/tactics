@@ -12,6 +12,7 @@ public static class UnitEvents {
 	public static event UIEvent onUnlockUI;
 	public static event UnitBaseEvent onUnitReactionEnd;
 	public static event UnitBaseEvent onMouseOverUnit;
+	public static event UnitBaseEvent onUnitSelectionChanged;
 	public static event UnitAttributeEvent onAttributeChanged;
 	public static event UnitInteractionEvent onUnitFXEnd;
 	public static event UnitEffectEvent OnUnitEffectChanged;
@@ -27,6 +28,11 @@ public static class UnitEvents {
 	public static void UnlockUI(){
 		if(onUnlockUI!=null)
 			onUnlockUI();
+	}
+
+	public static void UnitSelectionChanged(Unit u){
+		if(onUnitSelectionChanged!=null)
+			onUnitSelectionChanged(u);
 	}
 
 	public static void UnitAttributeChanged(Unit u,BaseAttribute at){

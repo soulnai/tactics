@@ -1,23 +1,38 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class FXmanager : MonoBehaviour {
 	public static FXmanager instance;
 	public float fxSpeed = 5f;
 
-	void Awake(){
+	public List<GameObject> FXlist;
+	
+	public void Awake()
+	{
 		instance = this;
 	}
-
-	// Use this for initialization
-	void Start () {
 	
+	public GameObject getFX(string ID)
+	{
+		return FXlist.Find(GameObject => gameObject.name == ID) as GameObject; 
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	public void addFX(GameObject fx)
+	{
+		if(getFX(fx.name) == null)
+			FXlist.Add(fx);
+		else
+			Debug.Log("FX already in list");
+	}
 	
+	public void removeFX(GameObject fx)
+	{
+		if(getFX(fx.name) != null)
+			FXlist.Remove(fx);
+		else
+			Debug.Log("FX not in list");
 	}
 
 	public void createAbilityFX(GameObject FXprefab,Vector3 startPos = default(Vector3), Vector3 endPos = default(Vector3),BaseAbility a = null,Unit owner = null,Unit target = null)

@@ -10,8 +10,6 @@ public class TooltipGUI : MonoBehaviour {
 	public AbilityTooltipController abilityTooltip;
 	public UnitTooltipController unitTooltip;
 
-	public Text title;
-	public Text descr;
 	private float delay = 1f;
 	private RectTransform rectTransform;
 	private Vector3 position;
@@ -31,7 +29,6 @@ public class TooltipGUI : MonoBehaviour {
 	}
 
 	public void showTooltipDelayed(TooltipHelperGUI t){
-		this.GetComponent<CanvasGroup>().alpha = 0;
 		StartCoroutine(waitToShow(t,delay));
 	}
 

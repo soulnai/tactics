@@ -5,6 +5,7 @@ using EnumSpace;
 
 public class UnitPanelGUI : MonoBehaviour {
 	public Image icon;
+	public Image selection;
 	public Slider HPslider;
 	public Slider MPslider;
 	public Slider APslider;
@@ -15,10 +16,15 @@ public class UnitPanelGUI : MonoBehaviour {
 	// Use this for initialization
 	void Awake(){
 		gameObject.SetActive(false);
+		selection.gameObject.SetActive(false);
+		UnitEvents.onUnitSelectionChanged += updateSelectionBox;
 	}
 
-	void Start () {
-	
+	public void updateSelectionBox(Unit u){
+		if(u == targetUnit)
+			selection.gameObject.SetActive(true);
+		else
+			selection.gameObject.SetActive(false);
 	}
 
 	public void Init(Unit target)

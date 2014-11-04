@@ -55,7 +55,16 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	public List <Player> players = new List<Player>();
-	public int currentUnitIndex = 0;
+	private int _currentUnitIndex = 0;
+	public int currentUnitIndex{
+		set{
+			_currentUnitIndex = value;	
+			UnitEvents.UnitSelectionChanged(currentUnit);
+		}
+		get{
+			return _currentUnitIndex;
+		}
+	}
 	public int currentPlayerIndex = 0;
 	public Unit currentUnit{
 		set{
@@ -212,12 +221,15 @@ public class GameManager : MonoBehaviour {
 
 		if (currentUnitIndex + 1 < currentPlayer.units.Count) {
 			currentUnitIndex++;
+
 		} 
 		else {
 			if(currentPlayer.playerName == "AI")
 				PlayerEndTurn();
-			else
+			else{
 				currentUnitIndex = 0;
+			
+			}
 		}
 
 		if(matchState == matchStates.battle){
@@ -270,7 +282,7 @@ public class GameManager : MonoBehaviour {
 								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray (), maxHeightDiff);
 		
 						foreach (Tile t in highlightedTiles) {
-								t.visual.transform.renderer.materials [1].color = highlightColor;
+								t.visual.transform.renderer.material.color = highlightColor;
 						}
 				
 	}
@@ -284,7 +296,7 @@ public class GameManager : MonoBehaviour {
 				else
 					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
 				foreach (Tile t in highlightedTiles) 
-					t.visual.transform.renderer.materials [1].color = highlightColor;
+					t.visual.transform.renderer.material.color = highlightColor;
 				
 		}
 
@@ -302,7 +314,7 @@ public class GameManager : MonoBehaviour {
 	public void removeTileHighlights() {
 		for (int i = 0; i < mapSize; i++) {
 			for (int j = 0; j < mapSize; j++) {
-				map[i][j].visual.transform.renderer.materials[1].color = Color.white;
+				map[i][j].visual.transform.renderer.material.color = Color.white;
 			}
 		}
 	}
@@ -645,7 +657,7 @@ public class GameManager : MonoBehaviour {
 					AttackhighlightTiles (t.gridPosition, Color.green, currentUnit.currentAbility.areaDamageRadius, true);
 					highlightedTiles.Add (t);
 					//TODO better solution for Highlighted tiles center tile
-					t.visual.transform.renderer.materials [1].color = Color.green;
+					t.visual.transform.renderer.material.color = Color.green;
 					}
 				}
 			}

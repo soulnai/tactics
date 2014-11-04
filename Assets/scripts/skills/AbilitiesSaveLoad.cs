@@ -81,10 +81,15 @@ public static class AbilitiesSaveLoad{
 		tempAbility.range			=	ab.range;
 		tempAbility.requireTarget 	=	ab.requireTarget;
 		tempAbility.selfUse			=	ab.selfUse;
-		if(ab.hitFXprefab != null)
-		tempAbility.hitFXprefab 	=	ab.hitFXprefab.name;
-		if(ab.rangedFXprefab != null)
-		tempAbility.rangedFXprefab	=	ab.rangedFXprefab.name;
+
+		if(ab.hitFXprefab != null){
+//			FXmanager.instance.addFX(ab.hitFXprefab);
+			tempAbility.hitFXprefab 	=	ab.hitFXprefab.name;
+		}
+		if(ab.rangedFXprefab != null){
+//			FXmanager.instance.addFX(ab.rangedFXprefab);
+			tempAbility.rangedFXprefab	=	ab.rangedFXprefab.name;
+		}
 		return tempAbility;
 	}
 
@@ -109,11 +114,11 @@ public static class AbilitiesSaveLoad{
 		ab.range				=	tempAbility.range				;
 		ab.requireTarget		=	tempAbility.requireTarget 		;
 		ab.selfUse 				=	tempAbility.selfUse			;	
-		//TODO effects manager for all purposes
-//		if(tempAbility.hitFXprefab != null)
-//			ab.hitFXprefab	=	Resources.Load(tempAbility.hitFXprefab) as GameObject;
-//		if(tempAbility.rangedFXprefab != null)
-//			ab.rangedFXprefab	=	Resources.Load(tempAbility.rangedFXprefab) as GameObject;
+
+//		if((tempAbility.hitFXprefab != null)||(tempAbility.hitFXprefab != ""))
+//			ab.hitFXprefab = FXmanager.instance.getFX(tempAbility.hitFXprefab);
+//		if((tempAbility.rangedFXprefab != null)||(tempAbility.rangedFXprefab != ""))
+//			ab.rangedFXprefab = FXmanager.instance.getFX(tempAbility.rangedFXprefab);
 		return ab;
 	}
 
