@@ -218,7 +218,7 @@ public class Unit : MonoBehaviour {
 						attackDistance = a.range;
 						damageBase = a.baseDamage;
 	//					UnitAction = a.unitAction;
-						gm.AttackhighlightTiles (gridPosition, Color.red, attackDistance, true);
+						gm.AttackhighlightTiles (gridPosition,ColorHolder.instance.attack, attackDistance, true);
 					}
 				}
 			}
@@ -278,7 +278,7 @@ public class Unit : MonoBehaviour {
 		gm.removeTileHighlights ();
 		if(AP > 0){
 			UnitAction = unitActions.readyToMove;
-			gm.highlightTilesAt (gridPosition, Color.blue, movementPerActionPoint, false, maxHeightDiff);
+			gm.highlightTilesAt (gridPosition,ColorHolder.instance.move, movementPerActionPoint, false, maxHeightDiff);
 		}
 	}
 

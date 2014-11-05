@@ -8,6 +8,7 @@ public class Tile : MonoBehaviour {
 	GameObject PREFAB;
 
 	public GameObject visual;
+	public GameObject highlight;
 
 	public TileType type = TileType.Normal;
 
@@ -20,9 +21,14 @@ public class Tile : MonoBehaviour {
 	public List<Tile> neighbors = new List<Tile>();
 
 	public Unit unitInTile;
+	public highlightContourController highlightController;
 
 	private GameManager gm;
 	// Use this for initialization
+	void Awake(){
+//		highlight.SetActive(false);
+	}
+
 	void Start () {
 		if (Application.loadedLevelName == "gameScene") {
 			gm = GameManager.instance;
@@ -159,5 +165,14 @@ public class Tile : MonoBehaviour {
 		GameObject newVisual = (GameObject)Instantiate(PREFAB, transform.position, Quaternion.identity);
 		newVisual.transform.parent = container.transform;
 		visual = newVisual;
+	}
+
+	public void showHighlight(Color color){
+		highlight.SetActive(true);
+		highlight.renderer.sharedMaterial.color = color;
+	}
+
+	public void hideHighlight(){
+		highlight.SetActive(false);
 	}
 }
