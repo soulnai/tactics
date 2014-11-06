@@ -39,11 +39,17 @@ public class FXmanager : MonoBehaviour {
 	{
 		if(a.attackType != EnumSpace.attackTypes.melee)
 		{
-			createFX(a.rangedFXprefab,startPos,endPos,a,owner,target);
+			if(a.rangedFXprefab != null)
+				createFX(a.rangedFXprefab,startPos,endPos,a,owner,target);
+			else
+				Debug.Log("Ranged FX prefab not set for - "+a.abilityName);
 		}
 		else
 		{
-			createFX(a.hitFXprefab,startPos,startPos,a,owner,target);
+			if(a.hitFXprefab != null)
+				createFX(a.hitFXprefab,startPos,startPos,a,owner,target);
+			else
+				Debug.Log("Hit FX prefab not set for - "+a.abilityName);
 		}
 	}
 

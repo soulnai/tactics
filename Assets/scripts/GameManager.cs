@@ -289,7 +289,7 @@ public class GameManager : MonoBehaviour {
 				
 	}
 
-	public void AttackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers) {
+	public void AttackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers,bool addCenterTile = false) {
 
 				highlightedTiles = new List<Tile> ();
 		
@@ -297,8 +297,9 @@ public class GameManager : MonoBehaviour {
 					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
 				else
 					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
+				if(addCenterTile)
+					highlightedTiles.Add(map [(int)originLocation.x] [(int)originLocation.y]);
 				foreach (Tile t in highlightedTiles) {
-//					t.visual.transform.renderer.material.color = highlightColor;
 					t.showHighlight(highlightColor);
 					t.highlightController.showContour(highlightedTiles);
 		}
@@ -319,7 +320,6 @@ public class GameManager : MonoBehaviour {
 	public void removeTileHighlights() {
 		for (int i = 0; i < mapSize; i++) {
 			for (int j = 0; j < mapSize; j++) {
-//				map[i][j].visual.transform.renderer.material.color = Color.white;
 				map[i][j].hideHighlight();
 				map[i][j].highlightController.hideContour();
 			}
@@ -651,10 +651,8 @@ public class GameManager : MonoBehaviour {
 					Tile t = hit.transform.gameObject.GetComponent<Tile> ();
 					AttackhighlightTilesArea (currentUnit.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.range, true);
 					AttackhighlightTiles (currentUnit.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.range, true);
-					AttackhighlightTiles (t.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.areaDamageRadius, true);
+					AttackhighlightTiles (t.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.areaDamageRadius, true,true);
 					highlightedTiles.Add (t);
-					//TODO better solution for Highlighted tiles center tile
-					t.visual.transform.renderer.material.color = ColorHolder.instance.area;
 					}
 				}
 			}
