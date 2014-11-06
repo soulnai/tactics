@@ -60,22 +60,21 @@ public class TooltipGUI : MonoBehaviour {
 	void showAbilityTip (TooltipHelperGUI t)
 	{
 		BaseAbility a = t.GetByType() as BaseAbility;
-		abilityTooltip.Show(a);
-		abilityTooltip.GetComponent<RectTransform>().position = position;
+		abilityTooltip.Show(a,position);
+		abilityTooltip.transform.position = position;
 	}
 
 	void showEffectTip (TooltipHelperGUI t)
 	{
 		BaseEffect ef = t.GetByType() as BaseEffect;
-		effectTooltip.Show(ef);
-		effectTooltip.GetComponent<RectTransform>().position = position;
+		effectTooltip.Show(ef,position);
+		effectTooltip.transform.position = position;
 	}
 
 	void showUnitTip (TooltipHelperGUI t)
 	{
 		Unit u = t.GetByType() as Unit;
-		unitTooltip.Show(u);
-		unitTooltip.GetComponent<RectTransform>().position = position;
+		unitTooltip.Show(u,position);
 	}
 
 	public void hideTooltip ()

@@ -2,21 +2,14 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class AbilityTooltipController : MonoBehaviour {
+public class AbilityTooltipController : BaseTooltip {
 	public Text name;
 	public Text description;
-	
-	void Awake(){
-		gameObject.SetActive(false);
-	}
-	
-	public void Show(BaseAbility a){
+
+	public void Show(BaseAbility a,Vector3 pos){
 		gameObject.SetActive(true);
+		setPosition(pos);
 		name.text = a.abilityName;
 		description.text = a.attackType.ToString();
-	}
-	
-	public void Hide(){
-		gameObject.SetActive(false);
 	}
 }

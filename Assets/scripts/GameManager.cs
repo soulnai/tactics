@@ -449,17 +449,7 @@ public class GameManager : MonoBehaviour {
 					applyAbilityToTarget (ability, _target, amountOfDamage);
 					checkIfCastInterrupted(_target);
 
-
-					if((ability.attackType != attackTypes.melee)&&(ability.rangedFXprefab != null))
-					{
-						FXmanager.instance.createAbilityFX(ability.rangedFXprefab,unitOwner.transform.position,targetUnit.transform.position,ability);
-					}
-					if((ability.attackType == attackTypes.melee)&&(ability.hitFXprefab != null))
-					{
-						FXmanager.instance.createAbilityFX(ability.hitFXprefab,targetUnit.transform.position,targetUnit.transform.position,ability);
-					}
-
-
+					FXmanager.instance.createAbilityFX(unitOwner.transform.position,targetUnit.transform.position,ability);
 
 			//if missed
 			} else {

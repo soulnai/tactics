@@ -35,7 +35,7 @@ public class FXmanager : MonoBehaviour {
 			Debug.Log("FX not in list");
 	}
 
-	public void createAbilityFX(GameObject FXprefab,Vector3 startPos = default(Vector3), Vector3 endPos = default(Vector3),BaseAbility a = null,Unit owner = null,Unit target = null)
+	public void createAbilityFX(Vector3 startPos = default(Vector3), Vector3 endPos = default(Vector3),BaseAbility a = null,Unit owner = null,Unit target = null)
 	{
 		if(a.attackType != EnumSpace.attackTypes.melee)
 		{

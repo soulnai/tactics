@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class UnitTooltipController : MonoBehaviour {
+public class UnitTooltipController : BaseTooltip {
 	public Image unitIcon;
 	public Text name;
 	public Text unitClass;
@@ -14,13 +14,9 @@ public class UnitTooltipController : MonoBehaviour {
 	public Text mag;
 	public Text appliedEffectsCount;
 
-	
-	void Awake(){
-		gameObject.SetActive(false);
-	}
-	
-	public void Show(Unit u){
+	public void Show(Unit u,Vector3 pos){
 		gameObject.SetActive(true);
+		setPosition(pos);
 		unitIcon.sprite = u.icon;
 		name.text = u.unitName;
 		unitClass.text = u.UnitClass.ToString();
@@ -31,9 +27,5 @@ public class UnitTooltipController : MonoBehaviour {
 		dex.text = ""+u.Dexterity;
 		mag.text = ""+u.Magic;
 		appliedEffectsCount.text =""+ u.unitBaseEffects.effectsAppliedToUnit.Count;
-	}
-	
-	public void Hide(){
-		gameObject.SetActive(false);
 	}
 }

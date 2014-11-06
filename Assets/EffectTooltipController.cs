@@ -2,19 +2,16 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class EffectTooltipController : MonoBehaviour {
+public class EffectTooltipController : BaseTooltip {
 	public Image icon;
 	public Text name;
 	public Text description;
 	public Text duration;
 	public Text owner;
 
-	void Awake(){
-		gameObject.SetActive(false);
-	}
-
-	public void Show(BaseEffect ef){
+	public void Show(BaseEffect ef,Vector3 pos){
 		gameObject.SetActive(true);
+		setPosition(pos);
 		if(ef.icon != null)
 			icon.sprite = ef.icon;
 		name.text = ef.name;
@@ -24,9 +21,5 @@ public class EffectTooltipController : MonoBehaviour {
 		else
 			duration.text = ef.duration.ToString();
 		owner.text = ef.owner.unitName;
-	}
-
-	public void Hide(){
-		gameObject.SetActive(false);
 	}
 }
