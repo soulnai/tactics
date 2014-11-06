@@ -18,6 +18,14 @@ public class UnitPanelGUI : MonoBehaviour {
 		gameObject.SetActive(false);
 		selection.gameObject.SetActive(false);
 		UnitEvents.onUnitSelectionChanged += updateSelectionBox;
+		UnitEvents.onAttributeChanged += updateAttribute;
+	}
+
+	void updateAttribute (Unit u, BaseAttribute at)
+	{
+		if(u == targetUnit)
+			updateValue(at.attribute);
+
 	}
 
 	public void updateSelectionBox(Unit u){
@@ -69,12 +77,7 @@ public class UnitPanelGUI : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		//TODO rework on Events
-		if(canUpdate){
-			updateValue(unitAttributes.AP);
-			updateValue(unitAttributes.HP);
-			updateValue(unitAttributes.MP);
-		}
+
 	}
 
 	void OnDestroy(){

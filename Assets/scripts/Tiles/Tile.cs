@@ -27,11 +27,12 @@ public class Tile : MonoBehaviour {
 	// Use this for initialization
 	void Awake(){
 //		highlight.SetActive(false);
+		gm = GameManager.instance;
 	}
 
 	void Start () {
 		if (Application.loadedLevelName == "gameScene") {
-			gm = GameManager.instance;
+
 			generateNeighbors();
 		}
 	}
@@ -86,6 +87,7 @@ public class Tile : MonoBehaviour {
 			if (gm.currentUnit.UnitAction == unitActions.readyToMove) {
 				gm.moveUnitTo(this);
 			}
+			UnitEvents.TileClick(this);
 //			else if (gm.currentUnit.UnitAction == unitActions.meleeAttack) {
 //				gm.attackWithCurrentPlayer(this);
 //			} else if (gm.currentUnit.UnitAction == unitActions.rangedAttack) {
@@ -170,6 +172,7 @@ public class Tile : MonoBehaviour {
 	public void showHighlight(Color color){
 		highlight.SetActive(true);
 		highlight.renderer.sharedMaterial.color = color;
+		highlightController.showContour(gm.highlightedTiles);
 	}
 
 	public void hideHighlight(){

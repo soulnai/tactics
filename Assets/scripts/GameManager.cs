@@ -92,7 +92,6 @@ public class GameManager : MonoBehaviour {
 
 
 	void Awake() {
-		matchState = matchStates.battle;
 		instance = this;
 		if(StartScreenPersistentObj.instance != null){
 			UserUnitPrefab [0] = StartScreenPersistentObj.instance.UserUnitPrefab [0];
@@ -101,9 +100,30 @@ public class GameManager : MonoBehaviour {
 			UserUnitPrefab [3] = StartScreenPersistentObj.instance.UserUnitPrefab [3];
 		}
 		mapTransform = transform.FindChild("Map");
+	}
 
+	void startPlacePhase ()
+	{
+		matchState = matchStates.placeUnits;
+		for(int i=0;i<map.Count-5;i++)
+			for(int j=0;j<4;j++)
+				highlightedTiles.Add(map[i][j]);
+		foreach (Tile t in highlightedTiles) {
+			t.showHighlight(ColorHolder.instance.move);
+		}
+	}
+
+	public void startBattlePhase ()
+	{
+		UnitEvents.UnlockUI();
+		matchState = matchStates.battle;
 		OnUnitTurnStart += TurnLogic;
 		OnVictoryState += endMatch;
+
+		Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
+		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+		
+		StartCoroutine(DelayedFirstTurnLogic(0.1f));
 	}
 
 	void endMatch (Player loserPlayer)
@@ -120,15 +140,27 @@ public class GameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {	
+		UnitEvents.onTileClick += TileClickHandler;
+		UnitEvents.LockUI();
 		generateMap();
 		generateUnits();
+		startPlacePhase();
 		unitSelection = (GameObject)Instantiate(selectionRing, currentUnit.transform.position, Quaternion.Euler(0,0,0));
 		unitSelection.transform.parent = currentUnit.transform;
 
-		Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
-		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
+	}
 
-		StartCoroutine(DelayedFirstTurnLogic(0.1f));
+	void TileClickHandler (Tile t)
+	{
+		if((matchState == matchStates.placeUnits)&&(!GUImanager.instance.mouseOverGUI)){
+			if((!t.impassible)&&(highlightedTiles.Contains(t))&&(t.unitInTile == null)){
+				currentUnit.currentTile.unitInTile = null;
+				currentUnit.currentTile = t;
+				t.unitInTile = currentUnit;
+				currentUnit.gridPosition = t.gridPosition;
+				currentUnit.transform.position = (t.transform.position + 0.5f * Vector3.up);
+			}
+		}
 	}
 
 	IEnumerator DelayedFirstTurnLogic (float time)
@@ -282,9 +314,7 @@ public class GameManager : MonoBehaviour {
 								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray (), maxHeightDiff);
 		
 						foreach (Tile t in highlightedTiles) {
-//							t.visual.transform.renderer.material.color = highlightColor;
 							t.showHighlight(highlightColor);
-							t.highlightController.showContour(highlightedTiles);
 						}
 				
 	}
@@ -301,7 +331,6 @@ public class GameManager : MonoBehaviour {
 					highlightedTiles.Add(map [(int)originLocation.x] [(int)originLocation.y]);
 				foreach (Tile t in highlightedTiles) {
 					t.showHighlight(highlightColor);
-					t.highlightController.showContour(highlightedTiles);
 		}
 				
 		}
@@ -782,7 +811,8 @@ public class GameManager : MonoBehaviour {
 			currentUnit = u;
 			currentUnitIndex = u.playerOwner.units.IndexOf(u);
 		}
-		TurnLogic(currentUnit);
+		if(matchState == matchStates.battle)
+			TurnLogic(currentUnit);
 	}
 
 	void OnDestroy(){

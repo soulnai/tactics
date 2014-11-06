@@ -2,6 +2,7 @@
 using System.Collections;
 
 public delegate void UIEvent();
+public delegate void TileBaseEvent(Tile tile);
 public delegate void UnitBaseEvent(Unit unit);
 public delegate void UnitAttributeEvent(Unit unit,BaseAttribute at);
 public delegate void UnitInteractionEvent(Unit owner,Unit target);
@@ -10,6 +11,7 @@ public delegate void UnitEffectEvent(Unit u,BaseEffect ef);
 public static class UnitEvents {
 	public static event UIEvent onLockUI;
 	public static event UIEvent onUnlockUI;
+	public static event TileBaseEvent onTileClick;
 	public static event UnitBaseEvent onUnitReactionEnd;
 	public static event UnitBaseEvent onMouseOverUnit;
 	public static event UnitBaseEvent onUnitSelectionChanged;
@@ -19,6 +21,10 @@ public static class UnitEvents {
 	public static event UnitEffectEvent OnUnitEffectAdded;
 	public static event UnitEffectEvent OnUnitEffectRemoved;
 
+	public static void TileClick(Tile t){
+		if(onTileClick!=null)
+			onTileClick(t);
+	}
 
 	public static void LockUI(){
 		if(onLockUI!=null)

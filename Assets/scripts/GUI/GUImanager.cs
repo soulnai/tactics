@@ -20,6 +20,7 @@ public class GUImanager : MonoBehaviour {
 	public TooltipGUI tooltip;
 	public VictoryPanelControllerGUI victoryPanel;
 	public Button endTurnButton;
+	public Button endPlacementButton;
 
 	private GameManager gm;
 	// Use this for initialization
@@ -30,15 +31,14 @@ public class GUImanager : MonoBehaviour {
 		{
 			b.gameObject.SetActive(false);
 		}
+		UnitEvents.onLockUI += LockUI;
+		UnitEvents.onUnlockUI += UnlockUI;
 	}
 
 	void Start () {
 		gm = GameManager.instance;
 		showAbilities();
 		abilitiesPanel.SetActive (!abilitiesPanel.activeInHierarchy);
-
-		UnitEvents.onLockUI += LockUI;
-		UnitEvents.onUnlockUI += UnlockUI;
 	}
 
 	void LockUI ()
@@ -86,6 +86,10 @@ public class GUImanager : MonoBehaviour {
 	{
 		abilitiesPanel.SetActive (false);
 		GameManager.instance.PlayerEndTurn();
+	}
+
+	public void OnEndPlacementClick(){
+		GameManager.instance.startBattlePhase();
 	}
 
 	public void ShowHideGUI()
