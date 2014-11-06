@@ -21,10 +21,12 @@ public class UnitPanelGUI : MonoBehaviour {
 	}
 
 	public void updateSelectionBox(Unit u){
-		if(u == targetUnit)
-			selection.gameObject.SetActive(true);
-		else
-			selection.gameObject.SetActive(false);
+		if(selection != null){
+			if(u == targetUnit)
+				selection.gameObject.SetActive(true);
+			else
+				selection.gameObject.SetActive(false);
+		}
 	}
 
 	public void Init(Unit target)
