@@ -421,4 +421,12 @@ public class Unit : MonoBehaviour {
 	void OnMouseExit(){
 //		gm.removeTileHighlights();
 	}
+
+	void OnDestroy()
+	{
+		UnitEvents.onAttributeChanged -= HandleonAttributeChanged;
+		gm.OnPlayerTurnStart -= prepareForTurn;
+		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
+		UnitEvents.onUnitFXEnd -= FXend;
+	}
 }

@@ -204,4 +204,8 @@ public class BaseEffect : ICloneable {
 		}
 		return true;
 	}
+
+	void OnDestroy(){
+		gm.OnPlayerTurnEnd -= PlayerTurnEnd;
+	}
 }

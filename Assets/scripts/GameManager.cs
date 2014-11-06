@@ -784,4 +784,9 @@ public class GameManager : MonoBehaviour {
 		}
 		TurnLogic(currentUnit);
 	}
+
+	void OnDestroy(){
+		OnUnitTurnStart -= TurnLogic;
+		OnVictoryState -= endMatch;
+	}
 }

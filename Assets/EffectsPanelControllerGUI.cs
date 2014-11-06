@@ -66,4 +66,10 @@ public class EffectsPanelControllerGUI : MonoBehaviour {
 	void Update () {
 	
 	}
+
+	void OnDestroy(){
+		UnitEvents.OnUnitEffectChanged -= updateEffectPanels;
+		UnitEvents.OnUnitEffectAdded -= addEffectPanel;
+		UnitEvents.OnUnitEffectRemoved -= removeEffectPanel;
+	}
 }

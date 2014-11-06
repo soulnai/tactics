@@ -24,6 +24,15 @@ public class FXController : MonoBehaviour {
 		ability = a;
 		unitOwner = owner;
 		unitTarget = target;
+		if(GetComponent<CFX_AutoDestructShuriken>() == null)
+			StartCoroutine(delayedDestroy(2f));
+	}
+
+	IEnumerator delayedDestroy (float time)
+	{
+		yield return new WaitForSeconds(time);
+		if(this != null)
+			Destroy(gameObject);
 	}
 
 	public void Kill(){

@@ -140,4 +140,9 @@ public class GUImanager : MonoBehaviour {
 	{
 		tooltip.hideTooltip();
 	}
+
+	void OnDestroy(){
+		UnitEvents.onLockUI -= LockUI;
+		UnitEvents.onUnlockUI -= UnlockUI;
+	}
 }

@@ -76,4 +76,8 @@ public class UnitPanelGUI : MonoBehaviour {
 			updateValue(unitAttributes.MP);
 		}
 	}
+
+	void OnDestroy(){
+		UnitEvents.onUnitSelectionChanged -= updateSelectionBox;
+	}
 }

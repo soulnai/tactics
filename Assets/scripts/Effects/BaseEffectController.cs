@@ -13,7 +13,6 @@ public class BaseEffectController : MonoBehaviour {
 	private Unit owner;
 	void Awake () {
 		gm.OnUnitPosChange += OnUnitPosChange;
-//		gm.OnPlayerTurnStart += updateAllEffects;
 		owner = GetComponent<Unit>();
 	}
 
@@ -127,5 +126,9 @@ public class BaseEffectController : MonoBehaviour {
 					owner.getAttribute(ac.attribute).addMod(ef.getValue(owner,ac));
 			}
 		}
+	}
+
+	void OnDestroy(){
+		gm.OnUnitPosChange -= OnUnitPosChange;
 	}
 }
