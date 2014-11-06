@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour {
 	void startPlacePhase ()
 	{
 		matchState = matchStates.placeUnits;
-		for(int i=0;i<map.Count-5;i++)
+		for(int i=map.Count/2-3;i<map.Count/2+3;i++)
 			for(int j=0;j<4;j++)
 				highlightedTiles.Add(map[i][j]);
 		foreach (Tile t in highlightedTiles) {
