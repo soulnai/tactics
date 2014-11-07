@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using EnumSpace;
 
 [System.Serializable]
 public class Player {
 
 	public string playerName;
+	public playerType type = playerType.player;
 	public List<Unit> units = new List<Unit>();
 	public List<Unit> unitsDead = new List<Unit>();
 	private int currentUnit;

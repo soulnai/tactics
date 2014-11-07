@@ -89,6 +89,7 @@ public class GUImanager : MonoBehaviour {
 	}
 
 	public void OnEndPlacementClick(){
+		endPlacementButton.gameObject.SetActive(false);
 		GameManager.instance.startBattlePhase();
 	}
 

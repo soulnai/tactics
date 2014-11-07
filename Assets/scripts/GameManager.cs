@@ -90,6 +90,8 @@ public class GameManager : MonoBehaviour {
 	private RaycastHit target;
 	private GameObject unitSelection;
 
+	private List<Tile> startTilesFirst = new List<Tile>();
+	private List<Tile> startTilesSecond = new List<Tile>();
 
 	void Awake() {
 		instance = this;
@@ -104,17 +106,53 @@ public class GameManager : MonoBehaviour {
 
 	void startPlacePhase ()
 	{
-		matchState = matchStates.placeUnits;
+		startTilesSecond = new List<Tile>();
+		for(int i=map.Count/2-3;i<map.Count/2+3;i++)
+			for(int j=map[0].Count-4;j<map[0].Count;j++)
+				startTilesSecond.Add(map[i][j]);
+
+		startTilesFirst = new List<Tile>();
 		for(int i=map.Count/2-3;i<map.Count/2+3;i++)
 			for(int j=0;j<4;j++)
-				highlightedTiles.Add(map[i][j]);
+				startTilesFirst.Add(map[i][j]);
+		highlightedTiles = startTilesFirst;
+
 		foreach (Tile t in highlightedTiles) {
 			t.showHighlight(ColorHolder.instance.move);
+
+		matchState = matchStates.placeUnits;
+
+		}
+
+		placeAIUnits();
+	}
+
+	void placeAIUnits ()
+	{
+		foreach(Player p in players)
+			if(p.type == playerType.ai)
+			foreach(Unit u in p.units){
+				u.placeUnit(getRandoMapTileXY(startTilesSecond));
+			}
+	}
+
+	void placeMissingUnits ()
+	{
+		foreach(Player p in players){
+			foreach(Unit u in p.units){
+				if(u.currentTile == null){
+					if(p.type == playerType.player)
+						u.placeUnit(getRandoMapTileXY(startTilesFirst));
+					else
+						u.placeUnit(getRandoMapTileXY(startTilesSecond));
+				}
+			}
 		}
 	}
 
 	public void startBattlePhase ()
 	{
+		placeMissingUnits();
 		UnitEvents.UnlockUI();
 		matchState = matchStates.battle;
 		OnUnitTurnStart += TurnLogic;
@@ -221,7 +259,7 @@ public class GameManager : MonoBehaviour {
 		if(OnUnitTurnStart != null)
 			OnUnitTurnStart(currentUnit);
 
-		if(currentPlayer.playerName == "AI")
+		if(currentPlayer.type == playerType.ai)
 			UnitEvents.LockUI();
 		else
 			UnitEvents.UnlockUI();
@@ -252,7 +290,7 @@ public class GameManager : MonoBehaviour {
 
 		} 
 		else {
-			if(currentPlayer.playerName == "AI")
+			if(currentPlayer.type == playerType.ai)
 				PlayerEndTurn();
 			else{
 				currentUnitIndex = 0;
@@ -603,9 +641,9 @@ public class GameManager : MonoBehaviour {
 		AIPlayer ai;
 		for(int i=0; i< unitsCountPlayer;i++)
 		{
-			Vector2 position = getRandoMapTileXY();
-			unit = ((GameObject)Instantiate(UserUnitPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<Unit>();
-			unit.placeUnit(position);
+//			Vector2 position = getRandoMapTileXY();
+			unit = ((GameObject)Instantiate(UserUnitPrefab[i],new Vector3(-1000f,-1000f,-1000f),Quaternion.identity)).GetComponent<Unit>();
+//			unit.placeUnit(position);
 			unit.unitName = "Alice-"+i;
 			unit.playerOwner = players[0];
 			players[0].addUnit(unit);
@@ -614,9 +652,9 @@ public class GameManager : MonoBehaviour {
 
 		for(int i=0; i< unitsCountAI;i++)
 		{
-			Vector2 position = getRandoMapTileXY();
-			ai = ((GameObject)Instantiate(AIPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<AIPlayer>();
-			ai.placeUnit(position);
+//			Vector2 position = getRandoMapTileXY();
+			ai = ((GameObject)Instantiate(AIPlayerPrefab,new Vector3(-1000f,-1000f,-1000f),Quaternion.identity)).GetComponent<AIPlayer>();
+//			ai.placeUnit(position);
 			ai.unitName = "Bot-"+i;				
 			ai.playerOwner = players[1];
 			players[1].addUnit(ai);
@@ -624,13 +662,20 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-	public Vector2 getRandoMapTileXY()
+	public Vector2 getRandoMapTileXY(List<Tile> tiles = null)
 	{
-		Vector2 tileXY = new Vector2(Random.Range(0,mapSize),Random.Range(0,mapSize));
+		Vector2 tileXY;
+		if(tiles != null)
+			tileXY = tiles[Random.Range(0,tiles.Count-1)].gridPosition;
+		else
+			tileXY = new Vector2(Random.Range(0,mapSize),Random.Range(0,mapSize));
 
 		if ((map[(int)tileXY.x][(int)tileXY.y].impassible == true)||(map[(int)tileXY.x][(int)tileXY.y].unitInTile != null))
 		{
-			tileXY = getRandoMapTileXY();
+			if(tiles != null)
+				tileXY = getRandoMapTileXY(tiles);
+			else
+				tileXY = getRandoMapTileXY();
 		}
 
 		return tileXY;

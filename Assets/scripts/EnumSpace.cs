@@ -108,4 +108,10 @@ namespace EnumSpace {
 		battle,
 		victory
 	}
+
+	public enum playerType{
+		player,
+		ai,
+		spectr
+	}
 }
