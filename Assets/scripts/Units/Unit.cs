@@ -355,6 +355,8 @@ public class Unit : MonoBehaviour {
 
 	public void placeUnit(Vector2 position)
 	{
+		if(currentTile != null)
+			currentTile.unitInTile = null;
 		gridPosition = position;
 		currentTile = gm.map[(int)position.x][(int)position.y];
 		currentTile.unitInTile = this;

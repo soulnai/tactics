@@ -154,11 +154,7 @@ public class GameManager : MonoBehaviour {
 	{
 		if((matchState == matchStates.placeUnits)&&(!GUImanager.instance.mouseOverGUI)){
 			if((!t.impassible)&&(highlightedTiles.Contains(t))&&(t.unitInTile == null)){
-				currentUnit.currentTile.unitInTile = null;
-				currentUnit.currentTile = t;
-				t.unitInTile = currentUnit;
-				currentUnit.gridPosition = t.gridPosition;
-				currentUnit.transform.position = (t.transform.position + 0.5f * Vector3.up);
+				currentUnit.placeUnit(t.gridPosition);
 			}
 		}
 	}
@@ -607,7 +603,7 @@ public class GameManager : MonoBehaviour {
 		AIPlayer ai;
 		for(int i=0; i< unitsCountPlayer;i++)
 		{
-			Vector2 position = getRandoMapTileXY(true);
+			Vector2 position = getRandoMapTileXY();
 			unit = ((GameObject)Instantiate(UserUnitPrefab[i],Vector3.zero,Quaternion.identity)).GetComponent<Unit>();
 			unit.placeUnit(position);
 			unit.unitName = "Alice-"+i;
@@ -618,7 +614,7 @@ public class GameManager : MonoBehaviour {
 
 		for(int i=0; i< unitsCountAI;i++)
 		{
-			Vector2 position = getRandoMapTileXY(true);
+			Vector2 position = getRandoMapTileXY();
 			ai = ((GameObject)Instantiate(AIPlayerPrefab,Vector3.zero,Quaternion.identity)).GetComponent<AIPlayer>();
 			ai.placeUnit(position);
 			ai.unitName = "Bot-"+i;				
@@ -628,20 +624,15 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-	public Vector2 getRandoMapTileXY(bool passible = false)
+	public Vector2 getRandoMapTileXY()
 	{
 		Vector2 tileXY = new Vector2(Random.Range(0,mapSize),Random.Range(0,mapSize));
 
-		if ((passible == true)&&(map[(int)tileXY.x][(int)tileXY.y].impassible == true))
+		if ((map[(int)tileXY.x][(int)tileXY.y].impassible == true)||(map[(int)tileXY.x][(int)tileXY.y].unitInTile != null))
 		{
-			tileXY = getRandoMapTileXY(passible);
+			tileXY = getRandoMapTileXY();
 		}
 
-		for (int i =0; i<unitsAll.Count; i++) {
-			if (map[(int)tileXY.x][(int)tileXY.y].gridPosition == unitsAll[i].gridPosition){
-				tileXY = getRandoMapTileXY();
-			}		
-		}
 		return tileXY;
 	}
 
