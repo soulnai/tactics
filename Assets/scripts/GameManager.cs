@@ -244,7 +244,7 @@ public class GameManager : MonoBehaviour {
 			delayCastLogic();
 		}
 		currentUnitIndex = 0;
-		
+		GUImanager.instance.Log.addText("<b><color=green>Turn "+ turnsCounter +" ends.</color></b> ");
 		turnsCounter++;
 
 		UnitEvents.UnitTurnStart(currentUnit);
@@ -519,6 +519,7 @@ public class GameManager : MonoBehaviour {
 	public void checkIfCastInterrupted(Unit _target){
 			if (_target.UnitAction == unitActions.casting){
 				if (Random.Range(0.0f, 1.0f) >= currentUnit.Magic/100){
+				GUImanager.instance.Log.addText(_target.unitName + " <b><color=red>fails to cast</color></b> " + _target.currentAbility);
 					Debug.Log ("Cast interrupted!");
 					_target.CastingDelay = 0;
 					_target.UnitAction = unitActions.idle;
@@ -544,9 +545,14 @@ public class GameManager : MonoBehaviour {
 				BaseEffect ef = BaseEffectsManager.instance.getEffect(s);
 				if(ef != null){
 					if(ef.requireTarget)
+					{
 						currentUnit.unitBaseEffects.addEffect(ef,_target);
-					else
+						GUImanager.instance.Log.addText(ef.name + " <b><color=red>applied on</color></b> " + _target.name + " by "+ currentUnit.name);
+					}
+					else{
 						currentUnit.unitBaseEffects.addEffect(ef);
+						GUImanager.instance.Log.addText(ef.name + " <b><color=red>applied on</color></b> " + currentUnit.name);
+					}
 				}
 			}
 		}

@@ -315,6 +315,7 @@ public class Unit : MonoBehaviour {
 				playerOwner.unitsDead.Add(this);
 			unitBaseEffects.deleteAllEffects(true);
 			animation.CrossFade("Death");
+			GUImanager.instance.Log.addText(name + " <b><color=red> died!</color></b> ");
 			gm.checkVictory();
 			StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim));
 		}
