@@ -23,6 +23,11 @@ public class Tile : MonoBehaviour {
 	public Unit unitInTile;
 	public highlightContourController highlightController;
 
+	public Tile upNeighbour;
+	public Tile rightNeighbour;
+	public Tile downNeighbour;
+	public Tile leftNeighbour;
+
 	private GameManager gm;
 	// Use this for initialization
 	void Awake(){
@@ -32,7 +37,6 @@ public class Tile : MonoBehaviour {
 
 	void Start () {
 		if (Application.loadedLevelName == "gameScene") {
-
 			generateNeighbors();
 		}
 	}
@@ -44,22 +48,26 @@ public class Tile : MonoBehaviour {
 		if (gridPosition.y > 0) {
 			Vector2 n = new Vector2(gridPosition.x, gridPosition.y - 1);
 			neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			upNeighbour = gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)];
 		}
 		//down
 		if (gridPosition.y < gm.mapSize - 1) {
 			Vector2 n = new Vector2(gridPosition.x, gridPosition.y + 1);
 			neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			downNeighbour = gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)];
 		}		
 		
 		//left
 		if (gridPosition.x > 0) {
 			Vector2 n = new Vector2(gridPosition.x - 1, gridPosition.y);
 			neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			leftNeighbour = gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)];
 		}
 		//right
 		if (gridPosition.x < gm.mapSize - 1) {
 			Vector2 n = new Vector2(gridPosition.x + 1, gridPosition.y);
 			neighbors.Add(gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)]);
+			rightNeighbour = gm.map[(int)Mathf.Round(n.x)][(int)Mathf.Round(n.y)];
 		}
 	}
 	
@@ -69,6 +77,9 @@ public class Tile : MonoBehaviour {
 	}
 	
 	void OnMouseEnter() {
+		if(Application.loadedLevelName == "gameScene"){
+			UnitEvents.TileCursorOverChanged(this);
+		}
 		if (Application.loadedLevelName == "MapCreatorScene" && Input.GetMouseButton(0)) {
 			if(MapCreatorManager.instance.editorState == editorStates.setType)
 			setType(MapCreatorManager.instance.palletSelection);
@@ -172,7 +183,7 @@ public class Tile : MonoBehaviour {
 	public void showHighlight(Color color){
 		highlight.SetActive(true);
 		highlight.renderer.sharedMaterial.color = color;
-		highlightController.showContour(gm.highlightedTiles);
+//		highlightController.showContour(gm.highlightedTiles);
 	}
 
 	public void hideHighlight(){

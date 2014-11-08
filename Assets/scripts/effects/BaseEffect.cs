@@ -44,7 +44,7 @@ public class BaseEffect : ICloneable {
 	public void Init(Unit _owner = null,Unit _target = null)
 	{
 
-		gm.OnPlayerTurnEnd += PlayerTurnEnd;
+		UnitEvents.OnPlayerTurnEnd += PlayerTurnEnd;
 
 		if(_owner != null)
 			owner = _owner;
@@ -206,6 +206,6 @@ public class BaseEffect : ICloneable {
 	}
 
 	void OnDestroy(){
-		gm.OnPlayerTurnEnd -= PlayerTurnEnd;
+		UnitEvents.OnPlayerTurnEnd -= PlayerTurnEnd;
 	}
 }

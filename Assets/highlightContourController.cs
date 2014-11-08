@@ -39,6 +39,39 @@ public class highlightContourController : MonoBehaviour {
 	
 	}
 
+	public List<Vector3> getContour(List<Tile> selection){
+		List<Vector3> tempList = new List<Vector3>();
+		int count = 0;
+		foreach(Tile t in ownerTile.neighbors)
+			if(selection.Contains(t))
+				count++;
+		if(count == 4)
+			return null;
+
+		//up
+		if((ownerTile.upNeighbour==null)||(!selection.Contains(ownerTile.upNeighbour))){
+			if(!tempList.Contains(cornerLT.transform.position))	tempList.Add(cornerLT.transform.position);
+			if(!tempList.Contains(cornerRT.transform.position)) tempList.Add(cornerRT.transform.position);
+		}
+		//right
+		if((ownerTile.rightNeighbour==null)||(!selection.Contains(ownerTile.rightNeighbour))){
+			if(!tempList.Contains(cornerRT.transform.position)) tempList.Add(cornerRT.transform.position);
+			if(!tempList.Contains(cornerRB.transform.position)) tempList.Add(cornerRB.transform.position);
+		}
+		//down
+		if((ownerTile.downNeighbour==null)||(!selection.Contains(ownerTile.downNeighbour))){
+			if(!tempList.Contains(cornerRB.transform.position)) tempList.Add(cornerRB.transform.position);
+			if(!tempList.Contains(cornerLB.transform.position)) tempList.Add(cornerLB.transform.position);
+		}
+		//left
+		if((ownerTile.leftNeighbour==null)||(!selection.Contains(ownerTile.leftNeighbour))){
+			if(!tempList.Contains(cornerLB.transform.position)) tempList.Add(cornerLB.transform.position);
+			if(!tempList.Contains(cornerLT.transform.position)) tempList.Add(cornerLT.transform.position);
+		}
+		tempList.Sort(new GUImanager.Vector3Sorter());
+		return tempList;
+	}
+
 	public void showContour(List<Tile> selection){
 		foreach(Tile t in ownerTile.neighbors){
 			//up

@@ -6,6 +6,7 @@ public class ColorHolder : MonoBehaviour {
 	public Color attack;
 	public Color area;
 	public Color move;
+	public Material pathMat;
 
 	void Awake () {
 		instance = this;

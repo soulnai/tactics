@@ -6,18 +6,11 @@ using DG.Tweening;
 using EnumSpace;
 
 //Events
-
-public delegate void UnitEvent(Unit currentUnit);
-public delegate void PlayerEvent(Player currentPlayer);
 public delegate void RoundEvent();
 
 public class GameManager : MonoBehaviour {
-	public event UnitEvent OnUnitPosChange;
-	public event UnitEvent OnUnitTurnStart;
-	public event UnitEvent OnUnitTurnEnd;
-	public event PlayerEvent OnPlayerTurnStart;
-	public event PlayerEvent OnPlayerTurnEnd;
-	public event PlayerEvent OnVictoryState;
+
+
 
 	public static GameManager instance;
 	//units count
@@ -119,10 +112,9 @@ public class GameManager : MonoBehaviour {
 
 		foreach (Tile t in highlightedTiles) {
 			t.showHighlight(ColorHolder.instance.move);
-
-		matchState = matchStates.placeUnits;
-
+			matchState = matchStates.placeUnits;
 		}
+//		GUImanager.instance.showHighlightRegion(highlightedTiles);
 
 		placeAIUnits();
 	}
@@ -155,8 +147,8 @@ public class GameManager : MonoBehaviour {
 		placeMissingUnits();
 		UnitEvents.UnlockUI();
 		matchState = matchStates.battle;
-		OnUnitTurnStart += TurnLogic;
-		OnVictoryState += endMatch;
+		UnitEvents.OnUnitTurnStart += TurnLogic;
+		UnitEvents.OnVictoryState += endMatch;
 
 		Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
@@ -179,10 +171,12 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {	
 		UnitEvents.onTileClick += TileClickHandler;
+		UnitEvents.onTileCursorOverChanged += drawPointer;
 		UnitEvents.LockUI();
 		generateMap();
 		generateUnits();
 		startPlacePhase();
+
 		unitSelection = (GameObject)Instantiate(selectionRing, currentUnit.transform.position, Quaternion.Euler(0,0,0));
 		unitSelection.transform.parent = currentUnit.transform;
 
@@ -206,7 +200,7 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		drawPointer();
+
 		drawArea ();
 		if((currentUnit.UnitAction != unitActions.idle)&&(currentUnit.UnitAction != unitActions.moving)&&(currentUnit.UnitAction != unitActions.readyToMove))
 			AttackOnMouseClick ();
@@ -234,30 +228,26 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void PlayerEndTurn(){
-		if(OnPlayerTurnEnd != null)
-			OnPlayerTurnEnd(currentPlayer);
+		UnitEvents.PlayerTurnEnd(currentPlayer);
 		
 		if(currentPlayerIndex + 1 < players.Count)
 		{
 			currentPlayerIndex++;
-			if(OnPlayerTurnStart != null)
-				OnPlayerTurnStart(currentPlayer);
+			UnitEvents.PlayerTurnStart(currentPlayer);
 			delayCastLogic();
 		}
 		else
 		{			
 			currentPlayerIndex = 0;
 
-			if(OnPlayerTurnStart != null)
-				OnPlayerTurnStart(currentPlayer);
+			UnitEvents.PlayerTurnStart(currentPlayer);
 			delayCastLogic();
 		}
 		currentUnitIndex = 0;
 		
 		turnsCounter++;
 
-		if(OnUnitTurnStart != null)
-			OnUnitTurnStart(currentUnit);
+		UnitEvents.UnitTurnStart(currentUnit);
 
 		if(currentPlayer.type == playerType.ai)
 			UnitEvents.LockUI();
@@ -282,8 +272,7 @@ public class GameManager : MonoBehaviour {
 
 	public void selectNextUnit() {
 		//End turn event
-		if(OnUnitTurnEnd != null)
-			OnUnitTurnEnd(currentUnit);
+		UnitEvents.UnitTurnEnd(currentUnit);
 
 		if (currentUnitIndex + 1 < currentPlayer.units.Count) {
 			currentUnitIndex++;
@@ -306,8 +295,7 @@ public class GameManager : MonoBehaviour {
 			else
 			{
 				//Start turn event
-				if(OnUnitTurnStart != null)
-					OnUnitTurnStart(currentUnit);
+				UnitEvents.UnitTurnStart(currentUnit);
 			}
 		}
 	}
@@ -340,17 +328,16 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void highlightTilesAt(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers, float maxHeightDiff = 100f) {
-						highlightedTiles = new List<Tile> ();
+		highlightedTiles = new List<Tile> ();
+		if (ignorePlayers)
+			highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, maxHeightDiff);
+		else
+			highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray (), maxHeightDiff);
 
-						if (ignorePlayers)
-								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, maxHeightDiff);
-						else
-								highlightedTiles = TileHighlight.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray (), maxHeightDiff);
+		foreach (Tile t in highlightedTiles)
+			t.showHighlight(highlightColor);
 		
-						foreach (Tile t in highlightedTiles) {
-							t.showHighlight(highlightColor);
-						}
-				
+//		GUImanager.instance.showHighlightRegion(highlightedTiles);
 	}
 
 	public void AttackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers,bool addCenterTile = false) {
@@ -381,6 +368,8 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	public void removeTileHighlights() {
+		GUImanager.instance.hideHighlightRegion();
+		GUImanager.instance.hidePath();
 		for (int i = 0; i < mapSize; i++) {
 			for (int j = 0; j < mapSize; j++) {
 				map[i][j].hideHighlight();
@@ -401,8 +390,7 @@ public class GameManager : MonoBehaviour {
 			currentUnit.gridPosition = destTile.gridPosition;
 			destTile.unitInTile = currentUnit;
 			currentUnit.currentTile = destTile;
-			if(OnUnitPosChange != null)
-				OnUnitPosChange(currentUnit);
+			UnitEvents.UnitPosChanged(currentUnit);
 		} else {
 			Debug.Log ("destination invalid");
 		}
@@ -634,6 +622,11 @@ public class GameManager : MonoBehaviour {
 			}
 			map.Add(row);
 		}
+		for (int i = 0; i < mapSize; i++) {
+			for (int j = 0; j < mapSize; j++) {
+				map[i][j].generateNeighbors();
+			}
+		}
 	}
 
 	void generateUnits() {
@@ -681,28 +674,16 @@ public class GameManager : MonoBehaviour {
 		return tileXY;
 	}
 
-	public void drawPointer()
+	public void drawPointer(Tile t)
 	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
-
-		if((Physics.Raycast(ray,out hit,1000f,mask))&&(!GUImanager.instance.mouseOverGUI))
-		{
-			if(hit.transform.gameObject.GetComponent<Tile>() != null)
-			{
-				pointer.SetActive(true);
-				Tile t = hit.transform.gameObject.GetComponent<Tile>();
-				pointer.transform.position = Vector3.Lerp(pointer.transform.position,(t.transform.position+new Vector3(0,0.5f,0)),0.5f);
-			}
-			else
-			{
-				pointer.SetActive(false);
-			}
-		}
+		pointer.SetActive(true);
+		pointer.transform.position = (t.transform.position+new Vector3(0,0.5f,0));
+		if((currentUnit.UnitAction == unitActions.readyToMove)&&
+		   (highlightedTiles.Contains(t))&&
+		   (t.impassible == false))
+			GUImanager.instance.showPath(TilePathFinder.FindPath(map[(int)currentUnit.gridPosition.x][(int)currentUnit.gridPosition.y],t, unitsAll.Where(x => x.gridPosition != t.gridPosition && x.gridPosition != currentUnit.gridPosition).Select(x => x.gridPosition).ToArray(),currentUnit.maxHeightDiff));
 		else
-		{
-			pointer.SetActive(false);
-		}
+			GUImanager.instance.hidePath();
 	}
 
 	void drawArea ()
@@ -799,10 +780,7 @@ public class GameManager : MonoBehaviour {
 	{
 		foreach(Player p in players){ 
 			if(p.unitsDead.Count >= p.units.Count){
-				if(OnVictoryState != null)
-				{
-					OnVictoryState(p);
-				}
+				UnitEvents.VictoryState(p);
 			}
 		}
 	}
@@ -852,7 +830,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void OnDestroy(){
-		OnUnitTurnStart -= TurnLogic;
-		OnVictoryState -= endMatch;
+		UnitEvents.OnUnitTurnStart -= TurnLogic;
+		UnitEvents.OnVictoryState -= endMatch;
 	}
 }

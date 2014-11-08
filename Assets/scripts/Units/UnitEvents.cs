@@ -2,6 +2,7 @@
 using System.Collections;
 
 public delegate void UIEvent();
+public delegate void PlayerBaseEvent(Player player);
 public delegate void TileBaseEvent(Tile tile);
 public delegate void UnitBaseEvent(Unit unit);
 public delegate void UnitAttributeEvent(Unit unit,BaseAttribute at);
@@ -9,17 +10,59 @@ public delegate void UnitInteractionEvent(Unit owner,Unit target);
 public delegate void UnitEffectEvent(Unit u,BaseEffect ef);
 
 public static class UnitEvents {
+	public static event PlayerBaseEvent OnPlayerTurnStart;
+	public static event PlayerBaseEvent OnPlayerTurnEnd;
+	public static event PlayerBaseEvent OnVictoryState;
 	public static event UIEvent onLockUI;
 	public static event UIEvent onUnlockUI;
 	public static event TileBaseEvent onTileClick;
+	public static event TileBaseEvent onTileCursorOverChanged;
 	public static event UnitBaseEvent onUnitReactionEnd;
 	public static event UnitBaseEvent onMouseOverUnit;
 	public static event UnitBaseEvent onUnitSelectionChanged;
+	public static event UnitBaseEvent OnUnitPosChange;
+	public static event UnitBaseEvent OnUnitTurnStart;
+	public static event UnitBaseEvent OnUnitTurnEnd;
 	public static event UnitAttributeEvent onAttributeChanged;
 	public static event UnitInteractionEvent onUnitFXEnd;
 	public static event UnitEffectEvent OnUnitEffectChanged;
 	public static event UnitEffectEvent OnUnitEffectAdded;
 	public static event UnitEffectEvent OnUnitEffectRemoved;
+
+	public static void TileCursorOverChanged(Tile t){
+		if(onTileCursorOverChanged != null)
+			onTileCursorOverChanged(t);
+	}
+
+	public static void VictoryState(Player p){
+		if(OnVictoryState != null)
+			OnVictoryState(p);
+	}
+
+	public static void PlayerTurnEnd(Player p){
+		if(OnPlayerTurnEnd != null)
+			OnPlayerTurnEnd(p);
+	}
+
+	public static void PlayerTurnStart(Player p){
+		if(OnPlayerTurnStart != null)
+			OnPlayerTurnStart(p);
+	}
+
+	public static void UnitPosChanged(Unit u){
+		if(OnUnitPosChange != null)
+			OnUnitPosChange(u);
+	}
+
+	public static void UnitTurnStart(Unit u){
+		if(OnUnitTurnStart != null)
+			OnUnitTurnStart(u);
+	}
+
+	public static void UnitTurnEnd(Unit u){
+		if(OnUnitTurnEnd != null)
+			OnUnitTurnEnd(u);
+	}
 
 	public static void TileClick(Tile t){
 		if(onTileClick!=null)

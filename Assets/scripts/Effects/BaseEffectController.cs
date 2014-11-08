@@ -12,7 +12,7 @@ public class BaseEffectController : MonoBehaviour {
 	private GameManager gm = GameManager.instance;
 	private Unit owner;
 	void Awake () {
-		gm.OnUnitPosChange += OnUnitPosChange;
+		UnitEvents.OnUnitPosChange += OnUnitPosChange;
 		owner = GetComponent<Unit>();
 	}
 
@@ -129,6 +129,6 @@ public class BaseEffectController : MonoBehaviour {
 	}
 
 	void OnDestroy(){
-		gm.OnUnitPosChange -= OnUnitPosChange;
+		UnitEvents.OnUnitPosChange -= OnUnitPosChange;
 	}
 }
