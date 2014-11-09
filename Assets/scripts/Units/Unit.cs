@@ -217,7 +217,6 @@ public class Unit : MonoBehaviour {
 						currentAbility = a;
 						attackDistance = a.range;
 						damageBase = a.baseDamage;
-	//					UnitAction = a.unitAction;
 						gm.AttackhighlightTiles (gridPosition,ColorHolder.instance.attack, attackDistance, true);
 					}
 				}

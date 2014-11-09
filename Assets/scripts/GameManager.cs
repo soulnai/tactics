@@ -234,15 +234,14 @@ public class GameManager : MonoBehaviour {
 		{
 			currentPlayerIndex++;
 			UnitEvents.PlayerTurnStart(currentPlayer);
-			delayCastLogic();
 		}
 		else
 		{			
 			currentPlayerIndex = 0;
 
 			UnitEvents.PlayerTurnStart(currentPlayer);
-			delayCastLogic();
 		}
+		delayCastLogic();
 		currentUnitIndex = 0;
 		GUImanager.instance.Log.addText("<b><color=green>Turn "+ turnsCounter +" ends.</color></b> ");
 		turnsCounter++;
@@ -261,9 +260,9 @@ public class GameManager : MonoBehaviour {
 		foreach(Unit u in currentPlayer.units){
 			if (u.UnitAction == unitActions.casting && u.CastingDelay > 0) {
 				u.CastingDelay--;
-				u.AP = 0;
 				selectNextUnit();
-			} else if (u.UnitAction == unitActions.casting) {
+			}
+			if (u.UnitAction == unitActions.casting && u.CastingDelay == 0) {
 				u.currentAbility = u.DelayedAbility;
 				u.DelayedAbilityReady = true;
 			}
@@ -838,5 +837,7 @@ public class GameManager : MonoBehaviour {
 	void OnDestroy(){
 		UnitEvents.OnUnitTurnStart -= TurnLogic;
 		UnitEvents.OnVictoryState -= endMatch;
+		UnitEvents.onTileClick -= TileClickHandler;
+		UnitEvents.onTileCursorOverChanged -= drawPointer;
 	}
 }
