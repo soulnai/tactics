@@ -2,6 +2,7 @@
 using System.Collections;
 
 public delegate void UIEvent();
+public delegate void UIConfirmEvent(guiConfirmFunc func);
 public delegate void PlayerBaseEvent(Player player);
 public delegate void TileBaseEvent(Tile tile);
 public delegate void UnitBaseEvent(Unit unit);
@@ -15,6 +16,7 @@ public static class UnitEvents {
 	public static event PlayerBaseEvent OnVictoryState;
 	public static event UIEvent onLockUI;
 	public static event UIEvent onUnlockUI;
+	public static event UIConfirmEvent onConfirmRequest;
 	public static event TileBaseEvent onTileClick;
 	public static event TileBaseEvent onTileCursorOverChanged;
 	public static event UnitBaseEvent onUnitReactionEnd;
@@ -77,6 +79,11 @@ public static class UnitEvents {
 	public static void UnlockUI(){
 		if(onUnlockUI!=null)
 			onUnlockUI();
+	}
+
+	public static void ConfirmRequest(guiConfirmFunc func){
+		if(onConfirmRequest!=null)
+			onConfirmRequest(func);
 	}
 
 	public static void UnitSelectionChanged(Unit u){

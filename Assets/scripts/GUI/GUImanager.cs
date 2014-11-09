@@ -5,7 +5,11 @@ using System.Collections.Generic;
 using EnumSpace;
 using Vectrosity;
 
+public delegate void guiConfirmFunc(bool answer);
+
 public class GUImanager : MonoBehaviour {
+
+	guiConfirmFunc func;
 
 	public static GUImanager instance;
 	public GameObject controlsPanel;
@@ -80,11 +84,17 @@ public class GUImanager : MonoBehaviour {
 		mouseOverGUI = over;
 	}
 
-	public void OnMoveClick()
+	public void OnMoveClick(bool needConfirm = true)
 	{
-		abilitiesPanel.SetActive (false);
-		Unit u = gm.currentUnit;
-		u.tryMove();
+		if(needConfirm == false){
+			abilitiesPanel.SetActive (false);
+			Unit u = gm.currentUnit;
+			u.tryMove();
+		}
+		else{
+			func = OnMoveClick;
+			UnitEvents.ConfirmRequest(func);
+		}
 	}
 
 	public void OnEndTurnClick()
