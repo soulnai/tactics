@@ -255,7 +255,7 @@ public class GameManager : MonoBehaviour {
 		}
 		delayCastLogic();
 		currentUnitIndex = 0;
-		GUImanager.instance.Log.addText("<b><color=green>Turn "+ turnsCounter +" ends.</color></b> ");
+		GUImanager.instance.Log.addText("<b><color=green>"+ currentPlayer.playerName +" turn begins.</color></b> ");
 		turnsCounter++;
 
 		UnitEvents.UnitTurnStart(currentUnit);
