@@ -416,14 +416,6 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	void OnMouseEnter(){
-//		gm.ShowMovementDistance(this);
-	}
-
-	void OnMouseExit(){
-//		gm.removeTileHighlights();
-	}
-
 	void OnDestroy()
 	{
 		UnitEvents.onAttributeChanged -= HandleonAttributeChanged;

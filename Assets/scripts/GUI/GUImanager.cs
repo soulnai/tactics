@@ -84,9 +84,9 @@ public class GUImanager : MonoBehaviour {
 		mouseOverGUI = over;
 	}
 
-	public void OnMoveClick(bool needConfirm = true)
+	public void OnMoveClick(bool noConfirm = false)
 	{
-		if(needConfirm == false){
+		if(noConfirm == true){
 			abilitiesPanel.SetActive (false);
 			Unit u = gm.currentUnit;
 			u.tryMove();

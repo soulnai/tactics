@@ -23,6 +23,5 @@ public class VictoryPanelControllerGUI : MonoBehaviour {
 		winnerPlayer = p;
 		winnerText.text = "Winner - "+winnerPlayer.playerName;
 		gameObject.SetActive(true);
-
 	}
 }
