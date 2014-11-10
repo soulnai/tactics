@@ -13,7 +13,7 @@ public class AbilitiesController : MonoBehaviour {
 
 	void Start () {
 		initAbilities();
-		GUImanager.instance.showAbilities();
+		GUImanager.instance.initAbilities();
 	}
 
 	public void initAbilities (){

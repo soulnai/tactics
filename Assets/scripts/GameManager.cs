@@ -99,6 +99,9 @@ public class GameManager : MonoBehaviour {
 
 	void startPlacePhase ()
 	{
+		currentUnitIndex = 0;
+		matchState = matchStates.placeUnits;
+
 		startTilesSecond = new List<Tile>();
 		for(int i=map.Count/2-3;i<map.Count/2+3;i++)
 			for(int j=map[0].Count-4;j<map[0].Count;j++)
@@ -108,11 +111,9 @@ public class GameManager : MonoBehaviour {
 		for(int i=map.Count/2-3;i<map.Count/2+3;i++)
 			for(int j=0;j<4;j++)
 				startTilesFirst.Add(map[i][j]);
-		highlightedTiles = startTilesFirst;
 
-		foreach (Tile t in highlightedTiles) {
+		foreach (Tile t in startTilesFirst) {
 			t.showHighlight(ColorHolder.instance.move);
-			matchState = matchStates.placeUnits;
 		}
 //		GUImanager.instance.showHighlightRegion(highlightedTiles);
 
@@ -165,7 +166,8 @@ public class GameManager : MonoBehaviour {
 		Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 		
-		StartCoroutine(DelayedFirstTurnLogic(0.1f));
+		firstTurnInit();
+		TurnLogic(currentUnit);
 	}
 
 	void endMatch (Player loserPlayer)
@@ -184,6 +186,7 @@ public class GameManager : MonoBehaviour {
 	void Start () {	
 		UnitEvents.onTileClick += TileClickHandler;
 		UnitEvents.onTileCursorOverChanged += drawPointer;
+		UnitEvents.onTileCursorOverChanged += drawArea;
 		UnitEvents.LockUI();
 		generateMap();
 		generateUnits();
@@ -197,23 +200,14 @@ public class GameManager : MonoBehaviour {
 	void TileClickHandler (Tile t)
 	{
 		if((matchState == matchStates.placeUnits)&&(!GUImanager.instance.mouseOverGUI)){
-			if((!t.impassible)&&(highlightedTiles.Contains(t))&&(t.unitInTile == null)){
+			if((!t.impassible)&&(startTilesFirst.Contains(t))&&(t.unitInTile == null)){
 				currentUnit.placeUnit(t.gridPosition);
 			}
 		}
 	}
-
-	IEnumerator DelayedFirstTurnLogic (float time)
-	{
-		yield return new WaitForSeconds(time);
-		firstTurnInit();
-		TurnLogic(currentUnit);
-	}
 	
 	// Update is called once per frame
 	void Update () {
-
-		drawArea ();
 		if((currentUnit.UnitAction != unitActions.idle)&&(currentUnit.UnitAction != unitActions.moving)&&(currentUnit.UnitAction != unitActions.readyToMove))
 			AttackOnMouseClick ();
 	}
@@ -314,7 +308,7 @@ public class GameManager : MonoBehaviour {
 	void TurnLogic (Unit u)
 	{
 		if(u.UnitState != unitStates.dead){
-			GUImanager.instance.showAbilities ();
+			GUImanager.instance.initAbilities ();
 			removeTileHighlights ();
 
 			//reset & focus camera
@@ -325,6 +319,7 @@ public class GameManager : MonoBehaviour {
 			//set selection ring
 			unitSelection.transform.position = currentUnit.transform.position;
 			unitSelection.transform.parent = currentUnit.transform;
+
 			if(u.DelayedAbilityReady){
 				u.onAbility(u.DelayedAbility);
 			}
@@ -406,56 +401,6 @@ public class GameManager : MonoBehaviour {
 		} else {
 			Debug.Log ("destination invalid");
 		}
-	}
-
-
-
-	public int calculateDamage (BaseAbility ability, Unit unitOwner, Unit _target ) {
-		int amountOfDamage = 0;
-		if (ability.attackType == attackTypes.magic || ability.attackType == attackTypes.heal) {
-			amountOfDamage = Mathf.RoundToInt(Random.Range(unitOwner.damageBase, unitOwner.maxDamageBase+1.0f) +(unitOwner.Magic/2) - _target.MagicDef);
-			if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
-				amountOfDamage+= Mathf.RoundToInt(amountOfDamage*unitOwner.criticalModifier);
-			}
-			//return amountOfDamage;
-		} else {
-			amountOfDamage = Mathf.RoundToInt(Random.Range(unitOwner.damageBase, unitOwner.maxDamageBase+1.0f) +(unitOwner.Strength/2) - _target.PhysicalDef);
-			float angle = Vector3.Angle(GameManager.instance.currentUnit.transform.forward, GameManager.instance.targetPub.transform.forward);
-			Debug.Log (angle);
-			//TODO backstab apply chance
-			if (angle <=30 && currentUnit.currentAbility.canBackstan && Random.Range(0.0f, 1.0f) <= 1f){
-				amountOfDamage = amountOfDamage*10;
-				Debug.Log ("backstab");
-				return amountOfDamage;
-			} else if (angle <=30 && currentUnit.currentAbility.canBackstan){
-				amountOfDamage = amountOfDamage*5;
-				Debug.Log ("backstab");
-				return amountOfDamage;
-			} else if (angle <=30){
-				amountOfDamage = amountOfDamage*2;
-				Debug.Log ("backstab");
-				return amountOfDamage;
-			}
-			else if (angle >=30 && angle <=90){
-				amountOfDamage = amountOfDamage*2;
-				Debug.Log ("flank attack");
-				return amountOfDamage;
-			}
-			else if (angle >90){
-				if (Random.Range(0.0f, 1.0f) <= unitOwner.criticalChance){
-					amountOfDamage+= Mathf.RoundToInt(amountOfDamage*unitOwner.criticalModifier);
-				}
-				Debug.Log ("front attack");
-				return amountOfDamage;
-			}
-			
-		}
-
-		if (amountOfDamage <= 0) {
-			amountOfDamage = 0;	
-			return amountOfDamage;
-		}
-		return amountOfDamage;
 	}
 
 	public void useAbility(BaseAbility ability,Unit unitOwner,Tile targetTile = null,Unit targetUnit = null){
@@ -577,8 +522,8 @@ public class GameManager : MonoBehaviour {
 
 		if (highlightedTiles.Contains (target.currentTile) && currentUnit.currentAbility.areaDamage == true) {
 			
-			if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange- currentUnit.currentAbility.areaDamageRadius/2 && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange+ currentUnit.currentAbility.areaDamageRadius/2 &&
-			    owner.gridPosition.y >= target.gridPosition.y - owner.attackRange- currentUnit.currentAbility.areaDamageRadius/2 && owner.gridPosition.y <= target.gridPosition.y + owner.attackRange+ currentUnit.currentAbility.areaDamageRadius/2) 
+			if (owner.gridPosition.x >= target.gridPosition.x - owner.attackRange - currentUnit.currentAbility.areaDamageRadius && owner.gridPosition.x <= target.gridPosition.x + owner.attackRange+ currentUnit.currentAbility.areaDamageRadius &&
+			    owner.gridPosition.y >= target.gridPosition.y - owner.attackRange - currentUnit.currentAbility.areaDamageRadius && owner.gridPosition.y <= target.gridPosition.y + owner.attackRange+ currentUnit.currentAbility.areaDamageRadius) 
 			{
 				return true;
 			} else
@@ -704,21 +649,20 @@ public class GameManager : MonoBehaviour {
 			GUImanager.instance.hidePath();
 	}
 
-	void drawArea ()
+	void drawArea (Tile t)
 	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
+//		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+//		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
 		if (currentUnit.currentAbility.areaDamage == true && currentUnit.UnitAction == unitActions.readyToAttack) {
-			if ((Physics.Raycast (ray, out hit, 1000f, mask)) && (!GUImanager.instance.mouseOverGUI)) {
-				if (hit.transform.gameObject.GetComponent<Tile> () != null) {
+//			if ((Physics.Raycast (ray, out hit, 1000f, mask)) && (!GUImanager.instance.mouseOverGUI)) {
+//				if (hit.transform.gameObject.GetComponent<Tile> () != null) {
 					removeTileHighlights ();
-					Tile t = hit.transform.gameObject.GetComponent<Tile> ();
 					AttackhighlightTilesArea (currentUnit.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.range, true);
 					AttackhighlightTiles (currentUnit.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.range, true);
 					AttackhighlightTiles (t.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.areaDamageRadius, true,true);
 					highlightedTiles.Add (t);
-					}
-				}
+//					}
+//				}
 			}
 
 	}
@@ -845,6 +789,9 @@ public class GameManager : MonoBehaviour {
 		}
 		if(matchState == matchStates.battle)
 			TurnLogic(currentUnit);
+
+		unitSelection.transform.position = currentUnit.transform.position;
+		unitSelection.transform.parent = currentUnit.transform;
 	}
 
 	void OnDestroy(){

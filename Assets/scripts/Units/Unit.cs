@@ -139,17 +139,9 @@ public class Unit : MonoBehaviour {
 		moveDestination = transform.position;
 		getAttribute(unitAttributes.AP).Value = APmax;
 		UnitEvents.OnPlayerTurnStart += prepareForTurn;
-		UnitEvents.onAttributeChanged += HandleonAttributeChanged;
+		UnitEvents.onAttributeChanged += checkDead;
 	}
 
-	void HandleonAttributeChanged (Unit unit, BaseAttribute at)
-	{
-		if(unit == this){
-			if(at.attribute == unitAttributes.HP)
-				checkDead();
-		}
-	}
-	
 	public void prepareForTurn(Player p)
 	{
 		if(p == playerOwner){
@@ -330,12 +322,6 @@ public class Unit : MonoBehaviour {
 		gm.selectNextUnit ();
 	}
 
-	public void OnGUI() {
-		//display HP
-		Vector3 location = Camera.main.WorldToScreenPoint(transform.position) + Vector3.up * 55;
-		GUI.Label(new Rect(location.x, Screen.height - location.y, 30, 20), HP.ToString());
-	}
-
 	public void takeDamage(int damage)
 	{
 		HP -= damage;
@@ -382,7 +368,6 @@ public class Unit : MonoBehaviour {
 		{
 			StartCoroutine(delayedEndTurn(delayAfterAnim));
 		}
-
 	}
 
 	IEnumerator delayedEndTurn (float t)
@@ -416,17 +401,16 @@ public class Unit : MonoBehaviour {
 		AP = APmax;
 	}
 
-	public void checkDead ()
+	public void checkDead (Unit unit, BaseAttribute at)
 	{
-		if((HP<=0)&&(UnitState != unitStates.dead))
-		{
-			makeDead();
-		}
+		if((unit == this)&&(at.attribute == unitAttributes.HP))
+				if((HP<=0)&&(UnitState != unitStates.dead))
+					makeDead();
 	}
 
 	void OnDestroy()
 	{
-		UnitEvents.onAttributeChanged -= HandleonAttributeChanged;
+		UnitEvents.onAttributeChanged -= checkDead;
 		UnitEvents.OnPlayerTurnStart -= prepareForTurn;
 		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
 		UnitEvents.onUnitFXEnd -= FXend;

@@ -36,7 +36,7 @@ public class GUImanager : MonoBehaviour {
 	// Use this for initialization
 	void Awake()
 	{
-		VectorLine.SetCamera3D(Camera.main);
+		abilitiesPanel.SetActive(false);
 		instance = this;
 		foreach(Button b in abilitiesButtonsList)
 		{
@@ -47,8 +47,9 @@ public class GUImanager : MonoBehaviour {
 	}
 
 	void Start () {
+		VectorLine.SetCamera3D(Camera.main);
 		gm = GameManager.instance;
-		showAbilities();
+		initAbilities();
 		abilitiesPanel.SetActive (!abilitiesPanel.activeInHierarchy);
 	}
 
@@ -61,6 +62,7 @@ public class GUImanager : MonoBehaviour {
 	void UnlockUI ()
 	{
 		controlsPanel.SetActive(true);
+		abilitiesPanel.SetActive(false);
 		endTurnButton.gameObject.SetActive(true);
 	}
 
@@ -77,7 +79,7 @@ public class GUImanager : MonoBehaviour {
 		abilitiesPanel.SetActive (false);
 	}
 
-	public void OnOff()
+	public void OnOffAbilitiesList()
 	{
 		abilitiesPanel.SetActive (!abilitiesPanel.activeInHierarchy);
 	}
@@ -119,22 +121,15 @@ public class GUImanager : MonoBehaviour {
 		Application.LoadLevel(Application.loadedLevel);
 	}
 
-	public void SlowMo()
-	{
-		Time.timeScale = 0.5f;
-	}
-
-	public void showAbilities()
+	public void initAbilities()
 	{
 		GameManager gm = GameManager.instance;
-		if(gm.currentUnit.GetComponent<AbilitiesController>() != null){
 		List<BaseAbility> abilitiesList = gm.currentUnit.GetComponent<AbilitiesController>().abilities;
 
 		foreach(Button b in abilitiesButtonsList)
 		{
 			b.gameObject.SetActive(false);
 		}
-
 		for(int i = 0; i < abilitiesList.Count; i++)
 		{
 			int j = i;
@@ -143,7 +138,6 @@ public class GUImanager : MonoBehaviour {
 			abilitiesButtonsList[j].GetComponent<buttonController>().setText(abilitiesList[j].abilityID);
 			abilitiesButtonsList[j].onClick.RemoveAllListeners();
 			abilitiesButtonsList[j].onClick.AddListener(delegate{onAbilityClick(abilitiesList[j]);});
-		}
 		}
 	}
 
@@ -161,13 +155,6 @@ public class GUImanager : MonoBehaviour {
 	{
 		tooltip.hideTooltip();
 	}
-
-	void OnDestroy(){
-		UnitEvents.onLockUI -= LockUI;
-		UnitEvents.onUnlockUI -= UnlockUI;
-	}
-
-
 
 	public class Vector3Sorter : IComparer<Vector3>{
 
@@ -238,7 +225,6 @@ public class GUImanager : MonoBehaviour {
 
 	public void showPath(List<Tile> path)
 	{
-
 		if(pathSpline != null)
 			pathSpline.Resize(0);
 		List<Vector3> pathPoints = new List<Vector3>();
@@ -257,5 +243,10 @@ public class GUImanager : MonoBehaviour {
 	public void hidePath(){
 		if(pathSpline != null)
 			pathSpline.Resize(0);
+	}
+
+	void OnDestroy(){
+		UnitEvents.onLockUI -= LockUI;
+		UnitEvents.onUnlockUI -= UnlockUI;
 	}
 }
