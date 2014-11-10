@@ -134,9 +134,21 @@ public class GameManager : MonoBehaviour {
 			foreach(Unit u in p.units){
 				if(u.currentTile == null){
 					if(p.type == playerType.player)
-						u.placeUnit(getRandoMapTileXY(startTilesFirst));
+					{u.placeUnit(getRandoMapTileXY(startTilesFirst));
+						Vector3 centerTilePos = map[11][11].transform.position;
+						centerTilePos.y = 0;
+						Vector3 unitPos = u.transform.position;
+						unitPos.y = 0;
+						Quaternion newRotation = Quaternion.LookRotation(centerTilePos - unitPos);
+						u.transform.rotation = newRotation;}
 					else
-						u.placeUnit(getRandoMapTileXY(startTilesSecond));
+					{	u.placeUnit(getRandoMapTileXY(startTilesSecond));
+						Vector3 centerTilePos = map[11][11].transform.position;
+						centerTilePos.y = 0;
+						Vector3 unitPos = u.transform.position;
+						unitPos.y = 0;
+						Quaternion newRotation = Quaternion.LookRotation(centerTilePos - unitPos);
+						u.transform.rotation = newRotation;}
 				}
 			}
 		}
