@@ -361,6 +361,12 @@ public class Unit : MonoBehaviour {
 		currentTile = gm.map[(int)position.x][(int)position.y];
 		currentTile.unitInTile = this;
 		transform.position = currentTile.transform.position + new Vector3(0,0.5f,0);
+		Vector3 centerTilePos = GameManager.instance.map[11][11].transform.position;
+		centerTilePos.y = 0;
+		Vector3 unitPos = transform.position;
+		unitPos.y = 0;
+		Quaternion newRotation = Quaternion.LookRotation(centerTilePos - unitPos);
+		transform.rotation = newRotation;
 	}
 	
 	IEnumerator WaitAnimationEnd(float waitTime,bool triggerReactionEnd = false){
