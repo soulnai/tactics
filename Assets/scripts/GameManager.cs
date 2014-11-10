@@ -313,8 +313,9 @@ public class GameManager : MonoBehaviour {
 			//set selection ring
 			unitSelection.transform.position = currentUnit.transform.position;
 			unitSelection.transform.parent = currentUnit.transform;
-			if(u.DelayedAbilityReady)
+			if(u.DelayedAbilityReady){
 				u.onAbility(u.DelayedAbility);
+			}
 		}
 		else
 		{
@@ -518,7 +519,7 @@ public class GameManager : MonoBehaviour {
 	public void checkIfCastInterrupted(Unit _target){
 			if (_target.UnitAction == unitActions.casting){
 				if (Random.Range(0.0f, 1.0f) >= currentUnit.Magic/100){
-				GUImanager.instance.Log.addText(_target.unitName + " <b><color=red>fails to cast</color></b> " + _target.currentAbility);
+				GUImanager.instance.Log.addText(_target.unitName + " interrupted and <b><color=red>fails to cast</color></b> " + _target.currentAbility);
 					Debug.Log ("Cast interrupted!");
 					_target.CastingDelay = 0;
 					_target.UnitAction = unitActions.idle;

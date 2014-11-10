@@ -9,18 +9,19 @@ public class ConfirmPanelController : MonoBehaviour {
 	public Button yesButton;
 	public Button noButton;
 
-	private guiConfirmFunc funcToConfirm;
-
+	private guiConfirmFunc funcYes;
+	private guiConfirmFunc funcNo;
 	void Awake(){
-		UnitEvents.onConfirmRequest += showConfirmationPanel;
+		UnitEvents.onRequestConfirm += showConfirmationPanel;
 	}
 
 	void Start(){
 		hideConfirmationPanel();
 	}
 
-	public void showConfirmationPanel(guiConfirmFunc func){
-		funcToConfirm = func;
+	public void showConfirmationPanel(guiConfirmFunc funcOnConfirm,guiConfirmFunc funcOnDecline){
+		funcYes = funcOnConfirm;
+		funcNo = funcOnDecline;
 		gameObject.SetActive(true);
 	}
 
@@ -30,14 +31,17 @@ public class ConfirmPanelController : MonoBehaviour {
 
 	public void answerYes(){
 		hideConfirmationPanel();
-		funcToConfirm(true);
+		if(funcYes != null)
+			funcYes();
 	}
 
 	public void answerNo(){
 		hideConfirmationPanel();
+		if(funcNo != null)
+			funcNo();
 	}
 
 	void OnDestroy(){
-		UnitEvents.onConfirmRequest -= showConfirmationPanel;
+		UnitEvents.onRequestConfirm -= showConfirmationPanel;
 	}
 }

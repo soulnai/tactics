@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using EnumSpace;
 
 public delegate void UIEvent();
-public delegate void UIConfirmEvent(guiConfirmFunc func);
+public delegate void UIActionEvent(unitActions actionBefore, unitActions actionAfter);
+public delegate void UIConfirmEvent(guiConfirmFunc funcCurrent,guiConfirmFunc funcNew);
 public delegate void PlayerBaseEvent(Player player);
 public delegate void TileBaseEvent(Tile tile);
 public delegate void UnitBaseEvent(Unit unit);
@@ -16,7 +18,8 @@ public static class UnitEvents {
 	public static event PlayerBaseEvent OnVictoryState;
 	public static event UIEvent onLockUI;
 	public static event UIEvent onUnlockUI;
-	public static event UIConfirmEvent onConfirmRequest;
+	public static event UIActionEvent onCurrentActionChange;
+	public static event UIConfirmEvent onRequestConfirm;
 	public static event TileBaseEvent onTileClick;
 	public static event TileBaseEvent onTileCursorOverChanged;
 	public static event UnitBaseEvent onUnitReactionEnd;
@@ -30,10 +33,17 @@ public static class UnitEvents {
 	public static event UnitEffectEvent OnUnitEffectChanged;
 	public static event UnitEffectEvent OnUnitEffectAdded;
 	public static event UnitEffectEvent OnUnitEffectRemoved;
+	
 
 	public static void TileCursorOverChanged(Tile t){
 		if(onTileCursorOverChanged != null)
 			onTileCursorOverChanged(t);
+	}
+
+	public static void CurrentActionChange(unitActions before,unitActions after){
+		Debug.Log(before+" - "+after);
+		if(onCurrentActionChange != null)
+			onCurrentActionChange(before,after);
 	}
 
 	public static void VictoryState(Player p){
@@ -81,9 +91,9 @@ public static class UnitEvents {
 			onUnlockUI();
 	}
 
-	public static void ConfirmRequest(guiConfirmFunc func){
-		if(onConfirmRequest!=null)
-			onConfirmRequest(func);
+	public static void RequestConfirm(guiConfirmFunc funcOnConfirm,guiConfirmFunc funcOnDecline){
+		if(onRequestConfirm!=null)
+			onRequestConfirm(funcOnConfirm,funcOnDecline);
 	}
 
 	public static void UnitSelectionChanged(Unit u){

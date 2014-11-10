@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using EnumSpace;
 using Vectrosity;
 
-public delegate void guiConfirmFunc(bool answer);
+public delegate void guiConfirmFunc();
 
 public class GUImanager : MonoBehaviour {
 
-	guiConfirmFunc func;
+	guiConfirmFunc funcNext;
+	guiConfirmFunc funcCurrent;
 
 	public static GUImanager instance;
 	public GameObject controlsPanel;
@@ -26,6 +27,7 @@ public class GUImanager : MonoBehaviour {
 	public VictoryPanelControllerGUI victoryPanel;
 	public Button endTurnButton;
 	public Button endPlacementButton;
+	public bool needConfirm = true;
 
 	private GameManager gm;
 	private List<Vector3> selectionRegionHighlight = new List<Vector3>();
@@ -34,6 +36,7 @@ public class GUImanager : MonoBehaviour {
 	// Use this for initialization
 	void Awake()
 	{
+		VectorLine.SetCamera3D(Camera.main);
 		instance = this;
 		foreach(Button b in abilitiesButtonsList)
 		{
@@ -84,23 +87,21 @@ public class GUImanager : MonoBehaviour {
 		mouseOverGUI = over;
 	}
 
-	public void OnMoveClick(bool noConfirm = false)
-	{
-		if(noConfirm == true){
-			abilitiesPanel.SetActive (false);
-			Unit u = gm.currentUnit;
-			u.tryMove();
-		}
-		else{
-			func = OnMoveClick;
-			UnitEvents.ConfirmRequest(func);
-		}
+	public void OnMoveClick(){
+		abilitiesPanel.SetActive (false);
+		Unit u = gm.currentUnit;
+		u.tryMove();
 	}
 
-	public void OnEndTurnClick()
-	{
-		abilitiesPanel.SetActive (false);
-		GameManager.instance.PlayerEndTurn();
+	public void OnEndTurnClick(){
+		if(needConfirm){
+			funcCurrent = GameManager.instance.PlayerEndTurn;
+			UnitEvents.RequestConfirm(funcCurrent,null);
+		}
+		else{
+			abilitiesPanel.SetActive (false);
+			GameManager.instance.PlayerEndTurn();
+		}
 	}
 
 	public void OnEndPlacementClick(){
@@ -237,6 +238,7 @@ public class GUImanager : MonoBehaviour {
 
 	public void showPath(List<Tile> path)
 	{
+
 		if(pathSpline != null)
 			pathSpline.Resize(0);
 		List<Vector3> pathPoints = new List<Vector3>();
@@ -256,5 +258,4 @@ public class GUImanager : MonoBehaviour {
 		if(pathSpline != null)
 			pathSpline.Resize(0);
 	}
-
 }

@@ -196,6 +196,7 @@ public class Unit : MonoBehaviour {
 	/// </summary>
 	public void onAbility(BaseAbility a)
 	{
+		UnitEvents.CurrentActionChange(UnitAction,unitActions.readyToAttack);
 		UnitAction = unitActions.readyToAttack;
 		gm.removeTileHighlights ();
 
@@ -274,6 +275,7 @@ public class Unit : MonoBehaviour {
 
 	public void tryMove ()
 	{
+		UnitEvents.CurrentActionChange(UnitAction,unitActions.readyToMove);
 		gm.removeTileHighlights ();
 		if(AP > 0){
 			UnitAction = unitActions.readyToMove;
