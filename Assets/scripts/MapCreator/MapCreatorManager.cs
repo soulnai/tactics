@@ -21,7 +21,7 @@ public class MapCreatorManager : MonoBehaviour {
 
 		mapTransform = transform.FindChild("Map");
 
-		generateBlankMap(22);
+		generateBlankMap(mapSize);
 	}
 	
 	// Update is called once per frame
@@ -30,7 +30,7 @@ public class MapCreatorManager : MonoBehaviour {
 	}
 
 	void generateBlankMap(int mSize) {
-		mapSize = mSize;
+
 
 		//initially remove all children
 		for(int i = 0; i < mapTransform.childCount; i++) {
@@ -78,7 +78,7 @@ public class MapCreatorManager : MonoBehaviour {
 	}
 
 	void saveMapToXml() {
-		MapSaveLoad.Save(MapSaveLoad.CreateMapContainer(map), "map.xml");
+		MapSaveLoad.Save(MapSaveLoad.CreateMapContainer(map), "map-test.xml");
 	}
 
 	void OnGUI() {
