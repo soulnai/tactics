@@ -83,7 +83,7 @@ public class AIPlayer : Unit {
 					gm.removeTileHighlights ();
 
 					UnitAction = unitActions.attacking;
-					gm.AttackhighlightTiles (gridPosition, Color.red, attackRange, true);
+					gm.AttackhighlightTiles (gridPosition, Color.red, attackRange, true, false, 100f);
 					gm.useAbility(a,this,null,opponent);	
 					AP = 0;
 					
