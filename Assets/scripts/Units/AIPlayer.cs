@@ -122,8 +122,6 @@ public class AIPlayer : Unit {
 						pathPoint = i;
 					}
 				}
-				Debug.Log(movementCost);
-				Debug.Log(pathPoint);
 				gm.moveUnitTo(path[pathPoint]);
 			}
 		}

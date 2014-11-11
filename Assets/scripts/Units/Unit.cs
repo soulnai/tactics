@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using EnumSpace;
 
 [System.Serializable]
-public class Unit : MonoBehaviour {
+public class Unit : MonoBehaviour, IPointerClickHandler {
 
 	public Sprite icon;
 
@@ -169,7 +170,9 @@ public class Unit : MonoBehaviour {
 	{
 		if(gm.currentUnit == this)
 		{
-			if((getAttribute(unitAttributes.AP).Value<=0)&&(canEndTurn == true)&&(UnitState != unitStates.dead))
+			if((getAttribute(unitAttributes.AP).Value<=0)&&
+			   (canEndTurn == true)&&
+			   (UnitState != unitStates.dead))
 			{
 				canEndTurn = false;
 				positionQueue.Clear();
@@ -423,6 +426,11 @@ public class Unit : MonoBehaviour {
 					makeDead();
 	}
 
+	public void OnPointerClick(PointerEventData data)
+	{
+		UnitEvents.UnitClick(this);
+	}
+	
 	void OnDestroy()
 	{
 		UnitEvents.onAttributeChanged -= checkDead;

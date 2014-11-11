@@ -71,7 +71,13 @@ public class UnitPanelGUI : MonoBehaviour {
 
 	void onIconClick (Unit target)
 	{
-		GameManager.instance.selectUnit(target);
+		if(GameManager.instance.currentUnit.UnitAction == unitActions.idle)
+			GameManager.instance.selectUnit(target);
+		else
+		{
+			//TODO onUnit/Tile click event for abilities
+			UnitEvents.UnitClick(targetUnit);
+		}
 	}
 
 	public void updateValue(unitAttributes at)

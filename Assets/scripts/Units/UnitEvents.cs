@@ -22,6 +22,7 @@ public static class UnitEvents {
 	public static event UIConfirmEvent onRequestConfirm;
 	public static event TileBaseEvent onTileClick;
 	public static event TileBaseEvent onTileCursorOverChanged;
+	public static event UnitBaseEvent onUnitClick;
 	public static event UnitBaseEvent onUnitReactionEnd;
 	public static event UnitBaseEvent onMouseOverUnit;
 	public static event UnitBaseEvent onUnitSelectionChanged;
@@ -34,7 +35,12 @@ public static class UnitEvents {
 	public static event UnitEffectEvent OnUnitEffectChanged;
 	public static event UnitEffectEvent OnUnitEffectAdded;
 	public static event UnitEffectEvent OnUnitEffectRemoved;
-	
+
+	public static void UnitClick(Unit u){
+		if(onUnitClick != null)
+			onUnitClick(u);
+	}
+
 	public static void UnitCastDelayChanged(Unit u){
 		if(OnUnitCastDelayChanged != null)
 			OnUnitCastDelayChanged(u);

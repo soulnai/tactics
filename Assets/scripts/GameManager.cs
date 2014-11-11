@@ -187,6 +187,8 @@ public class GameManager : MonoBehaviour {
 		UnitEvents.onTileClick += TileClickHandler;
 		UnitEvents.onTileCursorOverChanged += drawPointer;
 		UnitEvents.onTileCursorOverChanged += drawArea;
+		UnitEvents.onUnitClick += useAbility;
+		UnitEvents.onTileClick += useAbility;
 		UnitEvents.LockUI();
 		generateMap();
 		generateUnits();
@@ -204,12 +206,6 @@ public class GameManager : MonoBehaviour {
 				currentUnit.placeUnit(t.gridPosition);
 			}
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if((currentUnit.UnitAction != unitActions.idle)&&(currentUnit.UnitAction != unitActions.moving)&&(currentUnit.UnitAction != unitActions.readyToMove))
-			AttackOnMouseClick ();
 	}
 
 
@@ -646,27 +642,30 @@ public class GameManager : MonoBehaviour {
 			}
 
 	}
-	
-	public void AttackOnMouseClick () {
-		if ((Input.GetMouseButtonDown(0))&&(!GUImanager.instance.mouseOverGUI))
+
+	public void useAbility (Unit u) {
+		AttackOnMouseClick(u);
+	}
+
+	public void useAbility (Tile t) {
+		AttackOnMouseClick(t.unitInTile,t);
+	}
+
+	public void AttackOnMouseClick (Unit un = null,Tile t = null) {
+		if((currentUnit.UnitAction != unitActions.idle)&&(currentUnit.UnitAction != unitActions.moving)&&(currentUnit.UnitAction != unitActions.readyToMove))
 		{
 			BaseAbility ability = currentUnit.currentAbility;
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			Tile targetTile = null;
 			Unit targetUnit = null;
 
-			if(Physics.Raycast(ray,out hit))
-			{
-				if(hit.collider.GetComponent<Tile>())
-				{
-					targetTile = hit.collider.GetComponent<Tile>();
-					targetUnit = targetTile.unitInTile;
-				}
-				if(hit.collider.GetComponent<Unit>())
-				{
-					targetUnit = hit.collider.GetComponent<Unit>();
-					targetTile = targetUnit.currentTile;
-				}
+			if(un != null)
+				targetUnit = un;
+			else
+				targetUnit = t.unitInTile;
+			if(t != null)
+				targetTile = t;
+			else
+				targetTile = un.currentTile;
 
 			if(ability.requireTarget == true){
 					if(ability.selfUse == true)
@@ -710,7 +709,6 @@ public class GameManager : MonoBehaviour {
 						}
 					}
 				}
-			}
 			}
 		}
 
@@ -779,5 +777,8 @@ public class GameManager : MonoBehaviour {
 		UnitEvents.OnVictoryState -= endMatch;
 		UnitEvents.onTileClick -= TileClickHandler;
 		UnitEvents.onTileCursorOverChanged -= drawPointer;
+		UnitEvents.onTileCursorOverChanged -= drawArea;
+		UnitEvents.onUnitClick -= useAbility;
+		UnitEvents.onTileClick -= useAbility;
 	}
 }
