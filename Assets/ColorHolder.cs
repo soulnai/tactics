@@ -7,7 +7,6 @@ public class ColorHolder : MonoBehaviour {
 	public Color area;
 	public Color move;
 	public Material pathMat;
-	public Texture2D pathEndTexture;
 
 	void Awake () {
 		instance = this;
