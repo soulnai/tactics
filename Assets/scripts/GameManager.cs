@@ -334,14 +334,14 @@ public class GameManager : MonoBehaviour {
 //		GUImanager.instance.showHighlightRegion(highlightedTiles);
 	}
 
-	public void AttackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers,bool addCenterTile = false) {
+	public void AttackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers,bool addCenterTile = false,float maxHeightDiff = 0.5f) {
 
 				highlightedTiles = new List<Tile> ();
 		
 				if (ignorePlayers)
-					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance);
+			highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, maxHeightDiff);
 				else
-					highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray ());
+			highlightedTiles = TileHighlightAtack.FindHighlight (map [(int)originLocation.x] [(int)originLocation.y], distance, unitsAll.Where (x => x.gridPosition != originLocation).Select (x => x.gridPosition).ToArray (),maxHeightDiff);
 				if(addCenterTile)
 					highlightedTiles.Add(map [(int)originLocation.x] [(int)originLocation.y]);
 				foreach (Tile t in highlightedTiles) {

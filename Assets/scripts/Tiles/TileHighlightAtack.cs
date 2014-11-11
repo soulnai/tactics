@@ -9,11 +9,11 @@ public class TileHighlightAtack {
 		
 	}
 	
-	public static List<Tile> FindHighlight(Tile originTile, int atackRange) {
-		return FindHighlight(originTile, atackRange, new Vector2[0]);
+	public static List<Tile> FindHighlight(Tile originTile, int atackRange, float maxHeightDiff = 100f) {
+		return FindHighlight(originTile, atackRange, new Vector2[0],maxHeightDiff);
 	}
 	
-	public static List<Tile> FindHighlight(Tile originTile, int atackRange, Vector2[] occupied) {
+	public static List<Tile> FindHighlight(Tile originTile, int atackRange, Vector2[] occupied, float maxHeightDiff = 100f) {
 		List<Tile> closed = new List<Tile>();
 		List<TilePathAtack> open = new List<TilePathAtack>();
 		
@@ -36,7 +36,7 @@ public class TileHighlightAtack {
 			closed.Add(current.lastTile);
 			
 			foreach (Tile t in current.lastTile.neighbors) {	
-				if (occupied.Contains(t.gridPosition)) continue;
+				if (t.impassible || occupied.Contains(t.gridPosition) || (Mathf.Abs(current.lastTile.height-t.height)>maxHeightDiff && GameManager.instance.currentUnit.currentAbility.attackType == EnumSpace.attackTypes.melee)) continue;
 				TilePathAtack newTilePath = new TilePathAtack(current);
 				newTilePath.addTile(t);
 				open.Add(newTilePath);
