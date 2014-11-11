@@ -412,20 +412,13 @@ public class GameManager : MonoBehaviour {
 			Debug.Log("No target selected");
 		}
 		targetPub = _target;
-		//find new look angle
-		Quaternion newOwnerRotation;
-		if(_target != null)
-			newOwnerRotation = getNewLookRotation(unitOwner,_target);
-		else
-			newOwnerRotation = unitOwner.transform.rotation;
-		//rotate to target if needed
-		if(newOwnerRotation != unitOwner.transform.rotation)
-			unitOwner.transform.rotation = Quaternion.Slerp(unitOwner.transform.rotation, newOwnerRotation, 1f);
 
 		//check Ability distance
 		if(_target != null){
 		if(checkAbilityRange(ability,unitOwner,_target))
 		{
+			if(_target != null)
+				unitOwner.transform.rotation = getNewLookRotation(unitOwner,_target);
 			removeTileHighlights();
 
 			//if hit

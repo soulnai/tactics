@@ -187,14 +187,14 @@ public class Unit : MonoBehaviour {
 
 	// Update is called once per frame
 	public virtual void Update () {		
-		if(gm.currentUnit == this)
-		{
+//		if(gm.currentUnit == this)
+//		{
 			checkEndTurn();
 			if(UnitAction == unitActions.moving && GameManager.instance.currentUnit.UnitState != unitStates.dead)
 			{
 				MoveUnit();
 			}
-		}
+//		}
 
 	}
 
