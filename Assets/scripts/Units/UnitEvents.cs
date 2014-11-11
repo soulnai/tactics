@@ -28,12 +28,17 @@ public static class UnitEvents {
 	public static event UnitBaseEvent OnUnitPosChange;
 	public static event UnitBaseEvent OnUnitTurnStart;
 	public static event UnitBaseEvent OnUnitTurnEnd;
+	public static event UnitBaseEvent OnUnitCastDelayChanged;
 	public static event UnitAttributeEvent onAttributeChanged;
 	public static event UnitInteractionEvent onUnitFXEnd;
 	public static event UnitEffectEvent OnUnitEffectChanged;
 	public static event UnitEffectEvent OnUnitEffectAdded;
 	public static event UnitEffectEvent OnUnitEffectRemoved;
 	
+	public static void UnitCastDelayChanged(Unit u){
+		if(OnUnitCastDelayChanged != null)
+			OnUnitCastDelayChanged(u);
+	}
 
 	public static void TileCursorOverChanged(Tile t){
 		if(onTileCursorOverChanged != null)

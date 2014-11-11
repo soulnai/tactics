@@ -10,15 +10,29 @@ public class UnitPanelGUI : MonoBehaviour {
 	public Slider MPslider;
 	public Slider APslider;
 	public EffectsPanelControllerGUI effectsGUI;
+	public Text castCounter;
 
 	public Unit targetUnit;
 	private bool canUpdate = false;
 	// Use this for initialization
 	void Awake(){
 		gameObject.SetActive(false);
+		castCounter.gameObject.SetActive(false);
 		selection.gameObject.SetActive(false);
 		UnitEvents.onUnitSelectionChanged += updateSelectionBox;
 		UnitEvents.onAttributeChanged += updateAttribute;
+		UnitEvents.OnUnitCastDelayChanged += updateCastCounter;
+	}
+
+	void updateCastCounter(Unit u){
+
+		if(u == targetUnit){
+			castCounter.text = ""+u.CastingDelay;
+			if(u.CastingDelay <= 0)
+				castCounter.gameObject.SetActive(false);
+			else
+				castCounter.gameObject.SetActive(true);
+		}
 	}
 
 	void updateAttribute (Unit u, BaseAttribute at)
@@ -82,5 +96,7 @@ public class UnitPanelGUI : MonoBehaviour {
 
 	void OnDestroy(){
 		UnitEvents.onUnitSelectionChanged -= updateSelectionBox;
+		UnitEvents.onAttributeChanged -= updateAttribute;
+		UnitEvents.OnUnitCastDelayChanged -= updateCastCounter;
 	}
 }

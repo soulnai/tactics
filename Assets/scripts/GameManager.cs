@@ -247,7 +247,6 @@ public class GameManager : MonoBehaviour {
 
 			UnitEvents.PlayerTurnStart(currentPlayer);
 		}
-		delayCastLogic();
 		currentUnitIndex = 0;
 		GUImanager.instance.Log.addText("<b><color=green>"+ currentPlayer.playerName +" turn begins.</color></b> ");
 		turnsCounter++;
@@ -260,20 +259,7 @@ public class GameManager : MonoBehaviour {
 			UnitEvents.UnlockUI();
 	}
 
-	public void delayCastLogic()
-	{	
-		//cast delay logic
-		foreach(Unit u in currentPlayer.units){
-			if (u.UnitAction == unitActions.casting && u.CastingDelay > 0) {
-				u.CastingDelay--;
-				selectNextUnit();
-			}
-			if (u.UnitAction == unitActions.casting && u.CastingDelay == 0) {
-				u.currentAbility = u.DelayedAbility;
-				u.DelayedAbilityReady = true;
-			}
-		}
-	}
+
 
 	public void selectNextUnit() {
 		//End turn event
@@ -322,6 +308,7 @@ public class GameManager : MonoBehaviour {
 
 			if(u.DelayedAbilityReady){
 				u.onAbility(u.DelayedAbility);
+				u.DelayedAbilityReady = false;
 			}
 		}
 		else

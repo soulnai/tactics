@@ -109,7 +109,14 @@ public class Unit : MonoBehaviour {
 	public EnumSpace.unitActions UnitAction;
 	public Tile currentTile;
 	public BaseAbility currentAbility;
-	public int CastingDelay;
+	private int _castDelay;
+	public int CastingDelay{
+		set{
+			_castDelay = value;
+			UnitEvents.UnitCastDelayChanged(this);
+		}
+		get{return _castDelay;}
+	}
 	public BaseAbility DelayedAbility;
 	public bool DelayedAbilityReady = false;
 	public Unit currentTarget;
@@ -147,6 +154,14 @@ public class Unit : MonoBehaviour {
 		if(p == playerOwner){
 			unitBaseEffects.updateAllEffects(p);
 			getAttribute(unitAttributes.AP).Value = APmax;
+			//delay cast logic
+			if (UnitAction == unitActions.casting && CastingDelay > 0) {
+				CastingDelay--;
+			}
+			if (UnitAction == unitActions.casting && CastingDelay == 0) {
+				currentAbility = DelayedAbility;
+				DelayedAbilityReady = true;
+			}
 		}
 	}
 
