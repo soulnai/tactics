@@ -125,7 +125,7 @@ public static class GameMath {
 		} 
 		if (Random.Range(0.0f, 1.0f) <= target.avoidChance){
 			hit = false;
-			GUImanager.instance.Log.addText("<b>"+target.unitName+":</b>" + " successfuly avoided - "+owner.currentAbility.abilityID + " of " + owner.unitName+"!");
+			GUImanager.instance.Log.addText("<b>"+target.unitName+"("+target.UnitClass+")"+":</b>" + " successfuly avoided - "+owner.currentAbility.abilityName + " of " + owner.unitName+"("+owner.UnitClass+")"+"!");
 		} 
 		return hit;
 	}

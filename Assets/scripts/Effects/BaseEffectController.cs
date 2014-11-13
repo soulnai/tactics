@@ -7,85 +7,58 @@ public class BaseEffectController : MonoBehaviour {
 	public List<string> effectsID;
 	public List<BaseEffect> effects = new List<BaseEffect>();
 
-	public List<BaseEffect> effectsAppliedToUnit = new List<BaseEffect>();
+	public List<BaseEffect> effectsApplied = new List<BaseEffect>();
 
 	private GameManager gm = GameManager.instance;
 	private Unit owner;
 	void Awake () {
-		UnitEvents.OnUnitPosChange += OnUnitPosChange;
 		owner = GetComponent<Unit>();
 	}
 
-	void OnUnitPosChange (Unit u)
-	{
-		updateEffectsTargets();
-		updateModsFromAppliedEffects();
-	}
-
-	void updateEffectsTargets ()
-	{
-		foreach (BaseEffect ef in effects) {
-			ef.updateTargets();
-		}
-	}
-
-	public void updateAllEffects (Player p)
-	{
-		updateEffectsTargets();
-		if(owner.playerOwner == p)
-			foreach(BaseEffect ef in effectsAppliedToUnit)
-			{
-				ef.applyTo(owner);
-			}
-	}
-
-	public void initEffects (){
+	public void initStartEffects (){
+        UnitEvents.OnUnitEffectChanged += checkIfNeedToRemove;
+        UnitEvents.OnUnitEffectRemoved += deleteAppliedEffect;
 		for(int i=0;i<effectsID.Count;i++)
 		{
 			if(BaseEffectsManager.instance.getEffect(effectsID[i]) != null){
 				addEffect(BaseEffectsManager.instance.getEffect(effectsID[i]));
 			}
 		}
-		updateEffectsTargets();
 	}
 
-	public void deleteAllEffects(bool useDeathState = false)
+
+	public void addEffect(BaseEffect ef,Unit targetUnit = null)
 	{
-		if(useDeathState){
-			List<BaseEffect> tempList = new List<BaseEffect>();
-			foreach(BaseEffect ef in effects)
-			{
-				if (ef.deleteAfterOwnerDeath)
-					tempList.Add(ef);
-			}
-			foreach(BaseEffect ef in tempList)
-			{
-				ef.Delete();
-			}
+        if(!effects.Contains(ef)){
 
-		}
-		else
-			effects.Clear();
-	}
-
-	public void addEffect(BaseEffect ef,Unit target = null)
-	{
-		if((ef.requireTarget) && (target != null))
-			ef.Init(owner,target);
-		else
-			ef.Init(owner);
-
-		if(!effects.Contains(ef)){
-			effects.Add(ef);
+            if (targetUnit == null)
+            {
+                ef.Init(owner);
+                effects.Add(ef);
+            }
+            else
+            {
+                if (ef.CanBeAdded(targetUnit))
+                {
+                    ef.Init(owner, targetUnit);
+                    effects.Add(ef);
+                }
+            }
+			
 		}
 		else
 			Debug.Log("effect already applied");
 	}
 
-	public void delete(BaseEffect ef)
+	public void deleteEffect(BaseEffect ef)
 	{
 		if(effects.Contains(ef)){
 			effects.Remove(ef);
+            foreach (Unit u in ef.targets)
+            {
+                u.unitEffects.deleteAppliedEffect(u,ef);
+            }
+
 		}
 		else
 			Debug.Log("No such effect");
@@ -93,42 +66,30 @@ public class BaseEffectController : MonoBehaviour {
 
 	public void addAppliedEffect(BaseEffect ef)
 	{
-		if(!effectsAppliedToUnit.Contains(ef)){
-			effectsAppliedToUnit.Add(ef);
-			updateModsFromAppliedEffects();
+		if(!effectsApplied.Contains(ef)){
+			effectsApplied.Add(ef);
 			UnitEvents.UnitEffectAdded(owner,ef);
 		}
 		else
-			Debug.Log("This effects already applied");
+			Debug.Log("This effect already applied - "+ef.name);
 	}
 
-	public void removeAppliedEffect(BaseEffect ef)
+    public void checkIfNeedToRemove(Unit u, BaseEffect ef) {
+        if (!ef.targets.Contains(owner))
+        {
+            deleteAppliedEffect(owner, ef);
+        }
+    }
+	public void deleteAppliedEffect(Unit u,BaseEffect ef)
 	{
-		if(effectsAppliedToUnit.Contains(ef)){
-			effectsAppliedToUnit.Remove(ef);
-			updateModsFromAppliedEffects();
-			UnitEvents.UnitEffectRemoved(owner,ef);
-		}
-	}
-
-	public void updateModsFromAppliedEffects()
-	{
-//		updateEffectsTargets();
-		foreach(BaseAttribute at in owner.attributes){
-			at.clearMods();
-		}
-
-		foreach(BaseEffect ef in effectsAppliedToUnit)
-		{
-			foreach(BaseAttributeChanger ac in ef.affectedAttributes)
-			{
-				if(ac.mod)
-					owner.getAttribute(ac.attribute).addMod(ef.getValue(owner,ac));
-			}
-		}
-	}
-
-	void OnDestroy(){
-		UnitEvents.OnUnitPosChange -= OnUnitPosChange;
+        if ((u == owner)&&(effectsApplied.Contains(ef)))
+        {
+            effectsApplied.Remove(ef);
+            UnitEvents.UnitEffectRemoved(owner, ef);
+            foreach (BaseAttributeChanger ac in ef.affectedAttributes)
+            {
+                u.getAttribute(ac.attribute).removeMod(ac);
+            }
+        }
 	}
 }

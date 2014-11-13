@@ -126,7 +126,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 	public List<Vector3> positionQueue = new List<Vector3>();	
 	//
 	public AbilitiesController unitAbilitiesController;
-	public BaseEffectController unitBaseEffects;
+	public BaseEffectController unitEffects;
 	public Player playerOwner;
 
 
@@ -148,12 +148,24 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 		getAttribute(unitAttributes.AP).Value = APmax;
 		UnitEvents.OnPlayerTurnStart += prepareForTurn;
 		UnitEvents.onAttributeChanged += checkDead;
+		UnitEvents.onAttributeChanged += clampAttributeLimits;
+	}
+
+	void clampAttributeLimits (Unit owner, BaseAttribute at)
+	{
+		if(owner == this){
+			if(at.attribute == unitAttributes.HPmax)
+				HP = Mathf.Clamp(HP,0,HPmax);
+			if(at.attribute == unitAttributes.MPmax)
+				MP = Mathf.Clamp(MP,0,MPmax);
+			if(at.attribute == unitAttributes.APmax)
+				AP = Mathf.Clamp(AP,0,APmax);
+		}
 	}
 
 	public void prepareForTurn(Player p)
 	{
 		if(p == playerOwner){
-			unitBaseEffects.updateAllEffects(p);
 			getAttribute(unitAttributes.AP).Value = APmax;
 			//delay cast logic
 			if (UnitAction == unitActions.casting && CastingDelay > 0) {
@@ -322,11 +334,11 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 	{
 		if(UnitState != unitStates.dead){
 			UnitState = unitStates.dead;
+            UnitEvents.UnitDead(this);
 			if(!playerOwner.unitsDead.Contains(this))
 				playerOwner.unitsDead.Add(this);
-			unitBaseEffects.deleteAllEffects(true);
 			animation.CrossFade("Death");
-			GUImanager.instance.Log.addText(name + " <b><color=red> died!</color></b> ");
+			GUImanager.instance.Log.addText(name+"("+UnitClass+")" + " <b><color=red> died!</color></b> ");
 			gm.checkVictory();
 			StartCoroutine(WaitAnimationEnd(animation["Death"].length+delayAfterAnim));
 		}
@@ -401,19 +413,18 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 
 	public void setAttribute(unitAttributes a,int val)
 	{
-		attributes.Find(BaseAttribute => BaseAttribute.attribute == a).setOwner(this);
+		foreach(BaseAttribute at in attributes)
+			at.setOwner(this);
 		attributes.Find(BaseAttribute => BaseAttribute.attribute == a).Value = val;
 	}
 
 	public void initStartEffects()
 	{
-		unitBaseEffects.initEffects();
+		unitEffects.initStartEffects();
 	}
 
 	public void initStartAttributes()
 	{
-		unitBaseEffects.updateModsFromAppliedEffects();
-		
 		HP = HPmax;
 		MP = MPmax;
 		AP = APmax;

@@ -84,13 +84,22 @@ public class UnitPanelGUI : MonoBehaviour {
 	{
 		switch(at){
 		case unitAttributes.AP:
-			APslider.value = ((float)targetUnit.AP/(float)targetUnit.APmax);
+			if(targetUnit.AP > 0)
+				APslider.value = ((float)targetUnit.AP/(float)targetUnit.APmax);
+			else
+				APslider.value = 0;
 			break;
 		case unitAttributes.HP:
-			HPslider.value = ((float)targetUnit.HP/(float)targetUnit.HPmax);
+			if(targetUnit.HP > 0)
+				HPslider.value = ((float)targetUnit.HP/(float)targetUnit.HPmax);
+			else
+				HPslider.value = 0;
 			break;
 		case unitAttributes.MP:
-			MPslider.value = ((float)targetUnit.MP/(float)targetUnit.MPmax);
+			if(targetUnit.MP > 0)
+				MPslider.value = ((float)targetUnit.MP/(float)targetUnit.MPmax);
+			else
+				MPslider.value = 0;
 			break;
 		}
 	}

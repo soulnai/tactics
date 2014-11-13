@@ -182,8 +182,7 @@ public class Tile : MonoBehaviour {
 
 	public void showHighlight(Color color){
 		highlight.SetActive(true);
-		highlight.renderer.sharedMaterial.color = color;
-//		highlightController.showContour(gm.highlightedTiles);
+		highlight.renderer.material.color = color;
 	}
 
 	public void hideHighlight(){

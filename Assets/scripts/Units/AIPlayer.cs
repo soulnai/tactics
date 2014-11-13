@@ -7,7 +7,6 @@ using EnumSpace;
 
 
 public class AIPlayer : Unit {
-	public BaseAbility a;
 
 	private static GameManager gm{
 		get{
@@ -38,34 +37,34 @@ public class AIPlayer : Unit {
 			EndTurn();
 		}
 		else{
-			a = unitAbilitiesController.abilities[Random.Range(0, unitAbilitiesController.abilities.Count-1)];
-			if(a.MPCost > MP)
-				a = unitAbilitiesController.abilities[0];
+			currentAbility = unitAbilitiesController.abilities[Random.Range(0, unitAbilitiesController.abilities.Count-1)];
+			if(currentAbility.MPCost > MP)
+				currentAbility = unitAbilitiesController.abilities[0];
 
-			if ((AP > 0) && (MP >= a.MPCost)) {
-								attackRange = a.range;
-								attackDistance = a.range;
-								damageBase = a.baseDamage;
+			if ((AP > 0) && (MP >= currentAbility.MPCost)) {
+								attackRange = currentAbility.range;
+								attackDistance = currentAbility.range;
+								damageBase = currentAbility.baseDamage;
 								//magic
-				if (a.attackType == attackTypes.magic) {
+				if (currentAbility.attackType == attackTypes.magic) {
 						gm.MagicPrefab = MagicPrefabHolder.instance.Freeze;
 						gm.MagicExplosionPrefab = MagicPrefabHolder.instance.FreezeExplode;
 				}
 				//ranged
-				else if (a.attackType == attackTypes.ranged) {
+				else if (currentAbility.attackType == attackTypes.ranged) {
 										gm.MagicPrefab = MagicPrefabHolder.instance.Lightning;
 										gm.MagicExplosionPrefab = MagicPrefabHolder.instance.LightningExplode;
 								}
 				//melee
-				else if (a.attackType == attackTypes.melee) {
+				else if (currentAbility.attackType == attackTypes.melee) {
 
 								}
 				//stun
-				else if (a.attackType == attackTypes.ranged) {
+				else if (currentAbility.attackType == attackTypes.ranged) {
 										//UnitAction = unitActions.rangedAttack;
 										gm.MagicPrefab = MagicPrefabHolder.instance.Poison;
 										gm.MagicExplosionPrefab = MagicPrefabHolder.instance.PoisonExplode;
-								} else if (a.attackType == attackTypes.heal) {
+								} else if (currentAbility.attackType == attackTypes.heal) {
 										//UnitAction = unitActions.healAttack;
 										gm.MagicPrefab = MagicPrefabHolder.instance.Heal;
 										gm.MagicExplosionPrefab = MagicPrefabHolder.instance.HealExplode;
@@ -84,7 +83,7 @@ public class AIPlayer : Unit {
 
 					UnitAction = unitActions.attacking;
 					gm.AttackhighlightTiles (gridPosition, Color.red, attackRange, true, false, 100f);
-					gm.useAbility(a,this,null,opponent);	
+					gm.useAbility(currentAbility,this,null,opponent);	
 					AP = 0;
 					
 			}
@@ -98,7 +97,9 @@ public class AIPlayer : Unit {
 				gm.highlightTilesAt(gridPosition, Color.blue, movementPerActionPoint, false);
 				UnitAction = unitActions.moving;
 				List<Tile> path = TilePathFinder.FindPath (gm.map[(int)gridPosition.x][(int)gridPosition.y],gm.map[(int)opponent.gridPosition.x][(int)opponent.gridPosition.y], gm.unitsAll.Where(x => x.gridPosition != gridPosition && x.gridPosition != opponent.gridPosition).Select(x => x.gridPosition).ToArray());
-				gm.moveUnitTo(path[(int)Mathf.Max(0, path.Count - 1 - attackRange)]);
+				//TODO AI solution
+				if(path != null)
+					gm.moveUnitTo(path[(int)Mathf.Max(0, path.Count - 1 - attackRange)]);
 			}
 			//move toward nearest opponent
 			else if (UnitAction != unitActions.moving && movementTilesInRange.Where(x => gm.unitsAll.Where (y => y.GetType() != typeof(AIPlayer) && y.HP > 0 && y != this && y.gridPosition == x.gridPosition).Count() > 0).Count () > 0) {

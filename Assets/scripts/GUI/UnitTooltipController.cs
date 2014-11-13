@@ -26,6 +26,6 @@ public class UnitTooltipController : BaseTooltip {
 		str.text = ""+u.Strength;
 		dex.text = ""+u.Dexterity;
 		mag.text = ""+u.Magic;
-		appliedEffectsCount.text =""+ u.unitBaseEffects.effectsAppliedToUnit.Count;
+		appliedEffectsCount.text =""+ u.unitEffects.effectsApplied.Count;
 	}
 }

@@ -24,14 +24,12 @@ public class GameManager : MonoBehaviour {
 	public GameObject MagicExplosionPrefab;
 	public GameObject selectionRing;
 	public Unit targetPub;
-	public Texture ImpasTex;
 
 	public List<Tile> highlightedTiles;
 	public List<Tile> highlightedTilesArea;
 	
 	public int mapSize = 22;
 	public Transform mapTransform;
-	Transform tileTransform;
 	
 	public List <List<Tile>> map = new List<List<Tile>>();
 	public List <Unit> unitsAll{
@@ -79,8 +77,7 @@ public class GameManager : MonoBehaviour {
 	public GameObject pointer;
 	public int turnsCounter = 1;
 	public matchStates matchState;
-	private RaycastHit hit;
-	private RaycastHit target;
+
 	private GameObject unitSelection;
 
 	private List<Tile> startTilesFirst = new List<Tile>();
@@ -99,6 +96,7 @@ public class GameManager : MonoBehaviour {
 
 	void startPlacePhase ()
 	{
+		GUImanager.instance.Log.addText("<color=green>Placement Phase</color>");
 		currentUnitIndex = 0;
 		matchState = matchStates.placeUnits;
 
@@ -115,7 +113,6 @@ public class GameManager : MonoBehaviour {
 		foreach (Tile t in startTilesFirst) {
 			t.showHighlight(ColorHolder.instance.move);
 		}
-//		GUImanager.instance.showHighlightRegion(highlightedTiles);
 
 		placeAIUnits();
 	}
@@ -157,6 +154,7 @@ public class GameManager : MonoBehaviour {
 
 	public void startBattlePhase ()
 	{
+		GUImanager.instance.Log.addText("<color=green>Battle Phase</color>");
 		placeMissingUnits();
 		UnitEvents.UnlockUI();
 		matchState = matchStates.battle;
@@ -184,19 +182,18 @@ public class GameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {	
+		unitSelection = (GameObject)Instantiate(selectionRing,new Vector3(-1000f,-1000f,-1000f), Quaternion.identity);
+
 		UnitEvents.onTileClick += TileClickHandler;
 		UnitEvents.onTileCursorOverChanged += drawPointer;
 		UnitEvents.onTileCursorOverChanged += drawArea;
 		UnitEvents.onUnitClick += useAbility;
 		UnitEvents.onTileClick += useAbility;
+		UnitEvents.onUnitSelectionChanged += setSelectionRing;
 		UnitEvents.LockUI();
 		generateMap();
 		generateUnits();
 		startPlacePhase();
-
-		unitSelection = (GameObject)Instantiate(selectionRing, currentUnit.transform.position, Quaternion.Euler(0,0,0));
-		unitSelection.transform.parent = currentUnit.transform;
-
 	}
 
 	void TileClickHandler (Tile t)
@@ -204,6 +201,7 @@ public class GameManager : MonoBehaviour {
 		if((matchState == matchStates.placeUnits)&&(!GUImanager.instance.mouseOverGUI)){
 			if((!t.impassible)&&(startTilesFirst.Contains(t))&&(t.unitInTile == null)){
 				currentUnit.placeUnit(t.gridPosition);
+				selectNextUnit();
 			}
 		}
 	}
@@ -213,6 +211,7 @@ public class GameManager : MonoBehaviour {
 	{
 		currentUnitIndex = 0;
 		currentPlayerIndex = 0;
+		UnitEvents.PlayerTurnStart(currentPlayer);
 		foreach(Player p in players)
 		{
 			foreach(Unit u in p.units)
@@ -244,7 +243,7 @@ public class GameManager : MonoBehaviour {
 			UnitEvents.PlayerTurnStart(currentPlayer);
 		}
 		currentUnitIndex = 0;
-		GUImanager.instance.Log.addText("<b><color=green>"+ currentPlayer.playerName +" turn begins.</color></b> ");
+
 		turnsCounter++;
 
 		UnitEvents.UnitTurnStart(currentUnit);
@@ -261,16 +260,22 @@ public class GameManager : MonoBehaviour {
 		//End turn event
 		UnitEvents.UnitTurnEnd(currentUnit);
 
-		if (currentUnitIndex + 1 < currentPlayer.units.Count) {
-			currentUnitIndex++;
-
-		} 
-		else {
-			if(currentPlayer.type == playerType.ai)
-				PlayerEndTurn();
+		if(currentPlayer.type == playerType.ai){
+			if (currentUnitIndex + 1 < currentPlayer.units.Count) {
+				currentUnitIndex++;
+			} 
 			else{
-				currentUnitIndex = 0;
-			
+				PlayerEndTurn();
+			}
+		}
+		if(currentPlayer.type == playerType.player){
+			if(matchState == matchStates.battle)
+				selectNextUnitWithAP();
+			else if(matchState == matchStates.placeUnits){
+				if (currentUnitIndex + 1 < currentPlayer.units.Count)
+					currentUnitIndex++;
+				else
+					currentUnitIndex = 0;
 			}
 		}
 
@@ -287,6 +292,14 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	public void selectNextUnitWithAP(){
+		foreach(Unit u in currentPlayer.units)
+			if((u.UnitState != unitStates.dead)&&(u.AP > 0)&&(u.CastingDelay == 0)){
+				currentUnitIndex = currentPlayer.units.IndexOf(u);
+				break;
+			}
+	}
+
 	void TurnLogic (Unit u)
 	{
 		if(u.UnitState != unitStates.dead){
@@ -298,10 +311,6 @@ public class GameManager : MonoBehaviour {
 			Camera.main.GetComponent<CameraOrbit> ().pivot = currentUnit.transform;
 			Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
 
-			//set selection ring
-			unitSelection.transform.position = currentUnit.transform.position;
-			unitSelection.transform.parent = currentUnit.transform;
-
 			if(u.DelayedAbilityReady){
 				u.onAbility(u.DelayedAbility);
 				u.DelayedAbilityReady = false;
@@ -311,6 +320,11 @@ public class GameManager : MonoBehaviour {
 		{
 			selectNextUnit();
 		}
+	}
+
+	public void setSelectionRing(Unit u){
+		unitSelection.transform.position = u.transform.position;
+		unitSelection.transform.parent = u.transform;
 	}
 
 	public void highlightTilesAt(Vector2 originLocation, Color highlightColor, int distance) {
@@ -326,8 +340,6 @@ public class GameManager : MonoBehaviour {
 
 		foreach (Tile t in highlightedTiles)
 			t.showHighlight(highlightColor);
-		
-//		GUImanager.instance.showHighlightRegion(highlightedTiles);
 	}
 
 	public void AttackhighlightTiles(Vector2 originLocation, Color highlightColor, int distance, bool ignorePlayers,bool addCenterTile = false,float maxHeightDiff = 0.5f) {
@@ -427,7 +439,7 @@ public class GameManager : MonoBehaviour {
 					amountOfDamage = GameMath.calculateDamage(ability, unitOwner, _target);
 					amountOfDamage = GameMath.ResistToDamage(_target, amountOfDamage, ability);
 					//log message
-					GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+":</b>" + " successfuly used - "+ability.abilityID + " on " + _target.unitName + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
+					GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+"("+unitOwner.UnitClass+")"+":</b>" + " successfuly used - "+ability.abilityName + " on " + _target.unitName+"("+_target.UnitClass+")" + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 					unitOwner.playAbility(ability);
 
 					applyAbilityToTarget (ability, _target, amountOfDamage);
@@ -437,7 +449,7 @@ public class GameManager : MonoBehaviour {
 
 			//if missed
 			} else {
-				GUImanager.instance.Log.addText(unitOwner.unitName + " missed " + _target.unitName + "!");
+					GUImanager.instance.Log.addText(unitOwner.unitName+"("+unitOwner.UnitClass+")" + " missed " + _target.unitName+"("+_target.UnitClass+")" + "!");
 				unitOwner.playAbility(ability,true);
 			}
 
@@ -452,7 +464,7 @@ public class GameManager : MonoBehaviour {
 	public void checkIfCastInterrupted(Unit _target){
 			if (_target.UnitAction == unitActions.casting){
 				if (Random.Range(0.0f, 1.0f) >= currentUnit.Magic/100){
-				GUImanager.instance.Log.addText(_target.unitName + " interrupted and <b><color=red>fails to cast</color></b> " + _target.currentAbility);
+				GUImanager.instance.Log.addText(_target.unitName+"("+_target.UnitClass+")" + " interrupted and <b><color=red>fails to cast</color></b> " + _target.currentAbility.abilityName);
 					Debug.Log ("Cast interrupted!");
 					_target.CastingDelay = 0;
 					_target.UnitAction = unitActions.idle;
@@ -462,13 +474,13 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-	public void applyAbilityToTarget (BaseAbility ability, Unit _target, int amountOfDamage)
+	public void applyAbilityToTarget (BaseAbility ability, Unit target, int amountOfDamage)
 	{
 		if (ability.attackType == attackTypes.heal) {
-			_target.takeHeal (amountOfDamage);
+			target.takeHeal (amountOfDamage);
 		}
 		else {
-			_target.takeDamage (amountOfDamage);
+			target.takeDamage (amountOfDamage);
 		}
 
 		//Apply Effect
@@ -476,17 +488,23 @@ public class GameManager : MonoBehaviour {
 		{
 			foreach(string s in ability.effects){
 				BaseEffect ef = BaseEffectsManager.instance.getEffect(s);
-				if(ef != null){
-					if(ef.requireTarget)
-					{
-						currentUnit.unitBaseEffects.addEffect(ef,_target);
-						GUImanager.instance.Log.addText(ef.name + " <b><color=red>applied on</color></b> " + _target.name + " by "+ currentUnit.name);
-					}
-					else{
-						currentUnit.unitBaseEffects.addEffect(ef);
-						GUImanager.instance.Log.addText(ef.name + " <b><color=red>applied on</color></b> " + currentUnit.name);
-					}
-				}
+                if (ef != null)
+                {
+                    if (ef.requireTarget)
+                    {
+                        currentUnit.unitEffects.addEffect(ef, target);
+                        GUImanager.instance.Log.addText(ef.name + " <b><color=red>applied on</color></b> " + target.unitName + "(" + target.UnitClass + ")" + " by " + currentUnit.unitName + "(" + currentUnit.UnitClass + ")");
+                    }
+                    else
+                    {
+                        currentUnit.unitEffects.addEffect(ef);
+                        GUImanager.instance.Log.addText(ef.name + " <b><color=red>applied on</color></b> " + currentUnit.unitName + "(" + currentUnit.UnitClass + ")");
+                    }
+                }
+                else {
+                    Debug.Log("No such effect in Effect Manager");
+                }
+
 			}
 		}
 	}
@@ -627,19 +645,14 @@ public class GameManager : MonoBehaviour {
 
 	void drawArea (Tile t)
 	{
-//		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-//		LayerMask mask = 1<<LayerMask.NameToLayer("tiles");
-		if (currentUnit.currentAbility.areaDamage == true && currentUnit.UnitAction == unitActions.readyToAttack) {
-//			if ((Physics.Raycast (ray, out hit, 1000f, mask)) && (!GUImanager.instance.mouseOverGUI)) {
-//				if (hit.transform.gameObject.GetComponent<Tile> () != null) {
-					removeTileHighlights ();
-					AttackhighlightTilesArea (currentUnit.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.range, true);
-					AttackhighlightTiles (currentUnit.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.range, true);
-					AttackhighlightTiles (t.gridPosition,ColorHolder.instance.attack, currentUnit.currentAbility.areaDamageRadius, true,true);
-					highlightedTiles.Add (t);
-//					}
-//				}
-			}
+        if (currentUnit.currentAbility.areaDamage == true && currentUnit.UnitAction == unitActions.readyToAttack)
+        {
+            removeTileHighlights();
+            AttackhighlightTilesArea(currentUnit.gridPosition, ColorHolder.instance.attack, currentUnit.currentAbility.range, true);
+            AttackhighlightTiles(currentUnit.gridPosition, ColorHolder.instance.area, currentUnit.currentAbility.range, true);
+            AttackhighlightTiles(t.gridPosition, ColorHolder.instance.area, currentUnit.currentAbility.areaDamageRadius, true, true);
+            highlightedTiles.Add(t);
+        }
 
 	}
 
@@ -732,7 +745,7 @@ public class GameManager : MonoBehaviour {
 		List<Tile> tempTiles = TileHighlightAtack.FindHighlight (map [(int)centerTile.gridPosition.x] [(int)centerTile.gridPosition.y], radius);
 		tempTiles.Add(centerTile);
 		List<Unit> tempUnits = new List<Unit>();
-//		Debug.Log(tempTiles.Count);
+
 		foreach(Tile t in tempTiles)
 		{
 			if(t.unitInTile!=null){
@@ -780,5 +793,6 @@ public class GameManager : MonoBehaviour {
 		UnitEvents.onTileCursorOverChanged -= drawArea;
 		UnitEvents.onUnitClick -= useAbility;
 		UnitEvents.onTileClick -= useAbility;
+		UnitEvents.onUnitSelectionChanged -= setSelectionRing;
 	}
 }

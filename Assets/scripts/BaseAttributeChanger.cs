@@ -26,6 +26,45 @@ public class BaseAttributeChanger : ICloneable{
 	//apply chance
 	public bool useDamageTypes;
 	public damageTypes damageType;
+	[HideInInspector]
+	public BaseEffect ownerEffect;
+
+	public int getModValue(int attributeValue){
+		int modValue = 0;
+		if (multiply)
+			modValue = UnityEngine.Mathf.RoundToInt ((attributeValue * value) - attributeValue);
+		else
+			modValue = UnityEngine.Mathf.RoundToInt (value);
+		return modValue;
+	}
+    /// <summary>
+    /// apply simple attribute changer value to attribute.
+    /// Mod attribute changer is applied in Attribute itself.
+    /// </summary>
+    /// <param name="targetsList"></param>
+    public void applyAttributeMod(List<Unit> targetsList)
+    {
+        if (mod)
+        {
+            foreach (Unit u in targetsList)
+            {
+                if (!u.getAttribute(attribute).modList.Contains(this))
+                    u.getAttribute(attribute).addMod(this);
+            }
+        }
+    }
+
+    public void applyAttributeChanger(List<Unit> targetsList)
+    {
+        if ((applyEachTurn) && (!mod))
+        {
+            foreach (Unit u in targetsList)
+            {
+                if (u.playerOwner == GameManager.instance.currentPlayer)
+                    u.getAttribute(attribute).Value += Mathf.RoundToInt(value);
+            }
+        }
+    }
 
 	public object Clone()
 	{

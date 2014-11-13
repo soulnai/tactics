@@ -7,9 +7,13 @@ public class LogController : MonoBehaviour {
 	public Scrollbar scroll;
 	// Use this for initialization
 	void Start () {
-	
+		UnitEvents.OnPlayerTurnStart += PlayerTurnStart;
 	}
-	
+
+	void PlayerTurnStart(Player p){
+		GUImanager.instance.Log.addText("<color=green>"+p.playerName+" turn starts!</color>");
+	}
+
 	// Update is called once per frame
 	void Update () {
 	
@@ -22,7 +26,11 @@ public class LogController : MonoBehaviour {
 
 	public void addText(string t)
 	{
-		textLog.text += t+"\n";
+		textLog.text += t+"\n \n";
 		setScroll();
+	}
+
+	void OnDestroy(){
+		UnitEvents.OnPlayerTurnStart -= PlayerTurnStart;
 	}
 }

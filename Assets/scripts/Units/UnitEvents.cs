@@ -13,15 +13,19 @@ public delegate void UnitInteractionEvent(Unit owner,Unit target);
 public delegate void UnitEffectEvent(Unit u,BaseEffect ef);
 
 public static class UnitEvents {
+	//player events
 	public static event PlayerBaseEvent OnPlayerTurnStart;
 	public static event PlayerBaseEvent OnPlayerTurnEnd;
 	public static event PlayerBaseEvent OnVictoryState;
+	//ui events
 	public static event UIEvent onLockUI;
 	public static event UIEvent onUnlockUI;
 	public static event UIActionEvent onCurrentActionChange;
 	public static event UIConfirmEvent onRequestConfirm;
+	//tile events
 	public static event TileBaseEvent onTileClick;
 	public static event TileBaseEvent onTileCursorOverChanged;
+	//unit events
 	public static event UnitBaseEvent onUnitClick;
 	public static event UnitBaseEvent onUnitReactionEnd;
 	public static event UnitBaseEvent onMouseOverUnit;
@@ -30,12 +34,19 @@ public static class UnitEvents {
 	public static event UnitBaseEvent OnUnitTurnStart;
 	public static event UnitBaseEvent OnUnitTurnEnd;
 	public static event UnitBaseEvent OnUnitCastDelayChanged;
+    public static event UnitBaseEvent OnUnitDead;
 	public static event UnitAttributeEvent onAttributeChanged;
 	public static event UnitInteractionEvent onUnitFXEnd;
+	//effect events
 	public static event UnitEffectEvent OnUnitEffectChanged;
 	public static event UnitEffectEvent OnUnitEffectAdded;
 	public static event UnitEffectEvent OnUnitEffectRemoved;
 
+    public static void UnitDead(Unit u)
+    {
+        if (OnUnitDead != null)
+            OnUnitDead(u);
+    }
 	public static void UnitClick(Unit u){
 		if(onUnitClick != null)
 			onUnitClick(u);

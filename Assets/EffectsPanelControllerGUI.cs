@@ -54,12 +54,16 @@ public class EffectsPanelControllerGUI : MonoBehaviour {
 
 	void updateEffectPanels (Unit u, BaseEffect ef)
 	{
-			foreach(EffectPanelGUI p in effectPanels)
-			{
-				if(p.effect == ef){
-					p.updateCounter();
-				}
-			}
+        if (ef.targets.Contains(owner))
+        {
+            foreach (EffectPanelGUI p in effectPanelsUsed)
+            {
+                if (p.effect == ef)
+                {
+                    p.updateCounter();
+                }
+            }
+        }
 	}
 	
 	// Update is called once per frame

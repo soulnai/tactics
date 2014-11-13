@@ -1,10 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using EnumSpace;
-using System;
-using System.Xml;
-using System.Xml.Serialization;
+using UnityEngine;
 
 [System.Serializable]
 public class BaseEffect : ICloneable {
@@ -30,10 +26,8 @@ public class BaseEffect : ICloneable {
 	public Unit owner;
 //	[HideInInspector]
 	public List<Unit> targets;
-
+    private List<Unit> targetsToDelete = new List<Unit>();
 	public GameObject FX;
-
-	private bool useUpdateTargets = true;
 
 	private GameManager gm{
 		get{
@@ -41,142 +35,99 @@ public class BaseEffect : ICloneable {
 		}
 	}
 
-	public void Init(Unit _owner = null,Unit _target = null)
+	public void Init(Unit u,Unit target = null)
 	{
-
-		UnitEvents.OnPlayerTurnEnd += PlayerTurnEnd;
-
-		if(_owner != null)
-			owner = _owner;
-		if(_target!=null){
-			targets = new List<Unit>();
-			useUpdateTargets = false;
-			targets.Add(_target);
-			addToAppliedEffects ();
-		}
+        targets = new List<Unit>();
+        owner = u;
+        if (!infinite)
+            UnitEvents.OnPlayerTurnEnd += checkDuration;
+        UnitEvents.OnPlayerTurnEnd += deleteUnusedTargets;
+        if (useRadius)
+        {
+            UnitEvents.OnUnitPosChange += updateTargetsInRadius;
+            updateTargetsInRadius();
+        }
+        else if (target != null)
+        {
+            targets.Clear();
+            targets.Add(target);
+            addApliedEffect(targets);
+            applyAttributeMods(targets);
+        }
+        UnitEvents.OnUnitDead += deleteFromTargets;
+        UnitEvents.OnPlayerTurnStart += ActivateEffect;
 	}
 
-	void PlayerTurnEnd (Player p)
+    private void deleteUnusedTargets(Player player)
+    {
+        foreach (Unit u in targetsToDelete)
+            targets.Remove(u);
+    }
+
+    void addToDeleteList(Unit u)
+    {
+        if (targets.Contains(u))
+            targetsToDelete.Add(u);
+    }
+    void deleteFromTargets(Unit u)
+    {
+        if (targets.Contains(u))
+            addToDeleteList(u);
+    }
+
+	void checkDuration (Player p)
 	{
 		//Duration check
-		if((!infinite)&&(owner.playerOwner != p)){
+		if(owner.playerOwner != p) {
 			duration--;
-			UnitEvents.UnitEffectChanged(owner,this);
-			if(duration<=0)
-				Delete();
+            UnitEvents.UnitEffectChanged(owner, this);
+            if (duration <= 0) {
+                owner.unitEffects.deleteEffect(this);
+            }
 		}
 	}
+	
+	public void updateTargetsInRadius(Unit u = null){
+        if (useRadius)
+        {
+            targets = gm.findTargets(owner, radius, enemieUse, allyUse, selfUse);
+            addApliedEffect(targets);
+            applyAttributeMods(targets);
+            UnitEvents.UnitEffectChanged(owner, this);
+        }
+	}
 
-	void OnTurnStart (Unit currentUnit)
+    public void addApliedEffect(List<Unit> targets)
+    {
+        foreach (Unit u in targets)
+        {
+            if(CanBeAdded(u))
+                u.unitEffects.addAppliedEffect(this);
+        }
+    }
+
+	public void applyAttributeMods(List<Unit> targetList)
 	{
-//		if((infinite)||(duration>0)){
-//			updateTargets();
-//			if(targets.Contains(gm.currentUnit)){
-//				applyTo(gm.currentUnit);
-//			}
-//		}
+        if (targets.Count > 0)
+        {
+            if ((duration > 0) || (infinite))
+            {
+                foreach (BaseAttributeChanger ac in affectedAttributes)
+                {
+                    ac.applyAttributeMod(targetList);
+                    Debug.Log("Attribute Value changed");
+                }
+            }
+        }
 	}
 
-	public void updateTargets(Unit u = null){
-		removeFromAppliedEffects();
-		if(useUpdateTargets){
-			targets.Clear();
-			if(useRadius)
-			{
-				targets = gm.findTargets(owner,radius,enemieUse,allyUse,selfUse);
-			}
-			else
-			{
-				if(selfUse)
-					targets.Add(owner);
-				if(u != null){
-					if(allyUse)
-						if(u.playerOwner == owner.playerOwner)
-							targets.Add(u);
-					if(enemieUse)
-						if(u.playerOwner != owner.playerOwner)
-							targets.Add(u);
-				}
-			}
-		}
-		addToAppliedEffects ();
-	}
-
-	public void applyTo(Unit u)
-	{
-		if(targets.Contains(u)){
-			if((duration>0)||(infinite)){
-				foreach(BaseAttributeChanger ac in affectedAttributes)
-				{
-					int valueTemp = getValue(u,ac);
-
-					if((ac.applyEachTurn)&&(!ac.mod)){
-						u.getAttribute(ac.attribute).Value += valueTemp;
-						Debug.Log("Attribute Value changed");
-					}
-					else if(ac.mod)
-					{
-						if(u == gm.currentUnit){
-							u.getAttribute(ac.attribute).addMod(valueTemp);
-							Debug.Log("Mods list updated");
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public int getValue (Unit u,BaseAttributeChanger ac)
-	{
-		int valueTemp = 0;
-		int valueMod = u.getAttribute (ac.attribute).valueMod;
-		int value = u.getAttribute (ac.attribute).Value;
-		if (ac.multiply)
-			valueTemp = UnityEngine.Mathf.RoundToInt ((ac.value * value) - value);
-		else
-			valueTemp = UnityEngine.Mathf.RoundToInt ((ac.value + value) - value);
-		return valueTemp;
-	}
-
-	void addToAppliedEffects ()
-	{
-
-		foreach (Unit t in targets) {
-			if(CanBeAdded(t)){
-				if (!t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
-					t.unitBaseEffects.addAppliedEffect (this);
-			}
-		}
-	}
-
-	void removeFromAppliedEffects ()
-	{
-
-		foreach (Unit t in targets) {
-			if (t.unitBaseEffects.effectsAppliedToUnit.Contains (this))
-				t.unitBaseEffects.removeAppliedEffect (this);
-		}
-	}
-
-	public void setTarget (Unit target)
-	{
-		targets.Clear();
-		targets.Add(target);
-		useUpdateTargets = false;
-	}
-
-	public void Delete()
-	{
-		removeFromAppliedEffects ();
-		owner.unitBaseEffects.delete(this);
-	}
 	public object Clone()
 	{
 		return this.MemberwiseClone();
 	}
 
 	public bool CanBeAdded(Unit u){
-		List<BaseEffect> effects = u.unitBaseEffects.effectsAppliedToUnit;
+		List<BaseEffect> effects = u.unitEffects.effectsApplied;
 		//trying to add same copy of the effect to unit - false
 		if(effects.Contains (this))
 			return false;
@@ -189,6 +140,7 @@ public class BaseEffect : ICloneable {
 				//update duration if new duration > old
 				if((duration > appliedEf.duration)&&(!appliedEf.infinite)){
 					appliedEf.duration = duration;
+                    UnitEvents.UnitEffectChanged(owner, appliedEf);
 					return false;
 				}
 				//infinite - false
@@ -205,7 +157,15 @@ public class BaseEffect : ICloneable {
 		return true;
 	}
 
+    public void ActivateEffect(Player p) {
+        foreach (BaseAttributeChanger ac in affectedAttributes)
+        {
+            ac.applyAttributeChanger(targets);
+        }
+    }
+
 	void OnDestroy(){
-		UnitEvents.OnPlayerTurnEnd -= PlayerTurnEnd;
+        UnitEvents.UnitEffectRemoved(owner, this);
+		UnitEvents.OnPlayerTurnEnd -= checkDuration;
 	}
 }
