@@ -12,7 +12,7 @@ public delegate void UnitAttributeEvent(Unit unit,BaseAttribute at);
 public delegate void UnitInteractionEvent(Unit owner,Unit target);
 public delegate void UnitEffectEvent(Unit u,BaseEffect ef);
 
-public static class UnitEvents {
+public static class EventManager {
 	//player events
 	public static event PlayerBaseEvent OnPlayerTurnStart;
 	public static event PlayerBaseEvent OnPlayerTurnEnd;

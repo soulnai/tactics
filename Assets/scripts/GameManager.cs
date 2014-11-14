@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour {
 	public int currentUnitIndex{
 		set{
 			_currentUnitIndex = value;	
-			UnitEvents.UnitSelectionChanged(currentUnit);
+			EventManager.UnitSelectionChanged(currentUnit);
 		}
 		get{
 			return _currentUnitIndex;
@@ -156,10 +156,10 @@ public class GameManager : MonoBehaviour {
 	{
 		GUImanager.instance.Log.addText("<color=green>Battle Phase</color>");
 		placeMissingUnits();
-		UnitEvents.UnlockUI();
+		EventManager.UnlockUI();
 		matchState = matchStates.battle;
-		UnitEvents.OnUnitTurnStart += TurnLogic;
-		UnitEvents.OnVictoryState += endMatch;
+		EventManager.OnUnitTurnStart += TurnLogic;
+		EventManager.OnVictoryState += endMatch;
 
 		Camera.main.GetComponent<CameraOrbit>().pivot = currentUnit.transform;
 		Camera.main.GetComponent<CameraOrbit> ().pivotOffset += 0.9f * Vector3.up;
@@ -184,19 +184,26 @@ public class GameManager : MonoBehaviour {
 	void Start () {	
 		unitSelection = (GameObject)Instantiate(selectionRing,new Vector3(-1000f,-1000f,-1000f), Quaternion.identity);
 
-		UnitEvents.onTileClick += TileClickHandler;
-		UnitEvents.onTileCursorOverChanged += drawPointer;
-		UnitEvents.onTileCursorOverChanged += drawArea;
-		UnitEvents.onUnitClick += useAbility;
-		UnitEvents.onTileClick += useAbility;
-		UnitEvents.onUnitSelectionChanged += setSelectionRing;
-		UnitEvents.LockUI();
+		EventManager.onTileClick += PlaceUnit;
+        EventManager.onTileClick += useAbility;
+
+		EventManager.onTileCursorOverChanged += drawPointer;
+		EventManager.onTileCursorOverChanged += drawArea;
+
+		EventManager.onUnitClick += useAbility;
+        EventManager.onUnitClick += selectUnit;
+	    EventManager.onMouseOverUnit += drawPointer;
+
+		EventManager.onUnitSelectionChanged += setSelectionRing;
+
+		EventManager.LockUI();
+
 		generateMap();
 		generateUnits();
 		startPlacePhase();
 	}
 
-	void TileClickHandler (Tile t)
+	void PlaceUnit (Tile t)
 	{
 		if((matchState == matchStates.placeUnits)&&(!GUImanager.instance.mouseOverGUI)){
 			if((!t.impassible)&&(startTilesFirst.Contains(t))&&(t.unitInTile == null)){
@@ -211,7 +218,7 @@ public class GameManager : MonoBehaviour {
 	{
 		currentUnitIndex = 0;
 		currentPlayerIndex = 0;
-		UnitEvents.PlayerTurnStart(currentPlayer);
+		EventManager.PlayerTurnStart(currentPlayer);
 		foreach(Player p in players)
 		{
 			foreach(Unit u in p.units)
@@ -229,36 +236,36 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void PlayerEndTurn(){
-		UnitEvents.PlayerTurnEnd(currentPlayer);
+		EventManager.PlayerTurnEnd(currentPlayer);
 		
 		if(currentPlayerIndex + 1 < players.Count)
 		{
 			currentPlayerIndex++;
-			UnitEvents.PlayerTurnStart(currentPlayer);
+			EventManager.PlayerTurnStart(currentPlayer);
 		}
 		else
 		{			
 			currentPlayerIndex = 0;
 
-			UnitEvents.PlayerTurnStart(currentPlayer);
+			EventManager.PlayerTurnStart(currentPlayer);
 		}
 		currentUnitIndex = 0;
 
 		turnsCounter++;
 
-		UnitEvents.UnitTurnStart(currentUnit);
+		EventManager.UnitTurnStart(currentUnit);
 
 		if(currentPlayer.type == playerType.ai)
-			UnitEvents.LockUI();
+			EventManager.LockUI();
 		else
-			UnitEvents.UnlockUI();
+			EventManager.UnlockUI();
 	}
 
 
 
 	public void selectNextUnit() {
 		//End turn event
-		UnitEvents.UnitTurnEnd(currentUnit);
+		EventManager.UnitTurnEnd(currentUnit);
 
 		if(currentPlayer.type == playerType.ai){
 			if (currentUnitIndex + 1 < currentPlayer.units.Count) {
@@ -287,7 +294,7 @@ public class GameManager : MonoBehaviour {
 			else
 			{
 				//Start turn event
-				UnitEvents.UnitTurnStart(currentUnit);
+				EventManager.UnitTurnStart(currentUnit);
 			}
 		}
 	}
@@ -392,7 +399,7 @@ public class GameManager : MonoBehaviour {
 			currentUnit.gridPosition = destTile.gridPosition;
 			destTile.unitInTile = currentUnit;
 			currentUnit.currentTile = destTile;
-			UnitEvents.UnitPosChanged(currentUnit);
+			EventManager.UnitPosChanged(currentUnit);
 		} else {
 			Debug.Log ("destination invalid");
 		}
@@ -631,6 +638,10 @@ public class GameManager : MonoBehaviour {
 		return tileXY;
 	}
 
+    public void drawPointer(Unit u)
+    {
+        drawPointer(u.currentTile);
+    }
 	public void drawPointer(Tile t)
 	{
 		pointer.SetActive(true);
@@ -681,18 +692,17 @@ public class GameManager : MonoBehaviour {
 				targetTile = un.currentTile;
 
 			if(ability.requireTarget == true){
-					if(ability.selfUse == true)
-					{
-						if(currentUnit == targetUnit){
-							GameManager.instance.useAbility(ability,currentUnit,targetTile,targetUnit);
-						}
-						else
-							Debug.Log("Not self selected");
-					}
+			    if (ability.selfUse == true)
+			    {
+			        if (currentUnit == targetUnit)
+			        {
+			            GameManager.instance.useAbility(ability, currentUnit, targetTile, targetUnit);
+			        }
+			        else
+			            Debug.Log("Not self selected");
+			    }
 
-
-
-					if(ability.allyUse == true)
+			    if(ability.allyUse == true)
 					{
 						if((currentPlayer.units.Contains(targetUnit))&&(currentUnit != targetUnit)){
 							GameManager.instance.useAbility(ability,currentUnit,targetTile,targetUnit);
@@ -733,7 +743,7 @@ public class GameManager : MonoBehaviour {
 	{
 		foreach(Player p in players){ 
 			if(p.unitsDead.Count >= p.units.Count){
-				UnitEvents.VictoryState(p);
+				EventManager.VictoryState(p);
 			}
 		}
 	}
@@ -774,25 +784,31 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void selectUnit(Unit u){
-		if(u.playerOwner == currentPlayer){
-			currentUnit = u;
-			currentUnitIndex = u.playerOwner.units.IndexOf(u);
-		}
-		if(matchState == matchStates.battle)
-			TurnLogic(currentUnit);
-
-		unitSelection.transform.position = currentUnit.transform.position;
-		unitSelection.transform.parent = currentUnit.transform;
+	    if ((currentUnit.UnitAction == unitActions.idle) || (currentUnit.UnitAction == unitActions.readyToMove))
+	    {
+	        if (u.playerOwner == currentPlayer)
+	        {
+                if (currentUnit.UnitAction == unitActions.readyToMove)
+                {
+                    currentUnit.UnitAction = unitActions.idle;
+                }
+	            currentUnit = u;
+	            currentUnitIndex = u.playerOwner.units.IndexOf(u);
+                if (matchState == matchStates.battle)
+                    TurnLogic(currentUnit);
+                setSelectionRing(currentUnit);
+	        }
+	    }
 	}
 
 	void OnDestroy(){
-		UnitEvents.OnUnitTurnStart -= TurnLogic;
-		UnitEvents.OnVictoryState -= endMatch;
-		UnitEvents.onTileClick -= TileClickHandler;
-		UnitEvents.onTileCursorOverChanged -= drawPointer;
-		UnitEvents.onTileCursorOverChanged -= drawArea;
-		UnitEvents.onUnitClick -= useAbility;
-		UnitEvents.onTileClick -= useAbility;
-		UnitEvents.onUnitSelectionChanged -= setSelectionRing;
+		EventManager.OnUnitTurnStart -= TurnLogic;
+		EventManager.OnVictoryState -= endMatch;
+		EventManager.onTileClick -= PlaceUnit;
+		EventManager.onTileCursorOverChanged -= drawPointer;
+		EventManager.onTileCursorOverChanged -= drawArea;
+		EventManager.onUnitClick -= useAbility;
+		EventManager.onTileClick -= useAbility;
+		EventManager.onUnitSelectionChanged -= setSelectionRing;
 	}
 }

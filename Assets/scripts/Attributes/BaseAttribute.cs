@@ -16,7 +16,7 @@ public class BaseAttribute : ICloneable {
 		set{
 			_value = value;
 			if(owner != null)
-				UnitEvents.UnitAttributeChanged(owner,this);
+				EventManager.UnitAttributeChanged(owner,this);
 		}
 	}
 
@@ -47,7 +47,7 @@ public class BaseAttribute : ICloneable {
         else
             Debug.Log("attribute already contains this mod");
         if (owner != null)
-            UnitEvents.UnitAttributeChanged(owner, this);
+            EventManager.UnitAttributeChanged(owner, this);
 	}
 
 	public void removeMod(BaseAttributeChanger ac)
@@ -58,18 +58,18 @@ public class BaseAttribute : ICloneable {
         else
             Debug.Log("No such mod on the attribute");		
         if(owner != null)
-			UnitEvents.UnitAttributeChanged(owner,this);
+			EventManager.UnitAttributeChanged(owner,this);
 	}
 
 	public void clearAllMods()
 	{
 		modList.Clear();
-		UnitEvents.UnitAttributeChanged(owner,this);
+		EventManager.UnitAttributeChanged(owner,this);
 	}
 
 	public void setOwner(Unit u)
 	{
-        UnitEvents.OnPlayerTurnStart += updateMods;
+        EventManager.OnPlayerTurnStart += updateMods;
 		if(u != null)
 			owner = u;	
 		else

@@ -13,15 +13,14 @@ public class UnitPanelGUI : MonoBehaviour {
 	public Text castCounter;
 
 	public Unit targetUnit;
-	private bool canUpdate = false;
-	// Use this for initialization
+    // Use this for initialization
 	void Awake(){
 		gameObject.SetActive(false);
 		castCounter.gameObject.SetActive(false);
 		selection.gameObject.SetActive(false);
-		UnitEvents.onUnitSelectionChanged += updateSelectionBox;
-		UnitEvents.onAttributeChanged += updateAttribute;
-		UnitEvents.OnUnitCastDelayChanged += updateCastCounter;
+		EventManager.onUnitSelectionChanged += updateSelectionBox;
+		EventManager.onAttributeChanged += updateAttribute;
+		EventManager.OnUnitCastDelayChanged += updateCastCounter;
 	}
 
 	void updateCastCounter(Unit u){
@@ -38,7 +37,7 @@ public class UnitPanelGUI : MonoBehaviour {
 	void updateAttribute (Unit u, BaseAttribute at)
 	{
 		if(u == targetUnit)
-			updateValue(at.attribute);
+			UpdateValue(at.attribute);
 
 	}
 
@@ -56,31 +55,30 @@ public class UnitPanelGUI : MonoBehaviour {
 		gameObject.SetActive(true);
 		targetUnit = target;
 		icon.sprite = targetUnit.icon;
-		updateValue(unitAttributes.AP);
-		updateValue(unitAttributes.HP);
-		updateValue(unitAttributes.MP);
-		canUpdate = true;
-		effectsGUI.Init(targetUnit);
+		UpdateValue(unitAttributes.AP);
+		UpdateValue(unitAttributes.HP);
+		UpdateValue(unitAttributes.MP);
+	    effectsGUI.Init(targetUnit);
 
 		if(icon.GetComponent<Button>() != null)
 		{
 			icon.GetComponent<Button>().onClick.RemoveAllListeners();
-			icon.GetComponent<Button>().onClick.AddListener(delegate{onIconClick(target);});
+			icon.GetComponent<Button>().onClick.AddListener(delegate{OnIconClick(target);});
 		}
 	}
 
-	void onIconClick (Unit target)
+	void OnIconClick (Unit target)
 	{
-		if(GameManager.instance.currentUnit.UnitAction == unitActions.idle)
+        if ((GameManager.instance.currentUnit.UnitAction == unitActions.idle) || (GameManager.instance.currentUnit.UnitAction == unitActions.readyToMove))
 			GameManager.instance.selectUnit(target);
 		else
 		{
 			//TODO onUnit/Tile click event for abilities
-			UnitEvents.UnitClick(targetUnit);
+			EventManager.UnitClick(targetUnit);
 		}
 	}
 
-	public void updateValue(unitAttributes at)
+	public void UpdateValue(unitAttributes at)
 	{
 		switch(at){
 		case unitAttributes.AP:
@@ -110,8 +108,8 @@ public class UnitPanelGUI : MonoBehaviour {
 	}
 
 	void OnDestroy(){
-		UnitEvents.onUnitSelectionChanged -= updateSelectionBox;
-		UnitEvents.onAttributeChanged -= updateAttribute;
-		UnitEvents.OnUnitCastDelayChanged -= updateCastCounter;
+		EventManager.onUnitSelectionChanged -= updateSelectionBox;
+		EventManager.onAttributeChanged -= updateAttribute;
+		EventManager.OnUnitCastDelayChanged -= updateCastCounter;
 	}
 }

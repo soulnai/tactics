@@ -40,11 +40,11 @@ public class BaseEffect : ICloneable {
         targets = new List<Unit>();
         owner = u;
         if (!infinite)
-            UnitEvents.OnPlayerTurnEnd += checkDuration;
-        UnitEvents.OnPlayerTurnEnd += deleteUnusedTargets;
+            EventManager.OnPlayerTurnEnd += checkDuration;
+        EventManager.OnPlayerTurnEnd += deleteUnusedTargets;
         if (useRadius)
         {
-            UnitEvents.OnUnitPosChange += updateTargetsInRadius;
+            EventManager.OnUnitPosChange += updateTargetsInRadius;
             updateTargetsInRadius();
         }
         else if (target != null)
@@ -54,8 +54,8 @@ public class BaseEffect : ICloneable {
             addApliedEffect(targets);
             applyAttributeMods(targets);
         }
-        UnitEvents.OnUnitDead += deleteFromTargets;
-        UnitEvents.OnPlayerTurnStart += ActivateEffect;
+        EventManager.OnUnitDead += deleteFromTargets;
+        EventManager.OnPlayerTurnStart += ActivateEffect;
 	}
 
     private void deleteUnusedTargets(Player player)
@@ -80,7 +80,7 @@ public class BaseEffect : ICloneable {
 		//Duration check
 		if(owner.playerOwner != p) {
 			duration--;
-            UnitEvents.UnitEffectChanged(owner, this);
+            EventManager.UnitEffectChanged(owner, this);
             if (duration <= 0) {
                 owner.unitEffects.deleteEffect(this);
             }
@@ -93,7 +93,7 @@ public class BaseEffect : ICloneable {
             targets = gm.findTargets(owner, radius, enemieUse, allyUse, selfUse);
             addApliedEffect(targets);
             applyAttributeMods(targets);
-            UnitEvents.UnitEffectChanged(owner, this);
+            EventManager.UnitEffectChanged(owner, this);
         }
 	}
 
@@ -140,7 +140,7 @@ public class BaseEffect : ICloneable {
 				//update duration if new duration > old
 				if((duration > appliedEf.duration)&&(!appliedEf.infinite)){
 					appliedEf.duration = duration;
-                    UnitEvents.UnitEffectChanged(owner, appliedEf);
+                    EventManager.UnitEffectChanged(owner, appliedEf);
 					return false;
 				}
 				//infinite - false
@@ -165,7 +165,7 @@ public class BaseEffect : ICloneable {
     }
 
 	void OnDestroy(){
-        UnitEvents.UnitEffectRemoved(owner, this);
-		UnitEvents.OnPlayerTurnEnd -= checkDuration;
+        EventManager.UnitEffectRemoved(owner, this);
+		EventManager.OnPlayerTurnEnd -= checkDuration;
 	}
 }

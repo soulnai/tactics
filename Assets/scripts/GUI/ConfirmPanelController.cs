@@ -12,7 +12,7 @@ public class ConfirmPanelController : MonoBehaviour {
 	private guiConfirmFunc funcYes;
 	private guiConfirmFunc funcNo;
 	void Awake(){
-		UnitEvents.onRequestConfirm += showConfirmationPanel;
+		EventManager.onRequestConfirm += showConfirmationPanel;
 	}
 
 	void Start(){
@@ -42,6 +42,6 @@ public class ConfirmPanelController : MonoBehaviour {
 	}
 
 	void OnDestroy(){
-		UnitEvents.onRequestConfirm -= showConfirmationPanel;
+		EventManager.onRequestConfirm -= showConfirmationPanel;
 	}
 }

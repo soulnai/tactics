@@ -16,8 +16,8 @@ public class BaseEffectController : MonoBehaviour {
 	}
 
 	public void initStartEffects (){
-        UnitEvents.OnUnitEffectChanged += checkIfNeedToRemove;
-        UnitEvents.OnUnitEffectRemoved += deleteAppliedEffect;
+        EventManager.OnUnitEffectChanged += checkIfNeedToRemove;
+        EventManager.OnUnitEffectRemoved += deleteAppliedEffect;
 		for(int i=0;i<effectsID.Count;i++)
 		{
 			if(BaseEffectsManager.instance.getEffect(effectsID[i]) != null){
@@ -68,7 +68,7 @@ public class BaseEffectController : MonoBehaviour {
 	{
 		if(!effectsApplied.Contains(ef)){
 			effectsApplied.Add(ef);
-			UnitEvents.UnitEffectAdded(owner,ef);
+			EventManager.UnitEffectAdded(owner,ef);
 		}
 		else
 			Debug.Log("This effect already applied - "+ef.name);
@@ -85,7 +85,7 @@ public class BaseEffectController : MonoBehaviour {
         if ((u == owner)&&(effectsApplied.Contains(ef)))
         {
             effectsApplied.Remove(ef);
-            UnitEvents.UnitEffectRemoved(owner, ef);
+            EventManager.UnitEffectRemoved(owner, ef);
             foreach (BaseAttributeChanger ac in ef.affectedAttributes)
             {
                 u.getAttribute(ac.attribute).removeMod(ac);

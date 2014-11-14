@@ -7,7 +7,7 @@ public class LogController : MonoBehaviour {
 	public Scrollbar scroll;
 	// Use this for initialization
 	void Start () {
-		UnitEvents.OnPlayerTurnStart += PlayerTurnStart;
+		EventManager.OnPlayerTurnStart += PlayerTurnStart;
 	}
 
 	void PlayerTurnStart(Player p){
@@ -31,6 +31,6 @@ public class LogController : MonoBehaviour {
 	}
 
 	void OnDestroy(){
-		UnitEvents.OnPlayerTurnStart -= PlayerTurnStart;
+		EventManager.OnPlayerTurnStart -= PlayerTurnStart;
 	}
 }

@@ -42,8 +42,8 @@ public class GUImanager : MonoBehaviour {
 		{
 			b.gameObject.SetActive(false);
 		}
-		UnitEvents.onLockUI += LockUI;
-		UnitEvents.onUnlockUI += UnlockUI;
+		EventManager.onLockUI += LockUI;
+		EventManager.onUnlockUI += UnlockUI;
 	}
 
 	void Start () {
@@ -98,7 +98,7 @@ public class GUImanager : MonoBehaviour {
 	public void OnEndTurnClick(){
 		if(needConfirm){
 			funcCurrent = GameManager.instance.PlayerEndTurn;
-			UnitEvents.RequestConfirm(funcCurrent,null);
+			EventManager.RequestConfirm(funcCurrent,null);
 		}
 		else{
 			abilitiesPanel.SetActive (false);
@@ -246,7 +246,7 @@ public class GUImanager : MonoBehaviour {
 	}
 
 	void OnDestroy(){
-		UnitEvents.onLockUI -= LockUI;
-		UnitEvents.onUnlockUI -= UnlockUI;
+		EventManager.onLockUI -= LockUI;
+		EventManager.onUnlockUI -= UnlockUI;
 	}
 }

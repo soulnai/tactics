@@ -15,9 +15,9 @@ public class EffectsPanelControllerGUI : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		UnitEvents.OnUnitEffectChanged += updateEffectPanels;
-		UnitEvents.OnUnitEffectAdded += addEffectPanel;
-		UnitEvents.OnUnitEffectRemoved += removeEffectPanel;
+		EventManager.OnUnitEffectChanged += updateEffectPanels;
+		EventManager.OnUnitEffectAdded += addEffectPanel;
+		EventManager.OnUnitEffectRemoved += removeEffectPanel;
 
 		effectPanelsUnused = effectPanels;
 	}
@@ -72,8 +72,8 @@ public class EffectsPanelControllerGUI : MonoBehaviour {
 	}
 
 	void OnDestroy(){
-		UnitEvents.OnUnitEffectChanged -= updateEffectPanels;
-		UnitEvents.OnUnitEffectAdded -= addEffectPanel;
-		UnitEvents.OnUnitEffectRemoved -= removeEffectPanel;
+		EventManager.OnUnitEffectChanged -= updateEffectPanels;
+		EventManager.OnUnitEffectAdded -= addEffectPanel;
+		EventManager.OnUnitEffectRemoved -= removeEffectPanel;
 	}
 }

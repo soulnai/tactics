@@ -78,7 +78,7 @@ public class Tile : MonoBehaviour {
 	
 	void OnMouseEnter() {
 		if(Application.loadedLevelName == "gameScene"){
-			UnitEvents.TileCursorOverChanged(this);
+			EventManager.TileCursorOverChanged(this);
 		}
 		if (Application.loadedLevelName == "MapCreatorScene" && Input.GetMouseButton(0)) {
 			if(MapCreatorManager.instance.editorState == editorStates.setType)
@@ -98,7 +98,7 @@ public class Tile : MonoBehaviour {
 			if (gm.currentUnit.UnitAction == unitActions.readyToMove) {
 				gm.moveUnitTo(this);
 			}
-			UnitEvents.TileClick(this);
+			EventManager.TileClick(this);
 //			else if (gm.currentUnit.UnitAction == unitActions.meleeAttack) {
 //				gm.attackWithCurrentPlayer(this);
 //			} else if (gm.currentUnit.UnitAction == unitActions.rangedAttack) {

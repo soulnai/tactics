@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using EnumSpace;
 
 [System.Serializable]
-public class Unit : MonoBehaviour, IPointerClickHandler {
+public class Unit : MonoBehaviour, IPointerClickHandler,IPointerEnterHandler,IPointerExitHandler {
 
 	public Sprite icon;
 
@@ -114,7 +114,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 	public int CastingDelay{
 		set{
 			_castDelay = value;
-			UnitEvents.UnitCastDelayChanged(this);
+			EventManager.UnitCastDelayChanged(this);
 		}
 		get{return _castDelay;}
 	}
@@ -146,9 +146,9 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 	void Awake () {
 		moveDestination = transform.position;
 		getAttribute(unitAttributes.AP).Value = APmax;
-		UnitEvents.OnPlayerTurnStart += prepareForTurn;
-		UnitEvents.onAttributeChanged += checkDead;
-		UnitEvents.onAttributeChanged += clampAttributeLimits;
+		EventManager.OnPlayerTurnStart += prepareForTurn;
+		EventManager.onAttributeChanged += checkDead;
+		EventManager.onAttributeChanged += clampAttributeLimits;
 	}
 
 	void clampAttributeLimits (Unit owner, BaseAttribute at)
@@ -195,7 +195,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 
 	public void ReactionsEnd (Unit unit)
 	{
-		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
+		EventManager.onUnitReactionEnd -= ReactionsEnd;
 		canEndTurn = true;
 		Debug.Log("This - "+this.unitName+" // target - " +unit.unitName+"Reaction End");
 	}
@@ -218,7 +218,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 	/// </summary>
 	public void onAbility(BaseAbility a)
 	{
-		UnitEvents.CurrentActionChange(UnitAction,unitActions.readyToAttack);
+		EventManager.CurrentActionChange(UnitAction,unitActions.readyToAttack);
 		UnitAction = unitActions.readyToAttack;
 		gm.removeTileHighlights ();
 
@@ -261,8 +261,8 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 	public void playAbility(BaseAbility a,bool missed = false)
 	{
 		canEndTurn = false;
-		UnitEvents.onUnitReactionEnd += ReactionsEnd;
-		UnitEvents.onUnitFXEnd += FXend;
+		EventManager.onUnitReactionEnd += ReactionsEnd;
+		EventManager.onUnitFXEnd += FXend;
 
 		if(a.endsUnitTurn){
 			AP = 0;
@@ -297,18 +297,22 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 
 	public void tryMove ()
 	{
-		UnitEvents.CurrentActionChange(UnitAction,unitActions.readyToMove);
 		gm.removeTileHighlights ();
 		if(AP > 0){
+            EventManager.CurrentActionChange(UnitAction, unitActions.readyToMove);
 			UnitAction = unitActions.readyToMove;
 			gm.highlightTilesAt (gridPosition,ColorHolder.instance.move, movementPerActionPoint, false, maxHeightDiff);
+		}
+		else
+		{
+		    GUImanager.instance.Log.addText("No AP to move");
 		}
 	}
 
 	public void MoveUnit()
 	{
 		if (positionQueue.Count > 0) {
-			UnitEvents.LockUI();
+			EventManager.LockUI();
 			canEndTurn = false;
 			lookDirection = (positionQueue[0] - transform.position).normalized;
 			lookDirection.y = 0;
@@ -323,7 +327,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 					animation.CrossFade("Idle", 0.2F);
 					AP--;
 					UnitAction = unitActions.idle;
-					UnitEvents.UnlockUI();
+					EventManager.UnlockUI();
 					canEndTurn = true;
 				}
 			}	
@@ -334,7 +338,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 	{
 		if(UnitState != unitStates.dead){
 			UnitState = unitStates.dead;
-            UnitEvents.UnitDead(this);
+            EventManager.UnitDead(this);
 			if(!playerOwner.unitsDead.Contains(this))
 				playerOwner.unitsDead.Add(this);
 			animation.CrossFade("Death");
@@ -390,7 +394,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 	IEnumerator WaitAnimationEnd(float waitTime,bool triggerReactionEnd = false){
 		yield return new WaitForSeconds(waitTime);
 		if(triggerReactionEnd){
-			UnitEvents.ReactionEnd(this);
+			EventManager.ReactionEnd(this);
 		}
 		if(UnitState != unitStates.dead)
 			animation.CrossFade("Idle",0.2f);
@@ -439,14 +443,25 @@ public class Unit : MonoBehaviour, IPointerClickHandler {
 
 	public void OnPointerClick(PointerEventData data)
 	{
-		UnitEvents.UnitClick(this);
+		EventManager.UnitClick(this);
 	}
-	
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        EventManager.MouseOverUnit(this);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        
+    }
 	void OnDestroy()
 	{
-		UnitEvents.onAttributeChanged -= checkDead;
-		UnitEvents.OnPlayerTurnStart -= prepareForTurn;
-		UnitEvents.onUnitReactionEnd -= ReactionsEnd;
-		UnitEvents.onUnitFXEnd -= FXend;
+		EventManager.onAttributeChanged -= checkDead;
+		EventManager.OnPlayerTurnStart -= prepareForTurn;
+		EventManager.onUnitReactionEnd -= ReactionsEnd;
+		EventManager.onUnitFXEnd -= FXend;
 	}
+
+
 }
