@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
 	public GameObject MagicPrefab;
 	public GameObject MagicExplosionPrefab;
 	public GameObject selectionRing;
+    public GameObject tileSelectionBox;
 	public Unit targetPub;
 
 	public List<Tile> highlightedTiles;
@@ -186,7 +187,7 @@ public class GameManager : MonoBehaviour {
 
 		EventManager.onTileClick += PlaceUnit;
         EventManager.onTileClick += useAbility;
-
+        EventManager.onTileClick += selectUnit;
 		EventManager.onTileCursorOverChanged += drawPointer;
 		EventManager.onTileCursorOverChanged += drawArea;
 
@@ -783,6 +784,14 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+    public void selectUnit(Tile t)
+    {
+        if ((currentUnit.UnitAction == unitActions.idle) || (currentUnit.UnitAction == unitActions.readyToMove))
+        {
+            if (t.unitInTile != null)
+                selectUnit(t.unitInTile);
+        }
+    }
 	public void selectUnit(Unit u){
 	    if ((currentUnit.UnitAction == unitActions.idle) || (currentUnit.UnitAction == unitActions.readyToMove))
 	    {

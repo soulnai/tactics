@@ -166,6 +166,11 @@ public class BaseEffect : ICloneable {
 
 	void OnDestroy(){
         EventManager.UnitEffectRemoved(owner, this);
-		EventManager.OnPlayerTurnEnd -= checkDuration;
+		
+        EventManager.OnPlayerTurnEnd -= checkDuration;
+        EventManager.OnPlayerTurnEnd -= deleteUnusedTargets;
+        EventManager.OnUnitPosChange -= updateTargetsInRadius;
+        EventManager.OnUnitDead -= deleteFromTargets;
+        EventManager.OnPlayerTurnStart -= ActivateEffect;
 	}
 }

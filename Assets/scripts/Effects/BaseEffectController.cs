@@ -92,4 +92,10 @@ public class BaseEffectController : MonoBehaviour {
             }
         }
 	}
+
+    void OnDestroy()
+    {
+        EventManager.OnUnitEffectChanged -= checkIfNeedToRemove;
+        EventManager.OnUnitEffectRemoved -= deleteAppliedEffect;
+    }
 }
