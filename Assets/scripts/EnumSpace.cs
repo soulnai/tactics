@@ -42,6 +42,7 @@ namespace EnumSpace {
 		strenght,
 		dexterity,
 		magic,
+		movementPerActionPoint,
 	
 		//Def
 		PhysicalDef,

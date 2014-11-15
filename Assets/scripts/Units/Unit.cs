@@ -16,7 +16,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler,IPointerEnterHandler,IPo
 	public Vector3 moveDestination;
 	public float moveSpeed = 5.0f;
 	
-	public int movementPerActionPoint = 5;
+	//public int movementPerActionPoint = 5;
 	public int attackRange = 1;
 	public int attackDistance = 5;
 
@@ -24,6 +24,14 @@ public class Unit : MonoBehaviour, IPointerClickHandler,IPointerEnterHandler,IPo
 	public List<BaseAttribute> attributes = new List<BaseAttribute>();
 
 	//Attributes
+	public int movementPerActionPoint{
+		set{
+			setAttribute(unitAttributes.movementPerActionPoint,value);
+		}
+		get{
+			return getAttribute(unitAttributes.movementPerActionPoint).valueMod;
+		}
+	}
 	public int HPmax{
 		get{
 			return getAttribute(unitAttributes.HPmax).valueMod;
