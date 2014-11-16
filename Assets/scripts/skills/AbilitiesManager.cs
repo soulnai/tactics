@@ -18,7 +18,23 @@ public class AbilitiesManager : MonoBehaviour {
 
 	public BaseAbility getAbility(string ID)
 	{
-		return abilities.Find(BaseAttack => BaseAttack.abilityID == ID).Clone() as BaseAbility; 
+	    BaseAbility tempAbility = null;
+	    if (ID == "")
+	    {
+            Debug.Log("ID not set");
+	    }
+	    else
+	    {
+            if (abilities.Find(BaseAttack => BaseAttack.abilityID == ID) != null)
+	        {
+	            tempAbility = abilities.Find(BaseAttack => BaseAttack.abilityID == ID).Clone() as BaseAbility;
+	        }
+	        else
+	        {
+	            Debug.Log("No such ability - " + ID);
+	        }
+	    }
+	    return tempAbility;
 	}
 
 

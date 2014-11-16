@@ -38,18 +38,21 @@ namespace EnumSpace {
 		MPmax,
 		APmax,
 
-		//Attributes
+		//Base Attributes
 		strenght,
 		dexterity,
 		magic,
-		movementPerActionPoint,
+		
 	
 		//Def
 		PhysicalDef,
 		magicDef,
 		poisonDef,
 		fireDef,
-		iceDef
+		iceDef,
+
+        //Additional parameters
+        movementPerActionPoint
 	}
 
 	public enum damageTypes{

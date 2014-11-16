@@ -1,0 +1,16 @@
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\Assembly-CSharp.pdb
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\Assembly-UnityScript-firstpass.dll
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\DOTween.dll
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\UnityEditor.dll
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\UnityEngine.dll
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\UnityEngine.UI.dll
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\Vectrosity.dll
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\Assembly-CSharp-firstpass.pdb
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\UnityEngine.xml
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\UnityEditor.xml
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\UnityEngine.UI.xml
+F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\DOTween.xml
+F:\Side-projects\Soulnai_tactics\tactics\obj\Debug\UnityVS.tactics.CSharp.csprojResolveAssemblyReference.cache
+F:\Side-projects\Soulnai_tactics\tactics\obj\Debug\Assembly-CSharp.dll
+F:\Side-projects\Soulnai_tactics\tactics\obj\Debug\Assembly-CSharp.pdb
