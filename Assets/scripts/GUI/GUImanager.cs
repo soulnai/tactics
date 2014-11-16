@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -13,6 +14,8 @@ public class GUImanager : MonoBehaviour {
 	guiConfirmFunc funcCurrent;
 
 	public static GUImanager instance;
+    public UnitPanelGUI selectedUnit;
+    public UnitPanelGUI selectedTargetUnit;
 	public GameObject controlsPanel;
 	public GameObject abilitiesPanel;
 	public GameObject statsPanel;
@@ -44,9 +47,15 @@ public class GUImanager : MonoBehaviour {
 		}
 		EventManager.onLockUI += LockUI;
 		EventManager.onUnlockUI += UnlockUI;
+        EventManager.onUnitSelectionChanged += updateUnitPanels;
 	}
 
-	void Start () {
+    private void updateUnitPanels(Unit unit)
+    {
+        selectedUnit.Init(unit);
+    }
+
+    void Start () {
 		VectorLine.SetCamera3D(Camera.main);
 		gm = GameManager.instance;
 		initAbilities();

@@ -19,7 +19,8 @@ namespace EnumSpace {
 		palladin = 3,
 		knigth = 4,
 		mage = 5,
-		archer = 6
+		archer = 6,
+        priest = 7
 	}
 
 	public enum unitActions{

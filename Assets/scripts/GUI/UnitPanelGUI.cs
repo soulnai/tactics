@@ -5,6 +5,8 @@ using EnumSpace;
 
 public class UnitPanelGUI : MonoBehaviour {
 	public Image icon;
+    public Text unitName;
+    public Text unitClass;
 	public Image selection;
 	public Slider HPslider;
 	public Slider MPslider;
@@ -17,8 +19,8 @@ public class UnitPanelGUI : MonoBehaviour {
 	void Awake(){
 		gameObject.SetActive(false);
 		castCounter.gameObject.SetActive(false);
-		selection.gameObject.SetActive(false);
-		EventManager.onUnitSelectionChanged += updateSelectionBox;
+	    if (selection != null) selection.gameObject.SetActive(false);
+	    EventManager.onUnitSelectionChanged += updateSelectionBox;
 		EventManager.onAttributeChanged += updateAttribute;
 		EventManager.OnUnitCastDelayChanged += updateCastCounter;
 	}
@@ -54,6 +56,16 @@ public class UnitPanelGUI : MonoBehaviour {
 	{
 		gameObject.SetActive(true);
 		targetUnit = target;
+
+	    if (unitName != null)
+	    {
+	        unitName.text = target.unitName;
+	    }
+        if (unitClass != null)
+        {
+            unitClass.text = ""+target.UnitClass;
+        }
+
 		icon.sprite = targetUnit.icon;
 		UpdateValue(unitAttributes.AP);
 		UpdateValue(unitAttributes.HP);
