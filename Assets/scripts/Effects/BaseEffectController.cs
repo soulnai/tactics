@@ -9,7 +9,6 @@ public class BaseEffectController : MonoBehaviour {
 
 	public List<BaseEffect> effectsApplied = new List<BaseEffect>();
 
-	private GameManager gm = GameManager.instance;
 	private Unit owner;
 	void Awake () {
 		owner = GetComponent<Unit>();

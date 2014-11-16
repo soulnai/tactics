@@ -24,9 +24,8 @@ public class GameManager : MonoBehaviour {
 	public GameObject MagicExplosionPrefab;
 	public GameObject selectionRing;
     public GameObject tileSelectionBox;
-	public Unit targetPub;
 
-	public List<Tile> highlightedTiles;
+    public List<Tile> highlightedTiles;
 	public List<Tile> highlightedTilesArea;
 	
 	public int mapSize = 22;
@@ -427,9 +426,8 @@ public class GameManager : MonoBehaviour {
 		{
 			Debug.Log("No target selected");
 		}
-		targetPub = _target;
 
-		//check Ability distance
+	    //check Ability distance
 		if(_target != null){
 		if(checkAbilityRange(ability,unitOwner,_target))
 		{
@@ -444,9 +442,13 @@ public class GameManager : MonoBehaviour {
 
 					int amountOfDamage = 0;
 
-					amountOfDamage = GameMath.calculateDamage(ability, unitOwner, _target);
-					amountOfDamage = GameMath.ResistToDamage(_target, amountOfDamage, ability);
-					//log message
+				    if (ability.baseDamage != 0)
+				    {
+				        amountOfDamage = GameMath.calculateDamage(ability, unitOwner, _target);
+				        amountOfDamage = GameMath.ResistToDamage(_target, amountOfDamage, ability);
+				    }
+
+				    //log message
 					GUImanager.instance.Log.addText("<b>"+unitOwner.unitName+"("+unitOwner.UnitClass+")"+":</b>" + " successfuly used - "+ability.abilityName + " on " + _target.unitName+"("+_target.UnitClass+")" + " for <b><color=red>" + amountOfDamage + " damage</color></b>!");
 					unitOwner.playAbility(ability);
 
