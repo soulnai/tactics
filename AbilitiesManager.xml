@@ -16,10 +16,10 @@
       <range>1</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>standart</areaPattern>
+      <areaPattern>none</areaPattern>
       <baseDamage>5</baseDamage>
       <canBackstan>false</canBackstan>
-      <damageType>slashing</damageType>
+      <damageType>light</damageType>
       <effects />
       <rangedFXprefab>CFX3_Hit_Misc_F_Skull</rangedFXprefab>
     </Ability>
@@ -38,10 +38,10 @@
       <range>1</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>standart</areaPattern>
+      <areaPattern>none</areaPattern>
       <baseDamage>5</baseDamage>
       <canBackstan>false</canBackstan>
-      <damageType>poison</damageType>
+      <damageType>none</damageType>
       <effects>
         <string>poison</string>
       </effects>
@@ -62,7 +62,7 @@
       <range>5</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>standart</areaPattern>
+      <areaPattern>none</areaPattern>
       <baseDamage>5</baseDamage>
       <canBackstan>false</canBackstan>
       <damageType>pearcing</damageType>
@@ -90,7 +90,7 @@
       <areaPattern>circle</areaPattern>
       <baseDamage>10</baseDamage>
       <canBackstan>false</canBackstan>
-      <damageType>ice</damageType>
+      <damageType>fire</damageType>
       <effects />
     </Ability>
     <Ability>
@@ -108,7 +108,7 @@
       <range>1</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>standart</areaPattern>
+      <areaPattern>none</areaPattern>
       <baseDamage>5</baseDamage>
       <canBackstan>false</canBackstan>
       <damageType>blunt</damageType>
@@ -123,7 +123,7 @@
       <MPCost>5</MPCost>
       <CastTime>0</CastTime>
       <endsUnitTurn>true</endsUnitTurn>
-      <attackType>ranged</attackType>
+      <attackType>melee</attackType>
       <requireTarget>true</requireTarget>
       <enemieUse>false</enemieUse>
       <allyUse>false</allyUse>
@@ -131,10 +131,10 @@
       <range>1</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>standart</areaPattern>
+      <areaPattern>cross</areaPattern>
       <baseDamage>5</baseDamage>
       <canBackstan>true</canBackstan>
-      <damageType>pearcing</damageType>
+      <damageType>slashing</damageType>
       <effects />
     </Ability>
     <Ability>
@@ -152,10 +152,10 @@
       <range>5</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>line</areaPattern>
+      <areaPattern>none</areaPattern>
       <baseDamage>10</baseDamage>
       <canBackstan>false</canBackstan>
-      <damageType>light</damageType>
+      <damageType>none</damageType>
       <effects>
         <string>hot</string>
       </effects>
@@ -175,10 +175,10 @@
       <range>5</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>line</areaPattern>
+      <areaPattern>none</areaPattern>
       <baseDamage>3</baseDamage>
       <canBackstan>false</canBackstan>
-      <damageType>light</damageType>
+      <damageType>none</damageType>
       <effects>
         <string>Regeneration</string>
       </effects>
@@ -201,9 +201,9 @@
       <areaPattern>circle</areaPattern>
       <baseDamage>5</baseDamage>
       <canBackstan>false</canBackstan>
-      <damageType>light</damageType>
+      <damageType>none</damageType>
       <effects>
-        <string>hot</string>
+        <string>Regeneration</string>
       </effects>
     </Ability>
     <Ability>
@@ -221,7 +221,7 @@
       <range>5</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>line</areaPattern>
+      <areaPattern>none</areaPattern>
       <baseDamage>10</baseDamage>
       <canBackstan>false</canBackstan>
       <damageType>light</damageType>
@@ -234,7 +234,7 @@
       <MPCost>10</MPCost>
       <CastTime>0</CastTime>
       <endsUnitTurn>true</endsUnitTurn>
-      <attackType>magic</attackType>
+      <attackType>ranged</attackType>
       <requireTarget>true</requireTarget>
       <enemieUse>false</enemieUse>
       <allyUse>false</allyUse>
@@ -242,7 +242,7 @@
       <range>5</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>line</areaPattern>
+      <areaPattern>none</areaPattern>
       <baseDamage>5</baseDamage>
       <canBackstan>false</canBackstan>
       <damageType>poison</damageType>
@@ -266,12 +266,36 @@
       <range>7</range>
       <areaDamage>false</areaDamage>
       <areaDamageRadius>0</areaDamageRadius>
-      <areaPattern>line</areaPattern>
+      <areaPattern>none</areaPattern>
       <baseDamage>0</baseDamage>
       <canBackstan>false</canBackstan>
       <damageType>earth</damageType>
       <effects>
         <string>sloweffect</string>
+      </effects>
+      <hitFXprefab>CFX3_Hit_Misc_F_Skull (Green)</hitFXprefab>
+    </Ability>
+    <Ability>
+      <abilityID>Haste</abilityID>
+      <abilityName>Haste</abilityName>
+      <APcost>999</APcost>
+      <MPCost>10</MPCost>
+      <CastTime>0</CastTime>
+      <endsUnitTurn>true</endsUnitTurn>
+      <attackType>magic</attackType>
+      <requireTarget>true</requireTarget>
+      <enemieUse>false</enemieUse>
+      <allyUse>true</allyUse>
+      <selfUse>true</selfUse>
+      <range>7</range>
+      <areaDamage>false</areaDamage>
+      <areaDamageRadius>0</areaDamageRadius>
+      <areaPattern>none</areaPattern>
+      <baseDamage>0</baseDamage>
+      <canBackstan>false</canBackstan>
+      <damageType>electricity</damageType>
+      <effects>
+        <string>hasteeffect</string>
       </effects>
       <hitFXprefab>CFX3_Hit_Misc_F_Skull (Green)</hitFXprefab>
     </Ability>

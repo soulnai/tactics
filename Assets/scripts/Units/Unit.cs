@@ -114,8 +114,8 @@ public class Unit : MonoBehaviour, IPointerClickHandler,IPointerEnterHandler,IPo
 	public float damageRollSides = 6; //d6
 	public float maxHeightDiff = 0.5f;
 	public EnumSpace.unitClass UnitClass;
-	public EnumSpace.unitStates UnitState;
-	public EnumSpace.unitActions UnitAction;
+	public EnumSpace.unitStates UnitState = unitStates.normal;
+	public EnumSpace.unitActions UnitAction = unitActions.idle;
 	public Tile currentTile;
 	public BaseAbility currentAbility;
 	private int _castDelay;
