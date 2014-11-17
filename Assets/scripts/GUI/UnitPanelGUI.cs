@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using EnumSpace;
@@ -23,9 +24,19 @@ public class UnitPanelGUI : MonoBehaviour {
 	    EventManager.onUnitSelectionChanged += updateSelectionBox;
 		EventManager.onAttributeChanged += updateAttribute;
 		EventManager.OnUnitCastDelayChanged += updateCastCounter;
+        EventManager.OnUnitDead += updateIcon;
 	}
 
-	void updateCastCounter(Unit u){
+    private void updateIcon(Unit unit)
+    {
+        if (unit == targetUnit)
+        {
+            icon.sprite = unit.iconDead;
+        }
+    }
+
+
+    void updateCastCounter(Unit u){
 
 		if(u == targetUnit){
 			castCounter.text = ""+u.CastingDelay;

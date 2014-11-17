@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviour {
 				PlayerEndTurn();
 			}
 		}
-		if(currentPlayer.type == playerType.player){
+		else if(currentPlayer.type == playerType.player){
 			if(matchState == matchStates.battle)
 				selectNextUnitWithAP();
 			else if(matchState == matchStates.placeUnits){

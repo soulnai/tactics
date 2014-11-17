@@ -8,6 +8,7 @@ using EnumSpace;
 public class Unit : MonoBehaviour, IPointerClickHandler,IPointerEnterHandler,IPointerExitHandler {
 
 	public Sprite icon;
+    public Sprite iconDead;
 
 	public bool isFlying = false;
 
