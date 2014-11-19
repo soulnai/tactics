@@ -1,6 +1,5 @@
 F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll
 F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\Assembly-CSharp.pdb
-F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\Assembly-UnityScript-firstpass.dll
 F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\DOTween.dll
 F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\UnityEditor.dll
 F:\Side-projects\Soulnai_tactics\tactics\Temp\UnityVS_bin\Debug\UnityEngine.dll
