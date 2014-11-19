@@ -184,15 +184,16 @@ public class GameManager : MonoBehaviour {
 	void Start () {	
 		unitSelection = (GameObject)Instantiate(selectionRing,new Vector3(-1000f,-1000f,-1000f), Quaternion.identity);
 
+        EventManager.onTileClick += selectUnit;
 		EventManager.onTileClick += PlaceUnit;
         EventManager.onTileClick += useAbility;
-        EventManager.onTileClick += selectUnit;
+
 		EventManager.onTileCursorOverChanged += drawPointer;
 		EventManager.onTileCursorOverChanged += drawArea;
 
 		EventManager.onUnitClick += useAbility;
         EventManager.onUnitClick += selectUnit;
-	    EventManager.onMouseOverUnit += drawPointer;
+	    EventManager.OnCursorEnterUnit += drawPointer;
 
 		EventManager.onUnitSelectionChanged += setSelectionRing;
 
@@ -265,7 +266,10 @@ public class GameManager : MonoBehaviour {
 
 	public void selectNextUnit() {
 		//End turn event
-		EventManager.UnitTurnEnd(currentUnit);
+	    if (matchState == matchStates.battle)
+	    {
+	        EventManager.UnitTurnEnd(currentUnit);
+	    }
 
 		if(currentPlayer.type == playerType.ai){
 			if (currentUnitIndex + 1 < currentPlayer.units.Count) {

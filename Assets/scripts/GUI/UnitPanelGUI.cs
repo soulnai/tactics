@@ -125,6 +125,15 @@ public class UnitPanelGUI : MonoBehaviour {
 		}
 	}
 
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
 	// Update is called once per frame
 	void Update () {
 

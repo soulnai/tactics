@@ -457,12 +457,12 @@ public class Unit : MonoBehaviour, IPointerClickHandler,IPointerEnterHandler,IPo
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        EventManager.MouseOverUnit(this);
+        EventManager.CursorEnterUnit(this);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        
+        EventManager.CursorExitUnit(this);
     }
 	void OnDestroy()
 	{

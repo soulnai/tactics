@@ -28,7 +28,8 @@ public static class EventManager {
 	//unit events
 	public static event UnitBaseEvent onUnitClick;
 	public static event UnitBaseEvent onUnitReactionEnd;
-	public static event UnitBaseEvent onMouseOverUnit;
+	public static event UnitBaseEvent OnCursorEnterUnit;
+    public static event UnitBaseEvent OnCursorExitUnit;
 	public static event UnitBaseEvent onUnitSelectionChanged;
 	public static event UnitBaseEvent OnUnitPosChange;
 	public static event UnitBaseEvent OnUnitTurnStart;
@@ -149,11 +150,17 @@ public static class EventManager {
 			onUnitReactionEnd(unit);
 	}
 
-	public static void MouseOverUnit(Unit unit)
+	public static void CursorEnterUnit(Unit unit)
 	{
-		if(onMouseOverUnit != null)
-			onMouseOverUnit(unit);
+		if(OnCursorEnterUnit != null)
+			OnCursorEnterUnit(unit);
 	}
+
+    public static void CursorExitUnit(Unit unit)
+    {
+        if (OnCursorExitUnit != null)
+            OnCursorExitUnit(unit);
+    }
 
 	public static void FXEnd(Unit owner,Unit target)
 	{

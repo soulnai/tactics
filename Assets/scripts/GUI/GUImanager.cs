@@ -48,6 +48,9 @@ public class GUImanager : MonoBehaviour {
 		EventManager.onLockUI += LockUI;
 		EventManager.onUnlockUI += UnlockUI;
         EventManager.onUnitSelectionChanged += updateUnitPanels;
+	    EventManager.onTileCursorOverChanged += updateTargetUnitPanel;
+        EventManager.OnCursorEnterUnit += updateTargetUnitPanel;
+	    EventManager.OnCursorExitUnit += hideTargetUnitPanel;
 	}
 
     private void updateUnitPanels(Unit unit)
@@ -55,6 +58,27 @@ public class GUImanager : MonoBehaviour {
         selectedUnit.Init(unit);
     }
 
+    private void updateTargetUnitPanel(Tile tile)
+    {
+        if (tile.unitInTile != null)
+        {
+            updateTargetUnitPanel(tile.unitInTile);
+        }
+        else
+        {
+            hideTargetUnitPanel(null);
+        }
+    }
+    private void updateTargetUnitPanel(Unit unit)
+    {
+        if(unit.playerOwner.type == playerType.ai)
+            selectedTargetUnit.Init(unit);
+    }
+
+    private void hideTargetUnitPanel(Unit unit)
+    {
+        selectedTargetUnit.Hide();
+    }
     void Start () {
 		VectorLine.SetCamera3D(Camera.main);
 		gm = GameManager.instance;
