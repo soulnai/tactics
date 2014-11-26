@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using System.Collections;
 
 public class ColorHolder : MonoBehaviour {
@@ -7,6 +8,7 @@ public class ColorHolder : MonoBehaviour {
 	public Color area;
 	public Color move;
 	public Material pathMat;
+    public List<ColorObj> ColorsList = new List<ColorObj>();
 
 	void Awake () {
 		instance = this;
@@ -20,4 +22,16 @@ public class ColorHolder : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    public Color GetAttributeColor(BaseAttribute at)
+    {
+        foreach (ColorObj c in ColorsList)
+        {
+            if (c.Attribute == at.attribute)
+            {
+                return c.Color;
+            }
+        }
+        return Color.red;
+    }
 }

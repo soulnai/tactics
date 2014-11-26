@@ -28,7 +28,7 @@ public class EffectPanelGUI : MonoBehaviour {
 			counter.text = "inf";
 	}
 
-	public void Delete(){
+	public void Reset(){
 		effect = null;
 		counter.text = "0";
 		gameObject.SetActive(false);

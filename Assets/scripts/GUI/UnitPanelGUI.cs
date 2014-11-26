@@ -9,20 +9,24 @@ public class UnitPanelGUI : MonoBehaviour {
     public Text unitName;
     public Text unitClass;
 	public Image selection;
-	public Slider HPslider;
-	public Slider MPslider;
-	public Slider APslider;
+	public AttributeSliderController HPslider;
+	public AttributeSliderController MPslider;
+	public AttributeSliderController APslider;
 	public EffectsPanelControllerGUI effectsGUI;
 	public Text castCounter;
 
 	public Unit targetUnit;
+    public bool showSelectedUnit = false;
     // Use this for initialization
 	void Awake(){
 		gameObject.SetActive(false);
 		castCounter.gameObject.SetActive(false);
 	    if (selection != null) selection.gameObject.SetActive(false);
 	    EventManager.onUnitSelectionChanged += updateSelectionBox;
-		EventManager.onAttributeChanged += updateAttribute;
+	    if (showSelectedUnit)
+	    {
+	        EventManager.onUnitSelectionChanged += ChangeTargetUnit;
+	    }
 		EventManager.OnUnitCastDelayChanged += updateCastCounter;
         EventManager.OnUnitDead += updateIcon;
 	}
@@ -47,12 +51,7 @@ public class UnitPanelGUI : MonoBehaviour {
 		}
 	}
 
-	void updateAttribute (Unit u, BaseAttribute at)
-	{
-		if(u == targetUnit)
-			UpdateValue(at.attribute);
 
-	}
 
 	public void updateSelectionBox(Unit u){
 		if(selection != null){
@@ -62,6 +61,14 @@ public class UnitPanelGUI : MonoBehaviour {
 				selection.gameObject.SetActive(false);
 		}
 	}
+
+    public void ChangeTargetUnit(Unit u)
+    {
+        HPslider.Init(u.getAttribute(unitAttributes.HP));
+        MPslider.Init(u.getAttribute(unitAttributes.MP));
+        APslider.Init(u.getAttribute(unitAttributes.AP));
+        effectsGUI.Init(u);
+    }
 
 	public void Init(Unit target)
 	{
@@ -78,9 +85,10 @@ public class UnitPanelGUI : MonoBehaviour {
         }
 
 		icon.sprite = targetUnit.icon;
-		UpdateValue(unitAttributes.AP);
-		UpdateValue(unitAttributes.HP);
-		UpdateValue(unitAttributes.MP);
+        //TODO init sliders
+        HPslider.Init(target.getAttribute(unitAttributes.HP));
+        MPslider.Init(target.getAttribute(unitAttributes.MP));
+        APslider.Init(target.getAttribute(unitAttributes.AP));
 	    effectsGUI.Init(targetUnit);
 
 		if(icon.GetComponent<Button>() != null)
@@ -101,30 +109,6 @@ public class UnitPanelGUI : MonoBehaviour {
 		}
 	}
 
-	public void UpdateValue(unitAttributes at)
-	{
-		switch(at){
-		case unitAttributes.AP:
-			if(targetUnit.AP > 0)
-				APslider.value = ((float)targetUnit.AP/(float)targetUnit.APmax);
-			else
-				APslider.value = 0;
-			break;
-		case unitAttributes.HP:
-			if(targetUnit.HP > 0)
-				HPslider.value = ((float)targetUnit.HP/(float)targetUnit.HPmax);
-			else
-				HPslider.value = 0;
-			break;
-		case unitAttributes.MP:
-			if(targetUnit.MP > 0)
-				MPslider.value = ((float)targetUnit.MP/(float)targetUnit.MPmax);
-			else
-				MPslider.value = 0;
-			break;
-		}
-	}
-
     public void Hide()
     {
         gameObject.SetActive(false);
@@ -141,7 +125,6 @@ public class UnitPanelGUI : MonoBehaviour {
 
 	void OnDestroy(){
 		EventManager.onUnitSelectionChanged -= updateSelectionBox;
-		EventManager.onAttributeChanged -= updateAttribute;
 		EventManager.OnUnitCastDelayChanged -= updateCastCounter;
 	}
 }

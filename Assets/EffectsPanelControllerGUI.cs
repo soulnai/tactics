@@ -4,51 +4,55 @@ using System.Collections.Generic;
 
 public class EffectsPanelControllerGUI : MonoBehaviour {
 	public List<EffectPanelGUI> effectPanels;
-	private List<EffectPanelGUI> effectPanelsUsed = new List<EffectPanelGUI>();
-	private List<EffectPanelGUI> effectPanelsUnused = new List<EffectPanelGUI>();
 
 	private Unit owner;
 
 	public void Init(Unit u){
 		owner = u;
+	    clearAllPanels();
+	    foreach (BaseEffect ef in u.unitEffects.effectsApplied)
+	    {
+	        addEffectPanel(u,ef);
+	    }
 	}
+
+    private void clearAllPanels()
+    {
+        foreach (EffectPanelGUI efPanel in effectPanels)
+        {
+            efPanel.Reset();
+        }
+    }
 
 	// Use this for initialization
 	void Start () {
 		EventManager.OnUnitEffectChanged += updateEffectPanels;
 		EventManager.OnUnitEffectAdded += addEffectPanel;
 		EventManager.OnUnitEffectRemoved += removeEffectPanel;
-
-		effectPanelsUnused = effectPanels;
 	}
 
 	void addEffectPanel(Unit u, BaseEffect ef)
 	{
 		if(u == owner){
-			effectPanelsUnused[0].Init(ef);
-			effectPanelsUsed.Add(effectPanelsUnused[0]);
-			effectPanelsUnused.RemoveAt(0);
+            if (effectPanels.Find(EffectPanelGUI => EffectPanelGUI.effect == null) != null)
+		    {
+                effectPanels.Find(EffectPanelGUI => EffectPanelGUI.effect == null).Init(ef);    
+		    }
+            else
+            {
+                Debug.Log("No unused effects panel found");
+            }
+            
 		}
 	}
 
 	void removeEffectPanel(Unit u, BaseEffect ef)
 	{
 		if(u == owner){
-			EffectPanelGUI tempPanel = effectPanelsUsed.Find(EffectPanelGUI => EffectPanelGUI.effect == ef) as EffectPanelGUI;
+			EffectPanelGUI tempPanel = effectPanels.Find(EffectPanelGUI => EffectPanelGUI.effect == ef) as EffectPanelGUI;
 			if(tempPanel != null){
-				tempPanel.Delete();
-				effectPanelsUnused.Add(tempPanel);
-				effectPanelsUsed.Remove(tempPanel);
+				tempPanel.Reset();
 			}
-//			foreach(EffectPanelGUI panel in effectPanelsUsed){
-//				if(panel.effect == ef){
-//					effectPanelsUnused.Add(panel);
-//				}
-//			}
-//			foreach(EffectPanelGUI panel in effectPanelsUnused){
-//				if(effectPanelsUsed.Contains(panel))
-//					effectPanelsUsed.Remove(panel);
-//			}
 		}
 	}
 
@@ -56,7 +60,7 @@ public class EffectsPanelControllerGUI : MonoBehaviour {
 	{
         if (ef.targets.Contains(owner))
         {
-            foreach (EffectPanelGUI p in effectPanelsUsed)
+            foreach (EffectPanelGUI p in effectPanels)
             {
                 if (p.effect == ef)
                 {

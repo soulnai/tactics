@@ -76,6 +76,11 @@ public class BaseAttribute : ICloneable {
 			Debug.Log("Attribute doesnt have owner - " + this.attribute);
 	}
 
+    public Unit getOwner()
+    {
+        return owner;
+    }
+
     void updateMods(Player player)
     {
         if(modList.Count > 0){
@@ -83,6 +88,23 @@ public class BaseAttribute : ICloneable {
                 ac.getModValue(Value);
             }
         }
+    }
+
+    internal static float GetMaxAttributeValue(BaseAttribute at)
+    {
+        if (at.owner != null)
+        {
+            switch (at.attribute)
+            {
+                case unitAttributes.AP:
+                    return at.owner.getAttribute(unitAttributes.APmax).valueMod;
+                case unitAttributes.HP:
+                    return at.owner.getAttribute(unitAttributes.HPmax).valueMod;
+                case unitAttributes.MP:
+                    return at.owner.getAttribute(unitAttributes.MPmax).valueMod;
+            }
+        }
+        return at.valueMod;
     }
 
 	public object Clone()
